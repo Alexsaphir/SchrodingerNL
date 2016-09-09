@@ -1,8 +1,8 @@
-dt = 0.001;
-dx = .1;
+dt = 0.1;
+dx = 1.;
 
-Xmax = 100;
-Xmin = -100;
+Xmax = 1;
+Xmin = -1;
 
 
 
@@ -27,13 +27,13 @@ function R=doStep(U)
 	
 	for i=1:length(M)
 		if (i>1 & i<length(M)) then
-			M(i)=U(2,i)-%i*dt/dx/2.*(U(1,i-1)+U(1,i+1)-2.*U(1,i));
+			M(i)=U(2,i)-%i*dt/dx/dx/2.*(U(1,i-1)+U(1,i+1)-2.*U(1,i));
 		end
 		if (i==1) then
-			M(i)=U(2,i)-%i*dt/dx/2.*(U(1,i+1)-2.*U(1,i));
+			M(i)=U(2,i)-%i*dt/dx/dx/2.*(U(1,i+1)-2.*U(1,i));
 		end
 		if(i==length(M)) then
-			M(i)=U(2,i)-%i*dt/dx/2.*(U(1,i-1)-2.*U(1,i));
+			M(i)=U(2,i)-%i*dt/dx/dx/2.*(U(1,i-1)-2.*U(1,i));
 		end
 	end
 	
@@ -49,13 +49,13 @@ function R=firstStep(U)
     for i=1:length(M)
 		
 		if (i==1) then
-			M(i)=U(1,i)-%i*dt/dx/2.*(U(1,i+1)-2.*U(1,i));
+			M(i)=U(1,i)-%i*dt/dx/dx/2.*(U(1,i+1)-2.*U(1,i));
 		end
 		if(i==length(M)) then
-			M(i)=U(1,i)-%i*dt/dx/2.*(U(1,i-1)-2.*U(1,i));
+			M(i)=U(1,i)-%i*dt/dx/dx/2.*(U(1,i-1)-2.*U(1,i));
 		end
 		if (i>1 & i<length(M)) then
-			M(i)=U(1,i)-%i*dt/dx/2.*(U(1,i-1)+U(1,i+1)-2.*U(1,i));
+			M(i)=U(1,i)-%i*dt/dx/dx/2.*(U(1,i-1)+U(1,i+1)-2.*U(1,i));
 		end
 	end
 	R=[M;U];
@@ -72,8 +72,8 @@ U=initPulse();
 
 U=firstStep(U);
 Res=U;
-for i=1:1000000	
-	if(modulo(i,1000)==0)
+for i=1:10	
+	if(modulo(i,1)==0)
 		disp(i)
 		Res=[U(1,:);Res];
 	end
