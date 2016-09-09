@@ -15,7 +15,8 @@ SOURCES += \
     gridmanager.cpp
 
 DISTFILES += \
-    nlse
+    nlse \
+    schrod.sce
 
 HEADERS += \
     grid1d.h \
