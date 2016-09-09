@@ -36,13 +36,13 @@ void Solver1DGui::refreshView()
 	path.moveTo(0.,this->getValueNorm(0));
 	for(int i=1; i<this->getN();++i)
 	{
-		//path.lineTo((double)(i)*this->getDx(),-this->getValueNorm(i));
+		path.lineTo((double)(i)*this->getDx(),-this->getValueNorm(i));
 		//path.lineTo((double)(i)*this->getDx(),-this->getValue(i).real());
 
 		//Affichage du fourrier
-		path.moveTo(i,0);
-		path.lineTo(i,-this->getValueNorm(i));
-		view->scene()->addPath(path,Pen);
+//		path.moveTo(i,0);
+//		path.lineTo(i,-this->getValueNorm(i));
+//		view->scene()->addPath(path,Pen);
 	}
 	view->scene()->addPath(path,Pen);
 }
