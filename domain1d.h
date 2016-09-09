@@ -8,10 +8,13 @@
 class Domain1D: public Grid1D
 {
 public:
-	Domain1D(double Xmin, double Xmax, double Xstep, cmplx Binf, cmplx Bsup);
+	Domain1D(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsup);
 
 	cmplx getValue(int i) const;
 	void setValue(int i, cmplx y);
+
+	void doFourrier();
+	void undoFourrier();
 private:
 	cmplx BoundInf;//getValue(-1)
 	cmplx BoundSup;//getValue(N+1)

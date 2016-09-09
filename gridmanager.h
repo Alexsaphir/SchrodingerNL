@@ -8,12 +8,15 @@
 class GridManager
 {
 public:
-	GridManager(double Xmin, double Xmax, double Xstep, cmplx Binf, cmplx Bsup, int i, int d);
+	GridManager(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsup, int i, int d);
 
 	int getSizeStack() const;
 	Domain1D* getDomain(int i) const;
 	Domain1D* getCurrentDomain() const;
 	Domain1D* getNextDomain() const;
+	Domain1D* getOldDomain() const;
+
+	void switchDomain();
 
 	~GridManager();
 

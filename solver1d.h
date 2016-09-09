@@ -8,21 +8,21 @@
 class Solver1D
 {
 public:
-	Solver1D(double Xmin, double Xmax, double Xstep, cmplx Binf, cmplx Bsup, double timeStep);
+	Solver1D(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsup, Type timeStep);
 	~Solver1D();
 
 
 
-	double getDt() const;
-	double getDx() const;
+	Type getDt() const;
+	Type getDx() const;
 	cmplx getNextValue(int i) const;
 	cmplx getOldValue(int i) const;
-	double getPos(int i) const;
-	double getTime() const;
+	Type getPos(int i) const;
+	Type getTime() const;
 	cmplx getValue(int i) const;
 	double getValueNorm(int i) const;
-	double getXmax() const;
-	double getXmin() const;
+	Type getXmax() const;
+	Type getXmin() const;
 	int getN() const;
 	int getT() const;
 	void doStep();
@@ -40,18 +40,12 @@ private:
 
 	void SolveImaginary();
 	void SolveReal();
-	double V(int i) const;
+	Type V(int i) const;
 
 private:
-	bool Dom1isCurrent;
-	bool Dom2isCurrent;
-	bool Dom3isCurrent;
+	GridManager *GridM;
 
-	Domain1D *Dom1;
-	Domain1D *Dom2;
-	Domain1D *Dom3;
-
-	double dt;//Temporal step
+	Type dt;//Temporal step
 	int T;//Current time step
 };
 

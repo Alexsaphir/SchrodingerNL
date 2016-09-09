@@ -1,7 +1,7 @@
 #include "solver1dgui.h"
 
 
-Solver1DGui::Solver1DGui(double Xmin, double Xmax, double Xstep, cmplx Binf, cmplx Bsup, double timeStep) : Solver1D(Xmin ,Xmax, Xstep, Binf, Bsup, timeStep), QMainWindow()
+Solver1DGui::Solver1DGui(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsup, Type timeStep) : Solver1D(Xmin ,Xmax, Xstep, Binf, Bsup, timeStep), QMainWindow()
 {
 	SDI_Area = new QWidget;
 	GridLayout = new QGridLayout;
@@ -36,8 +36,13 @@ void Solver1DGui::refreshView()
 	path.moveTo(0.,this->getValueNorm(0));
 	for(int i=1; i<this->getN();++i)
 	{
-		path.lineTo((double)(i)*this->getDx(),-this->getValueNorm(i));
+		//path.lineTo((double)(i)*this->getDx(),-this->getValueNorm(i));
 		//path.lineTo((double)(i)*this->getDx(),-this->getValue(i).real());
+
+		//Affichage du fourrier
+		path.moveTo(i,0);
+		path.lineTo(i,-this->getValueNorm(i));
+		view->scene()->addPath(path,Pen);
 	}
 	view->scene()->addPath(path,Pen);
 }

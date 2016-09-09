@@ -1,6 +1,6 @@
 #include "gridmanager.h"
 
-GridManager::GridManager(double Xmin, double Xmax, double Xstep, cmplx Binf, cmplx Bsup, int i, int d)
+GridManager::GridManager(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsup, int i, int d)
 {
 	if(i<=0)
 		i=1;
@@ -22,7 +22,11 @@ Domain1D* GridManager::getCurrentDomain() const
 
 Domain1D* GridManager::getDomain(int i) const
 {
-	if( (i+offset)<Stack.size() )
+	//Current == 0
+	//Next == 1
+	//Old == -1
+
+	if( (i+offset)<Stack.size() && (i+offset)>=0)
 		return Stack.at(i+offset);
 	else
 		return getCurrentDomain();
@@ -33,9 +37,25 @@ Domain1D* GridManager::getNextDomain() const
 	return getDomain(1);
 }
 
+Domain1D* GridManager::getOldDomain() const
+{
+	return getDomain(-1);
+}
+
 int GridManager::getSizeStack() const
 {
 	return Stack.size();
+}
+
+void GridManager::switchDomain()
+{
+	Domain1D *begin;
+	begin = Stack.first();
+	for(int i=0;i<Stack.size()-1;++i)
+	{
+		Stack.replace(i,Stack.at(i+1));
+	}
+	Stack.replace(Stack.size()-1, begin);
 }
 
 GridManager::~GridManager()
