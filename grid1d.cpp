@@ -1,7 +1,7 @@
 #include "grid1d.h"
 
 
-Grid1D::Grid1D(double Xmn, double Xmx, double Xsp)
+Grid1D::Grid1D(Type Xmn, Type Xmx, Type Xsp)
 {
 	Xmin = Xmn;
 	Xmax = Xmx;
@@ -12,12 +12,12 @@ Grid1D::Grid1D(double Xmn, double Xmx, double Xsp)
 	V.fill(0.,nbPts);
 }
 
-double Grid1D::getDx() const
+Type Grid1D::getDx() const
 {
 	return Xstep;
 }
 
-double Grid1D::getPos(int i) const
+Type Grid1D::getPos(int i) const
 {
 	if(i<0)
 		return 0.;
@@ -35,12 +35,12 @@ cmplx Grid1D::getValue(int i) const
 	return V.at(i);
 }
 
-double Grid1D::getXmax() const
+Type Grid1D::getXmax() const
 {
 	return Xmax;
 }
 
-double Grid1D::getXmin() const
+Type Grid1D::getXmin() const
 {
 	return Xmin;
 }

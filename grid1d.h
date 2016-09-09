@@ -7,30 +7,32 @@
 
 #include <QDebug>
 
-typedef long double Type;
+typedef double Type;
 typedef std::complex<Type> cmplx;
 
 class Grid1D
 {
 public:
 
-	Grid1D(double Xmn, double Xmx, double Xsp);
+	Grid1D(Type Xmn, Type Xmx, Type Xsp);
 
-	double getDx() const;
-	double getPos(int i) const;
+	Type getDx() const;
+	Type getPos(int i) const;
 	cmplx getValue(int i) const;
-	double getXmax() const;
-	double getXmin() const;
+	Type getXmax() const;
+	Type getXmin() const;
 	int getN() const;
 	void setValue(int i, cmplx y);
 	void setValueReal(int i, Type y);
 	void setValueImag(int i, Type y);
 
+
+
 private:
 	QVector<cmplx> V;
-	double Xmin;
-	double Xmax;
-	double Xstep;
+	Type Xmin;
+	Type Xmax;
+	Type Xstep;
 	int nbPts;
 };
 
