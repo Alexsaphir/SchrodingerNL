@@ -45,7 +45,7 @@ cmplx Solver1D::getValue(int i) const
 
 double Solver1D::getValueNorm(int i) const
 {
-	return getValue(i).real()*getValue(i).real() + getValue(i).imag()*getValue(i).imag();
+	return std::abs(getValue(i));
 
 
 }
@@ -79,12 +79,15 @@ void Solver1D::doStep()
 	Domain1D *Current	= getCurrentDomain();
 	Domain1D *Old		= getOldDomain();
 
-	Type d=getDt()/getDx()/getDt();
+	cmplx j(0,1.);
+	Type d=getDt()/getDx()/getDx();
 
 	if(T==0)
 	{
-		for(double i=0;i<getN();++i)
+		#pragma omp parallel for
+		for(int i=0;i<getN();++i)
 		{
+
 			cmplx tmp(0.,0.);
 
 			tmp += Current->getValue(i+1);
@@ -93,6 +96,7 @@ void Solver1D::doStep()
 
 			tmp /= 2.;//Spécifique à T==0
 			tmp *= d;
+			tmp *= -j;//Mult by %i
 
 			tmp += Current->getValue(i);//Current car T==0
 
@@ -101,15 +105,17 @@ void Solver1D::doStep()
 	}
 	else
 	{
-		for(double i=0;i<getN();++i)
+		#pragma omp parallel for
+		for(int i=0;i<getN();++i)
 		{
 			cmplx tmp(0.,0.);
-
 			tmp += Current->getValue(i+1);
 			tmp += Current->getValue(i-1);
 			tmp -= 2.*Current->getValue(i);
 			tmp *= d;
-			tmp += Old->getValue(i);//Current car T==0
+			tmp *=-j;
+
+			tmp += Old->getValue(i);
 
 			Next->setValue(i,tmp);
 		}
@@ -157,14 +163,9 @@ void Solver1D::initPulse()
 	for(int i=0; i<this->getN();++i)
 	{
 		Type x(this->getPos(i));
-		cmplx j(0,1.);
-		this->setValue(i,std::sin(x));
-		//this->setValue(i,std::exp(-1.*x*x/4.)*std::exp((Type)100*j*x));
-		//if(std::abs(this->getValue(i))<0.01)
-		//this->setValue(i,0.);
+		cmplx j(0,100.*x);
+		this->setValue(i,std::exp(-x*x/4.)*std::exp(j));
 	}
-	this->getCurrentDomain()->doFourrier();
-	//this->getCurrentDomain()->undoFourrier();
 }
 
 
