@@ -13,17 +13,19 @@ void Domain1D::setValue(int i,cmplx y)
 
 cmplx Domain1D::getValue(int i) const
 {
+//	Reflective boundary
 //	if(i==-1)
 //		return Grid1D::getValue(0);
 //	if(i==this->getN())
 //		return Grid1D::getValue(this->getN()-1);
 
 
-	//Borne constante
+//	Constant boundary
 	if(i<0)
 		return BoundInf;
 	if(i==this->getN())
 		return BoundSup;
+
 	return Grid1D::getValue(i);
 }
 
