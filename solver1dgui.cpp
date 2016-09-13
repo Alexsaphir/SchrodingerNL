@@ -36,7 +36,7 @@ void Solver1DGui::refreshView()
 	path.moveTo(0.,this->getValueNorm(0));
 	for(int i=1; i<this->getN();++i)
 	{
-		path.lineTo((double)(i)*this->getDx(),-this->getValueNorm(i));
+		path.lineTo((double)(i)*this->getDx()*.01,-this->getValueNorm(i));
 		//path.lineTo((double)(i)*this->getDx(),-this->getValue(i).real());
 
 		//Affichage du fourrier
@@ -45,6 +45,7 @@ void Solver1DGui::refreshView()
 //		view->scene()->addPath(path,Pen);
 	}
 	view->scene()->addPath(path,Pen);
+	view->fitInView( view->scene()->sceneRect(), Qt::KeepAspectRatio );
 }
 
 void Solver1DGui::Zoom(QGraphicsSceneWheelEvent *event)
@@ -67,11 +68,18 @@ bool Solver1DGui::eventFilter(QObject *obj, QEvent *event)
 		if ( (key->key()==Qt::Key_Enter) )
 		{
 			//Enter or return was pressed-
-			for(int i=0;i<1;++i)
-			this->doStep();
-			refreshView();
+			//for(int i=0;i<100000;++i)
+			//{
+				this->doStep();
+			//	if (i%200==0)
+					//qDebug() << (Type)i/(Type)1000;
+			//}
 		}
-
+		if (key->key()==Qt::Key_Space)
+			this->doFourrier();
+		if(key->key()==Qt::Key_B)
+			this->undoFourrier();
+		refreshView();
 		return true;
 	}
 
@@ -83,4 +91,6 @@ Solver1DGui::~Solver1DGui()
 	delete view;
 	delete scene;
 	delete GridLayout;
+	delete Scroll;
+	delete SDI_Area;
 }
