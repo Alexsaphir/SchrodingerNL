@@ -28,7 +28,7 @@ Solver1DGui::Solver1DGui(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsu
 void Solver1DGui::refreshView()
 {
 	this->setWindowTitle(QString::number(this->getT()*this->getDt()));
-	scene->clear();
+	view->scene()->clear();
 	QPen Pen;
 	Pen.setWidth(1);
 	Pen.setCosmetic(true);
@@ -36,16 +36,10 @@ void Solver1DGui::refreshView()
 	path.moveTo(0.,this->getValueNorm(0));
 	for(int i=1; i<this->getN();++i)
 	{
-		path.lineTo((double)(i)*this->getDx()*.01,-this->getValueNorm(i));
-		//path.lineTo((double)(i)*this->getDx(),-this->getValue(i).real());
-
-		//Affichage du fourrier
-//		path.moveTo(i,0);
-//		path.lineTo(i,-this->getValueNorm(i));
-//		view->scene()->addPath(path,Pen);
+		path.lineTo((double)(i)*this->getDx(),-this->getValueNorm(i));
 	}
 	view->scene()->addPath(path,Pen);
-	view->fitInView( view->scene()->sceneRect(), Qt::KeepAspectRatio );
+	view->fitInView( view->scene()->, Qt::KeepAspectRatio );
 }
 
 void Solver1DGui::Zoom(QGraphicsSceneWheelEvent *event)
@@ -68,12 +62,12 @@ bool Solver1DGui::eventFilter(QObject *obj, QEvent *event)
 		if ( (key->key()==Qt::Key_Enter) )
 		{
 			//Enter or return was pressed-
-			//for(int i=0;i<100000;++i)
-			//{
+			for(int i=0;i<10000;++i)
+			{
 				this->doStep();
-			//	if (i%200==0)
-					//qDebug() << (Type)i/(Type)1000;
-			//}
+				if (i%500==0)
+					qDebug() << (Type)i/(Type)100;
+			}
 		}
 		if (key->key()==Qt::Key_Space)
 			this->doFourrier();
