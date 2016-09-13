@@ -12,7 +12,8 @@ SOURCES += \
     domain1d.cpp \
     solver1d.cpp \
     solver1dgui.cpp \
-    gridmanager.cpp
+    gridmanager.cpp \
+    integration.cpp
 
 DISTFILES += \
     nlse \
@@ -23,4 +24,5 @@ HEADERS += \
     domain1d.h \
     solver1d.h \
     solver1dgui.h \
-    gridmanager.h
+    gridmanager.h \
+    integration.h
