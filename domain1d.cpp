@@ -51,12 +51,13 @@ void Domain1D::undoFourrier()
 
 	for (int n=0;n<this->getN();++n)
 	{
-		cmplx i(0,2.*M_PI*n/this->getN());
+		cmplx j(0.,2.*M_PI*(Type)n/(Type)this->getN());
+
 		cmplx v(0,0);
 		for (int k=0;k<this->getN();++k)
 		{
-			v+=Tmp.getValue(n)*std::exp((Type)k*i);
+			v+=Tmp.getValue(n)*std::exp(j*(Type)k);
 		}
-		this->setValue(n,v/(Type)n);
+		this->setValue(n,v/(Type)this->getN());
 	}
 }
