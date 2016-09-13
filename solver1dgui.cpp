@@ -27,7 +27,7 @@ Solver1DGui::Solver1DGui(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsu
 
 void Solver1DGui::refreshView()
 {
-	this->setWindowTitle(QString::number(this->getT()));
+	this->setWindowTitle(QString::number(this->getT()*this->getDt()));
 	scene->clear();
 	QPen Pen;
 	Pen.setWidth(1);
