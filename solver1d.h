@@ -4,6 +4,7 @@
 #include <QDebug>
 
 #include "gridmanager.h"
+#include "integration.h"
 
 class Solver1D
 {
@@ -30,6 +31,8 @@ public:
 
 
 	void initPulse();
+	void doFourrier();
+	void undoFourrier();
 
 private:
 	Domain1D* getCurrentDomain() const;
@@ -41,6 +44,7 @@ private:
 	void SolveImaginary();
 	void SolveReal();
 	Type V(int i) const;
+	Type err_integ;
 
 private:
 	GridManager *GridM;
