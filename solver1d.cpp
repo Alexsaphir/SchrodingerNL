@@ -103,8 +103,6 @@ void Solver1D::doStep()
 
 			Next->setValue(i,tmp);
 		}
-		err_integ =std::abs(Integration::integrate(getOldDomain())-Integration::integrate(getCurrentDomain()));
-		qDebug() << err_integ;
 	}
 	else
 	{
@@ -119,17 +117,13 @@ void Solver1D::doStep()
 			tmp *=-j;
 
 			tmp += Old->getValue(i);
-			tmp += -j*dt*std::abs(Current->getValue(i))*std::abs(Current->getValue(i))*Current->getValue(i);
+			//tmp += -j*dt*std::abs(Current->getValue(i))*std::abs(Current->getValue(i))*Current->getValue(i);//NL part
 
 			Next->setValue(i,tmp);
 		}
 	}
 	++T;
 	switchDomain();
-	//qDebug() << Integration::integrate(getCurrentDomain());
-
-
-
 }
 
 void Solver1D::setValue(int i, cmplx y)
@@ -173,11 +167,11 @@ void Solver1D::initPulse()
 		Type x(this->getPos(i));
 		cmplx j(0,100.*x);
 		this->setValue(i,std::exp(-x*x/4.)*std::exp(j));
-		this->setValue(i,.1);
-		if(i<(this->getN()*490./1000.))
-			this->setValue(i,0.);
-		if(i>(this->getN()*510./1000.))
-			this->setValue(i,0.);
+//		this->setValue(i,.1);
+//		if(i<(this->getN()*490./1000.))
+//			this->setValue(i,0.);
+//		if(i>(this->getN()*510./1000.))
+//			this->setValue(i,0.);
 	}
 
 }
