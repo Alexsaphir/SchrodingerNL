@@ -13,13 +13,13 @@
 #include "domain1d.h"
 #include "solver1d.h"
 
-template<typename Type> class Domain1DGui : public QMainWindow
+class Domain1DGui : public QMainWindow
 {
 public:
-	Domain1DGui(Domain1D<Type> *d);
+	Domain1DGui(Domain1D *d);
 	~Domain1DGui();
 
-	void setDomain(Domain1D<Type> *d);
+	void setDomain(Domain1D *d);
 	void setValue(int i, Type y);
 public slots:
 	void refreshView();
@@ -30,8 +30,8 @@ private:
 
 private:
 
-	Domain1D<Type> *domain;
-	Solver1D<Type> *Solv;
+	Domain1D *domain;
+	Solver1D *Solv;
 
 	QGraphicsScene *scene;
 	QGraphicsView *view;
@@ -43,7 +43,7 @@ private:
 
 
 
-template<typename Type> Domain1DGui<Type>::Domain1DGui(Domain1D<Type> *d): QMainWindow()
+Domain1DGui::Domain1DGui(Domain1D *d): QMainWindow()
 {
 
 	domain = d;
@@ -72,7 +72,7 @@ template<typename Type> Domain1DGui<Type>::Domain1DGui(Domain1D<Type> *d): QMain
 	view->fitInView( view->scene()->sceneRect(), Qt::KeepAspectRatio );
 }
 
-template<typename Type> bool Domain1DGui<Type>::eventFilter(QObject *obj, QEvent *event)
+bool Domain1DGui::eventFilter(QObject *obj, QEvent *event)
 {
 	if (event->type() == QEvent::GraphicsSceneWheel)
 	{
@@ -94,7 +94,7 @@ template<typename Type> bool Domain1DGui<Type>::eventFilter(QObject *obj, QEvent
 	return false;
 }
 
-template<typename Type> void Domain1DGui<Type>::refreshView()
+void Domain1DGui::refreshView()
 {
 	this->setWindowTitle(QString::number(Solv->getTime()));
 	scene->clear();
@@ -102,27 +102,27 @@ template<typename Type> void Domain1DGui<Type>::refreshView()
 	Pen.setWidth(1);
 	Pen.setCosmetic(true);
 	QPainterPath path;
-	path.moveTo(0.,-domain->getValue(0));
+	path.moveTo(0.,-std::abs(domain->getValue(0)));
 	for(int i=1; i<domain->getN();++i)
 	{
-			path.lineTo((double)(i)*domain->getDx(),-domain->getValue(i));
+			path.lineTo((double)(i)*domain->getDx(),-std::abs(domain->getValue(i)));
 	}
 	view->scene()->addPath(path,Pen);
 }
 
-template<typename Type> void Domain1DGui<Type>::setDomain(Domain1D<Type> *d)
+void Domain1DGui::setDomain(Domain1D *d)
 {
 	domain =d;
 	refreshView();
 }
 
-template<typename Type> void Domain1DGui<Type>::Zoom(QGraphicsSceneWheelEvent *event)
+void Domain1DGui::Zoom(QGraphicsSceneWheelEvent *event)
 {
 	qreal scaleFactor=pow((double)2, event->delta() / 240.0);//Calcul le Facteur de zoom
 	view->scale(scaleFactor, scaleFactor);//Applique le zoom
 }
 
-template<typename Type> Domain1DGui<Type>::~Domain1DGui()
+Domain1DGui::~Domain1DGui()
 {
 	delete view;
 	delete scene;
