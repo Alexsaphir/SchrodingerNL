@@ -7,7 +7,7 @@
 
 #include <QDebug>
 
-typedef double Type;
+typedef double_t Type;
 typedef std::complex<Type> cmplx;
 
 class Grid1D

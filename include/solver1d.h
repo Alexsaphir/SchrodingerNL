@@ -19,7 +19,7 @@ public:
 	cmplx getNextValue(int i) const;
 	cmplx getOldValue(int i) const;
 	Type getPos(int i) const;
-	Type getTime() const;
+	double getTime() const;
 	cmplx getValue(int i) const;
 	double getValueNorm(int i) const;
 	Type getXmax() const;
