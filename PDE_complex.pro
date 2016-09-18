@@ -6,23 +6,35 @@ QMAKE_LFLAGS	+= -fopenmp
 CONFIG += c++11
 
 
-SOURCES += \
-    main.cpp \
-    grid1d.cpp \
-    domain1d.cpp \
-    solver1d.cpp \
-    solver1dgui.cpp \
-    gridmanager.cpp \
-    integration.cpp
-
 DISTFILES += \
-    nlse \
-    schrod.sce
+    Scilab/schrod.sce \
+    LICENSE \
+    README.md\
+    Temp/nlse\
+    WIP/domain1dgui.h \
+    WIP/equation.h \
+    WIP/grid2d.h \
+    WIP/point2d.h \
+    WIP/domain1dgui.cpp \
+    WIP/equation.cpp \
+    WIP/grid2d.cpp \
+    WIP/point2d.cpp
 
 HEADERS += \
-    grid1d.h \
-    domain1d.h \
-    solver1d.h \
-    solver1dgui.h \
-    gridmanager.h \
-    integration.h
+    include/domain1d.h \
+    include/grid1d.h \
+    include/gridmanager.h \
+    include/integration.h \
+    include/solver1d.h \
+    include/solver1dgui.h \
+
+
+SOURCES += \
+    src/domain1d.cpp \
+    src/grid1d.cpp \
+    src/gridmanager.cpp \
+    src/integration.cpp \
+    src/main.cpp \
+    src/solver1d.cpp \
+    src/solver1dgui.cpp \
+
