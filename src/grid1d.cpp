@@ -1,4 +1,4 @@
-#include "grid1d.h"
+#include "include/grid1d.h"
 
 
 Grid1D::Grid1D(Type Xmn, Type Xmx, Type Xsp)
@@ -9,7 +9,7 @@ Grid1D::Grid1D(Type Xmn, Type Xmx, Type Xsp)
 
 	nbPts = (int)((-Xmin + Xmax)/Xstep)+1;
 
-	V.fill(0.,nbPts);
+	V.fill(cmplx(0.,0.),nbPts);
 }
 
 Type Grid1D::getDx() const

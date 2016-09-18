@@ -1,4 +1,4 @@
-#include "domain1d.h"
+#include "include/domain1d.h"
 
 Domain1D::Domain1D(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsup) :Grid1D(Xmin, Xmax, Xstep)
 {
@@ -13,17 +13,10 @@ void Domain1D::setValue(int i,cmplx y)
 
 cmplx Domain1D::getValue(int i) const
 {
-//	Reflective boundary
-//	if(i==-1)
-//		return Grid1D::getValue(0);
-//	if(i==this->getN())
-//		return Grid1D::getValue(this->getN()-1);
-
-
 //	Constant boundary
 	if(i<0)
 		return BoundInf;
-	if(i==this->getN())
+	if(i>=this->getN())
 		return BoundSup;
 
 	return Grid1D::getValue(i);
@@ -32,7 +25,7 @@ cmplx Domain1D::getValue(int i) const
 void Domain1D::doFourrier()
 {
 	Grid1D Tmp= *this;
-
+#pragma omp parallel for
 	for (int k=0;k<this->getN();++k)
 	{
 		cmplx i(0,-2.*M_PI*k/this->getN());
@@ -48,7 +41,7 @@ void Domain1D::doFourrier()
 void Domain1D::undoFourrier()
 {
 	Grid1D Tmp= *this;
-
+#pragma omp parallel for
 	for (int n=0;n<this->getN();++n)
 	{
 		cmplx j(0.,2.*M_PI*(Type)n/(Type)this->getN());

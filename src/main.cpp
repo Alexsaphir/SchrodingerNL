@@ -1,7 +1,7 @@
 #include <QApplication>
 
-#include "grid1d.h"
-#include "solver1dgui.h"
+#include "include/grid1d.h"
+#include "include/solver1dgui.h"
 
 int main(int argc, char **argv)
 {

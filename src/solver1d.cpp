@@ -1,4 +1,4 @@
-#include "solver1d.h"
+#include "include/solver1d.h"
 
 Solver1D::Solver1D(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsup, Type timeStep)
 {
@@ -36,7 +36,7 @@ Type Solver1D::getPos(int i) const
 
 double Solver1D::getTime() const
 {
-	return dt*(double)T;
+	return (double)dt*(double)T;
 }
 
 cmplx Solver1D::getValue(int i) const
@@ -79,7 +79,6 @@ void Solver1D::doStep()
 	Domain1D *Next		= getNextDomain();
 	Domain1D *Current	= getCurrentDomain();
 	Domain1D *Old		= getOldDomain();
-	static int count(0);
 	cmplx j(0,1.);
 	Type d=getDt()/getDx()/getDx();
 
@@ -93,13 +92,15 @@ void Solver1D::doStep()
 
 			tmp += Current->getValue(i+1);
 			tmp += Current->getValue(i-1);
-			tmp -= 2.*Current->getValue(i);
+			tmp -= (Type)2.*Current->getValue(i);
 
 			tmp /= 2.;//Spécifique à T==0
+
 			tmp *= d;
 			tmp *= -j;//Mult by %i
 
 			tmp += Current->getValue(i);//Current car T==0
+			tmp+=-j*getDt()*V(i)*getValue(i);
 
 			Next->setValue(i,tmp);
 		}
@@ -112,13 +113,13 @@ void Solver1D::doStep()
 			cmplx tmp(0.,0.);
 			tmp += Current->getValue(i+1);
 			tmp += Current->getValue(i-1);
-			tmp -= 2.*Current->getValue(i);
+			tmp -= (Type)2.*Current->getValue(i);
+			//qDebug() << i<< tmp.real() << tmp.imag();
 			tmp *= d;
 			tmp *=-j;
 
 			tmp += Old->getValue(i);
-			//tmp += -j*dt*std::abs(Current->getValue(i))*std::abs(Current->getValue(i))*Current->getValue(i);//NL part
-
+			tmp+=-j*2.*getDt()*V(i)*getValue(i);
 			Next->setValue(i,tmp);
 		}
 	}
@@ -156,24 +157,30 @@ Domain1D* Solver1D::getOldDomain() const
 
 Type Solver1D::V(int i) const
 {
-	return 0.;
-	return getValueNorm(i);
+	if(i==getN()/3)
+		return 1000.;
+	else
+		return 0;
 }
 
 void Solver1D::initPulse()
 {
-	for(int i=0; i<this->getN();++i)
+	for(int i=0; i<=(getN()-1)/2;++i)
 	{
-		Type x(this->getPos(i));
-		cmplx j(0,100.*x);
-		this->setValue(i,std::exp(-x*x/4.)*std::exp(j));
-//		this->setValue(i,.1);
-//		if(i<(this->getN()*490./1000.))
-//			this->setValue(i,0.);
-//		if(i>(this->getN()*510./1000.))
-//			this->setValue(i,0.);
-	}
+		Type x(getPos(i));
+		cmplx w(0,100.*x);
+		cmplx tmp=std::exp(-(x*x)/(Type)4.)*std::exp(w);
 
+		setValue(getN()-1-i,tmp);
+		setValue(i,std::conj(tmp));
+	}
+//	for(int i=0; i<getN();++i)
+//	{
+//		Type x(getPos(i));
+//		cmplx w(0,100.*x);
+//		cmplx tmp=std::exp(-(x*x)/(Type)4.)*std::exp(w);
+//		setValue(i,tmp);
+//	}
 }
 
 void Solver1D::doFourrier()

@@ -1,4 +1,4 @@
-#include "gridmanager.h"
+#include "include/gridmanager.h"
 
 GridManager::GridManager(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsup, int i, int d)
 {
