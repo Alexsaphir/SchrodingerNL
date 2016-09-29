@@ -3,18 +3,16 @@
 
 #include <QVector>
 
-#include<complex>
-
 #include <QDebug>
 
-typedef double_t Type;
-typedef std::complex<Type> cmplx;
+#include "type.h"
+#include "axis.h"
 
 class Grid1D
 {
 public:
 
-	Grid1D(Type Xmn, Type Xmx, Type Xsp);
+	Grid1D(const Axis &X);
 
 	Type getDx() const;
 	Type getPos(int i) const;
@@ -22,18 +20,13 @@ public:
 	Type getXmax() const;
 	Type getXmin() const;
 	int getN() const;
-	void setValue(int i, cmplx y);
-	void setValueReal(int i, Type y);
-	void setValueImag(int i, Type y);
+	void setValue(int i, cmplx value);
 
 
 
 private:
 	QVector<cmplx> V;
-	Type Xmin;
-	Type Xmax;
-	Type Xstep;
-	int nbPts;
+	Axis AxisX;
 };
 
 #endif // GRID1D_H

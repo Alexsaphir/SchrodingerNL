@@ -1,15 +1,11 @@
 #include "include/domain1d.h"
 
-Domain1D::Domain1D(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsup) :Grid1D(Xmin, Xmax, Xstep)
+Domain1D::Domain1D(const Axis &X, cmplx Binf, cmplx Bsup) : Grid1D(X)
 {
 	BoundInf = Binf;
 	BoundSup = Bsup;
 }
 
-void Domain1D::setValue(int i,cmplx y)
-{
-	Grid1D::setValue(i,y);
-}
 
 cmplx Domain1D::getValue(int i) const
 {

@@ -4,12 +4,12 @@
 #include <QDebug>
 
 #include "gridmanager.h"
-#include "integration.h"
+
 
 class Solver1D
 {
 public:
-	Solver1D(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsup, Type timeStep);
+	Solver1D(const Axis &X, cmplx Binf, cmplx Bsup, Type timeStep);
 	~Solver1D();
 
 

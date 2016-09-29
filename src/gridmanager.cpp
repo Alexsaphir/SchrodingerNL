@@ -1,6 +1,6 @@
 #include "include/gridmanager.h"
 
-GridManager::GridManager(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsup, int i, int d)
+GridManager::GridManager(const Axis &X, cmplx Binf, cmplx Bsup, int i, int d)
 {
 	if(i<=0)
 		i=1;
@@ -9,7 +9,7 @@ GridManager::GridManager(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsu
 
 	for(int j=0;j<i;++j)
 	{
-		Domain1D* tmp = new Domain1D(Xmin, Xmax, Xstep, Binf, Bsup);
+		Domain1D* tmp = new Domain1D(X, Binf, Bsup);
 		Stack.append(tmp);
 	}
 	offset = d;

@@ -8,7 +8,7 @@
 class GridManager
 {
 public:
-	GridManager(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsup, int i, int d);
+	GridManager(Axis const &X, cmplx Binf, cmplx Bsup, int i, int d);
 
 	int getSizeStack() const;
 	Domain1D* getDomain(int i) const;

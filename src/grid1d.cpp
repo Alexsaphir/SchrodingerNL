@@ -1,20 +1,16 @@
 #include "include/grid1d.h"
 
 
-Grid1D::Grid1D(Type Xmn, Type Xmx, Type Xsp)
+Grid1D::Grid1D(const Axis &X)
 {
-	Xmin = Xmn;
-	Xmax = Xmx;
-	Xstep = Xsp;
+	AxisX = X;
 
-	nbPts = (int)((-Xmin + Xmax)/Xstep)+1;
-
-	V.fill(cmplx(0.,0.),nbPts);
+	V.fill(cmplx(0.,0.),getN());
 }
 
 Type Grid1D::getDx() const
 {
-	return Xstep;
+	return AxisX.getAxisStep();
 }
 
 Type Grid1D::getPos(int i) const
@@ -23,59 +19,37 @@ Type Grid1D::getPos(int i) const
 		return 0.;
 	if(i>=this->getN())
 		return 0.;
-	return Xmin+Xstep*(double)(i);
+	return getXmin()+getDx()*(double)(i);
 }
 
 cmplx Grid1D::getValue(int i) const
 {
-	if(i<0)
-		return 0.;
-	if(i>=this->getN())
-		return 0.;
+	//It's the Domain class who catch the index error
 	return V.at(i);
 }
 
 Type Grid1D::getXmax() const
 {
-	return Xmax;
+	return AxisX.getAxisMax();
 }
 
 Type Grid1D::getXmin() const
 {
-	return Xmin;
+	return AxisX.getAxisMin();
 }
 
 int Grid1D::getN() const
 {
-	return nbPts;
+	return AxisX.getAxisStep();
 }
 
-void Grid1D::setValue(int i, cmplx y)
+void Grid1D::setValue(int i, cmplx value)
 {
 	if(i<0)
 		return;
 	if(i>this->getN())
 		return;
 
-	V.replace(i, y);
+	V.replace(i, value);
 }
 
-void Grid1D::setValueReal(int i, Type y)
-{
-	if(i<0)
-		return;
-	if(i>this->getN())
-		return;
-	cmplx tmp(y, V.at(i).imag());
-	V.replace(i, tmp);
-}
-
-void Grid1D::setValueImag(int i, Type y)
-{
-	if(i<0)
-		return;
-	if(i>this->getN())
-		return;
-	cmplx tmp(V.at(i).real(), y);
-	V.replace(i, tmp);
-}

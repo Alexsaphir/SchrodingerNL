@@ -16,7 +16,7 @@ class Solver1D;
 class Solver1DGui : public Solver1D, public QMainWindow
 {
 public:
-	Solver1DGui(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsup, Type timeStep);
+	Solver1DGui(const Axis &X, cmplx Binf, cmplx Bsup, Type timeStep);
 	~Solver1DGui();
 
 public slots:
