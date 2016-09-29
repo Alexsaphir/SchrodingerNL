@@ -1,6 +1,10 @@
+#Personal ignore direction
 #Automatic Save From Gedit
 *~
 *.pdf
+#Configuration file of Qt
+qt2.xml
+
 
 #From github repositories gitignore
 
