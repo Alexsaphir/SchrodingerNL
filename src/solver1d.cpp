@@ -1,8 +1,8 @@
 #include "include/solver1d.h"
 
-Solver1D::Solver1D(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsup, Type timeStep)
+Solver1D::Solver1D(const Axis &X, cmplx Binf, cmplx Bsup, Type timeStep)
 {
-	GridM = new GridManager(Xmin, Xmax, Xstep, Binf, Bsup, 3,1);
+	GridM = new GridManager(X, Binf, Bsup, 3,1);
 
 	dt = timeStep;
 	T = 0;

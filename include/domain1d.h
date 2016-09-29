@@ -8,10 +8,9 @@
 class Domain1D: public Grid1D
 {
 public:
-	Domain1D(Type Xmin, Type Xmax, Type Xstep, cmplx Binf, cmplx Bsup);
+	Domain1D(const Axis &X, cmplx Binf, cmplx Bsup);
 
 	cmplx getValue(int i) const;
-	void setValue(int i, cmplx y);
 
 	void doFourrier();
 	void undoFourrier();
