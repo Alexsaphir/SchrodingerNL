@@ -157,6 +157,7 @@ Domain1D* Solver1D::getOldDomain() const
 
 Type Solver1D::V(int i) const
 {
+	return 0;
 	if(i==getN()/3)
 		return 1000.;
 	else
