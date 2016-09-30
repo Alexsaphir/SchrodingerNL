@@ -40,7 +40,7 @@ Type Grid1D::getXmin() const
 
 int Grid1D::getN() const
 {
-	return AxisX.getAxisStep();
+	return AxisX.getAxisN();
 }
 
 void Grid1D::setValue(int i, cmplx value)
