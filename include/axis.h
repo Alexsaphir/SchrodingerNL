@@ -1,7 +1,10 @@
 #ifndef AXIS_H
 #define AXIS_H
 
+#include <QDebug>
+
 #include "type.h"
+
 
 class Axis
 {
