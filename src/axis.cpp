@@ -25,3 +25,7 @@ int Axis::getAxisN() const
 	return nbPts;
 }
 
+Type Axis::getAxisStep() const
+{
+	return Xstep;
+}
