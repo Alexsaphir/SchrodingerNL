@@ -1,4 +1,4 @@
-#include "include/solver1d.h"
+#include "../Solver/solver1d.h"
 
 Solver1D::Solver1D(const Axis &X, cmplx Binf, cmplx Bsup, Type timeStep)
 {

@@ -1,4 +1,4 @@
-#include "include/grid1d.h"
+#include "grid1d.h"
 
 
 Grid1D::Grid1D(const Axis &X)

@@ -32,7 +32,7 @@ private:
 	QGraphicsScene *scene;
 	QGraphicsView *view;
 	QGridLayout *GridLayout;
-	QScrollArea *Scroll;
+	//QScrollArea *Scroll;
 	QWidget *SDI_Area;
 
 };

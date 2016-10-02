@@ -1,4 +1,4 @@
-#include "include/domain2d.h"
+#include "domain2d.h"
 
 Domain2D::Domain2D(const Axis &X, const Axis &Y, cmplx Bext) : Grid2D(X, Y)
 {

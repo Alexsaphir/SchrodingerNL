@@ -1,4 +1,4 @@
-#include "include/grid2d.h"
+#include "grid2d.h"
 
 Grid2D::Grid2D(const Axis &X, const Axis &Y)
 {

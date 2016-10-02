@@ -1,4 +1,4 @@
-#include "include/sparsematrix.h"
+#include "../SparseMatrix/sparsematrix.h"
 
 SparseMatrix::SparseMatrix() : row(0), column(0)
 {

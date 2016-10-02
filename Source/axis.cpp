@@ -1,4 +1,4 @@
-#include "include/axis.h"
+#include "axis.h"
 
 Axis::Axis():Xmax(0), Xmin(0), Xstep(0), nbPts(0)
 {

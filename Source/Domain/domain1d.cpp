@@ -1,4 +1,4 @@
-#include "include/domain1d.h"
+#include "domain1d.h"
 
 Domain1D::Domain1D(const Axis &X, cmplx Binf, cmplx Bsup) : Grid1D(X)
 {
