@@ -4,7 +4,7 @@
 #include <QPair>
 #include <QMap>
 
-#include "include/type.h"
+#include "../type.h"
 
 class SparseMatrix
 {

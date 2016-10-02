@@ -3,7 +3,7 @@
 
 #include <QVector>
 
-#include "include/type.h"
+#include "type.h"
 
 class Point
 {

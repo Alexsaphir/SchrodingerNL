@@ -1,7 +1,7 @@
 #ifndef DOMAIN1D_H
 #define DOMAIN1D_H
 
-#include "grid1d.h"
+#include "../Grid/grid1d.h"
 
 
 

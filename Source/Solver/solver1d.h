@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-#include "gridmanager.h"
+#include "../Grid/gridmanager.h"
 
 
 class Solver1D

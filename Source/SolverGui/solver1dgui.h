@@ -9,7 +9,7 @@
 #include <QKeyEvent>
 #include <QMainWindow>
 
-#include "solver1d.h"
+#include "../Solver/solver1d.h"
 
 class Solver1D;
 

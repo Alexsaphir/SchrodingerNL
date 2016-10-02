@@ -3,8 +3,8 @@
 
 #include <QVector>
 
-#include "type.h"
-#include "axis.h"
+#include "../type.h"
+#include "../axis.h"
 
 class Grid2D
 {

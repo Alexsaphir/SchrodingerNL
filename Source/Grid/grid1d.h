@@ -5,8 +5,8 @@
 
 #include <QDebug>
 
-#include "include/type.h"
-#include "include/axis.h"
+#include "../type.h"
+#include "../axis.h"
 
 
 class Grid1D

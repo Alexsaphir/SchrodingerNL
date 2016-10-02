@@ -3,7 +3,7 @@
 
 #include <QList>
 
-#include "domain1d.h"
+#include "../Domain/domain1d.h"
 
 class GridManager
 {

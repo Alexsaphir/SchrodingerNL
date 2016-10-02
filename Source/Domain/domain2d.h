@@ -1,7 +1,7 @@
 #ifndef DOMAIN2D_H
 #define DOMAIN2D_H
 
-#include "grid2d.h"
+#include "../Grid/grid2d.h"
 
 class Domain2D : public Grid2D
 {
