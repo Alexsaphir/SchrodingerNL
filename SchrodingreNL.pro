@@ -10,43 +10,44 @@ DISTFILES += \
     Scilab/schrod.sce \
     LICENSE \
     README.md\
-    Temp/nlse\
-    WIP/domain1dgui.h \
-    WIP/equation.h \
-    WIP/grid2d.h \
-    WIP/point2d.h \
-    WIP/integration.h \
-    WIP/domain1dgui.cpp \
-    WIP/equation.cpp \
-    WIP/integration.cpp \
-    WIP/grid2d.cpp \
-    WIP/point2d.cpp
+    Temp/nlse \
+    Temp/WIP/domain1dgui.cpp \
+    Temp/WIP/equation.cpp\
+    Temp/WIP/grid2d.cpp \
+    Temp/WIP/integration.cpp \
+    Temp/WIP/point2d.cpp \
+    Temp/WIP/domain1dgui.h \
+    Temp/WIP/equation.h \
+    Temp/WIP/grid2d.h \
+    Temp/WIP/integration.h \
+    Temp/WIP/point2d.h
+
+    
 
 HEADERS += \
-    include/domain1d.h \
-    include/grid1d.h \
-    include/gridmanager.h \
-    include/solver1d.h \
-    include/solver1dgui.h \
-    include/axis.h \
-    include/grid2d.h \
-    include/domain2d.h \
-    include/type.h \
-    include/point.h \
-    include/sparsematrix.h \
-    include/grid.h
-
+    Source/axis.h \
+    Source/point.h \
+    Source/type.h \
+    Source/Domain/domain1d.h \
+    Source/Domain/domain2d.h \
+    Source/Grid/grid.h \
+    Source/Grid/grid1d.h \
+    Source/Grid/grid2d.h \
+    Source/Grid/gridmanager.h \
+    Source/Solver/solver1d.h \
+    Source/SolverGui/solver1dgui.h \
+    Source/SparseMatrix/sparsematrix.h
 
 SOURCES += \
-    src/domain1d.cpp \
-    src/grid1d.cpp \
-    src/gridmanager.cpp \
-    src/main.cpp \
-    src/grid2d.cpp \
-    src/domain2d.cpp \
-    src/axis.cpp \
-    src/solver1d.cpp \
-    src/solver1dgui.cpp \
-    src/point.cpp \
-    src/sparsematrix.cpp \
-    src/grid.cpp
+    Source/axis.cpp \
+    Source/main.cpp \
+    Source/point.cpp \
+    Source/Domain/domain1d.cpp \
+    Source/Domain/domain2d.cpp \
+    Source/Grid/grid.cpp \
+    Source/Grid/grid1d.cpp \
+    Source/Grid/grid2d.cpp \
+    Source/Grid/gridmanager.cpp \
+    Source/Solver/solver1d.cpp \
+    Source/SolverGui/solver1dgui.cpp \
+    Source/SparseMatrix/sparsematrix.cpp
