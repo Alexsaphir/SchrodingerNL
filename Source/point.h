@@ -9,16 +9,16 @@ class Point
 {
 public:
 	Point();
-	Type x() const;//V.at(0)
-	Type y() const;//V.at(1)
-	Type z() const;
+	int x() const;//V.at(0)
+	int y() const;//V.at(1)
+	int z() const;
 
-	Type getValue(int i) const;
+	int getValue(int i) const;
 	int Dim() const;
-	void setValue(int i, Type Coord);
+	void setValue(int i, int Coord);
 
 private:
-	QVector<Type> V;
+	QVector<int> V;
 };
 
 #endif // POINT_H
