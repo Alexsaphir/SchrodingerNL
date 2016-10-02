@@ -33,7 +33,8 @@ HEADERS += \
     include/domain2d.h \
     include/type.h \
     include/point.h \
-    include/sparsematrix.h
+    include/sparsematrix.h \
+    include/grid.h
 
 
 SOURCES += \
@@ -47,4 +48,5 @@ SOURCES += \
     src/solver1d.cpp \
     src/solver1dgui.cpp \
     src/point.cpp \
-    src/sparsematrix.cpp
+    src/sparsematrix.cpp \
+    src/grid.cpp
