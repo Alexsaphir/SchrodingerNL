@@ -3,7 +3,7 @@ QT+=widgets
 QMAKE_CXXFLAGS	+= -fopenmp
 QMAKE_LFLAGS	+= -fopenmp
 
-CONFIG += c++11
+CONFIG += c++14
 
 
 DISTFILES += \
