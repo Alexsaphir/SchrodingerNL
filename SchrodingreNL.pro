@@ -36,7 +36,9 @@ HEADERS += \
     Source/Grid/gridmanager.h \
     Source/Solver/solver1d.h \
     Source/SolverGui/solver1dgui.h \
-    Source/SparseMatrix/sparsematrix.h
+    Source/SparseMatrix/sparsematrix.h \
+    Source/Domain/domainmanager.h \
+    Source/Domain/domain.h
 
 SOURCES += \
     Source/axis.cpp \
@@ -50,4 +52,6 @@ SOURCES += \
     Source/Grid/gridmanager.cpp \
     Source/Solver/solver1d.cpp \
     Source/SolverGui/solver1dgui.cpp \
-    Source/SparseMatrix/sparsematrix.cpp
+    Source/SparseMatrix/sparsematrix.cpp \
+    Source/Domain/domainmanager.cpp \
+    Source/Domain/domain.cpp
