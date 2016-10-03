@@ -4,6 +4,7 @@
 #include <QDebug>
 
 #include "../Grid/gridmanager.h"
+#include "../SparseMatrix/sparsematrix.h"
 
 
 class Solver1D
@@ -27,6 +28,7 @@ public:
 	int getN() const;
 	int getT() const;
 	void doStep();
+	void doStepWithMatrix();
 	void setValue(int i, cmplx y);
 
 
@@ -48,6 +50,7 @@ private:
 
 private:
 	GridManager *GridM;
+	SparseMatrix *Matrix;
 
 	Type dt;//Temporal step
 	int T;//Current time step

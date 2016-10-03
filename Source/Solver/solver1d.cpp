@@ -199,3 +199,9 @@ Solver1D::~Solver1D()
 {
 	delete GridM;
 }
+
+
+void Solver1D::doStepWithMatrix()
+{
+
+}
