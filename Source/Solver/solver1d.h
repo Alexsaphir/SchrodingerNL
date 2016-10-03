@@ -1,8 +1,6 @@
 #ifndef SOLVER1D_H
 #define SOLVER1D_H
 
-#include <QDebug>
-
 #include "../Grid/gridmanager.h"
 #include "../SparseMatrix/sparsematrix.h"
 

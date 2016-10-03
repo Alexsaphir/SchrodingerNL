@@ -114,7 +114,6 @@ void Solver1D::doStep()
 			tmp += Current->getValue(i+1);
 			tmp += Current->getValue(i-1);
 			tmp -= (Type)2.*Current->getValue(i);
-			//qDebug() << i<< tmp.real() << tmp.imag();
 			tmp *= d;
 			tmp *=-j;
 

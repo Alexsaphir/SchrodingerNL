@@ -7,7 +7,6 @@ Axis::Axis():Xmax(0), Xmin(0), Xstep(0), nbPts(0)
 
 Axis::Axis(Type Xmn, Type Xmx, Type Xsp):Xmax(Xmx), Xmin(Xmn), Xstep(Xsp)
 {
-	qDebug() << (Xmax-Xmin)/Xstep+1;
 	nbPts = (Xmax-Xmin)/Xstep+1;
 }
 

@@ -3,7 +3,6 @@
 
 #include <QVector>
 
-#include <QDebug>
 
 #include "../type.h"
 #include "../axis.h"
