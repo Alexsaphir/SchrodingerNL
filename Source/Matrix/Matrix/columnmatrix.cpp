@@ -1,6 +1,6 @@
 #include "columnmatrix.h"
 
-ColumnMatrix::ColumnMatrix()
+ColumnMatrix::ColumnMatrix(uint row): CoreMatrix(row, false)
 {
 
 }

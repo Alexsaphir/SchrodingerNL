@@ -1,11 +1,12 @@
 #ifndef COLUMNMATRIX_H
 #define COLUMNMATRIX_H
 
+#include "../corematrix.h"
 
-class ColumnMatrix
+class ColumnMatrix: public CoreMatrix
 {
 public:
-	ColumnMatrix();
+	ColumnMatrix(uint row);
 };
 
 #endif // COLUMNMATRIX_H
