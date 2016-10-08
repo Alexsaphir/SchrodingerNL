@@ -27,8 +27,6 @@ private:
 	void Zoom(QGraphicsSceneWheelEvent *event);
 
 private:
-
-
 	QGraphicsScene *scene;
 	QGraphicsView *view;
 	QGridLayout *GridLayout;
@@ -36,8 +34,5 @@ private:
 	QWidget *SDI_Area;
 
 };
-
-
-
 
 #endif // SOLVER1DGUI_H

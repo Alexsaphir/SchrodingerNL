@@ -1,4 +1,4 @@
-#include "../SolverGui/solver1dgui.h"
+#include "solver1dgui.h"
 
 
 Solver1DGui::Solver1DGui(const Axis &X, cmplx Binf, cmplx Bsup, Type timeStep) : Solver1D(X, Binf, Bsup, timeStep), QMainWindow()
@@ -84,4 +84,3 @@ Solver1DGui::~Solver1DGui()
 	//delete Scroll;
 	delete SDI_Area;
 }
-
