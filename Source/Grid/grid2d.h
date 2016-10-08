@@ -33,26 +33,4 @@ private:
 	Axis AxisY;
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #endif // GRID2D_H

@@ -48,7 +48,7 @@ cmplx Grid2D::getValue(int i, int j) const
 	//The domain look if (i,j) is in the grid or give a boundary condition
 	//We can skip the test if (i,j) is in the grid
 
-	return V.at(getNx()*j+i);
+	return V.at(j+getNy()*i);
 }
 
 Type Grid2D::getXmax() const
@@ -83,5 +83,5 @@ void Grid2D::setValue(int i, int j, cmplx value)
 {
 	if (!isInGrid(i,j))
 		return;
-	V.replace(i+getNx()*j, value);
+	V.replace(j+getNy()*i, value);
 }

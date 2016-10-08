@@ -12,7 +12,7 @@ class Grid
 {
 public:
 	Grid();
-
+	Grid(const Grid &G);
 	void AddAxis(const Axis &X);
 	int getAxisN() const;
 	int getIndexFromPos(const Point &Pos) const;
@@ -24,10 +24,13 @@ public:
 	void initGrid();
 	bool isInGrid(const Point &Pos) const;
 	bool isInGrid(int i) const;
+	bool ready() const;
 	void setValue(const Point &Pos, cmplx value);
 	void setValue(int i, cmplx value);
 
 
+private:
+	Axis *getAxis(int i) const;
 
 
 
