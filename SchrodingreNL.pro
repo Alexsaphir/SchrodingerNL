@@ -44,7 +44,9 @@ HEADERS += \
     Source/Matrix/SparseMatrix/sparsematrix.h \
     Source/Matrix/Matrix/matrix.h \
     Source/Matrix/corematrix.h \
-    Source/Solver/solver.h
+    Source/Solver/solver.h \
+    Source/Matrix/Matrix/columnmatrix.h \
+    Source/Matrix/Matrix/rowmatrix.h
 
 SOURCES += \
     Source/axis.cpp \
@@ -65,4 +67,6 @@ SOURCES += \
     Source/Matrix/Matrix/matrix.cpp \
     Source/Matrix/corematrix.cpp \
     Source/type.cpp \
-    Source/Solver/solver.cpp
+    Source/Solver/solver.cpp \
+    Source/Matrix/Matrix/columnmatrix.cpp \
+    Source/Matrix/Matrix/rowmatrix.cpp
