@@ -36,3 +36,13 @@ CoreMatrix::~CoreMatrix()
 {
 
 }
+
+cmplx CoreMatrix::at(uint i) const
+{
+	return cmplx(0,0);//If method if not redefined this isn't a vector
+}
+
+void CoreMatrix::set(uint i, const cmplx &value)
+{
+	return;
+}
