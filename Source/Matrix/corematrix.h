@@ -9,7 +9,7 @@ class CoreMatrix
 {
 public:
 	CoreMatrix();
-	CoreMatrix(uint row);
+	CoreMatrix(uint n, bool isRowMatrix);
 	CoreMatrix(uint row, uint column);
 
 	virtual cmplx getValue(uint i, uint j) const = 0;
