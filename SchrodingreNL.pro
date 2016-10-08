@@ -3,6 +3,7 @@ QT+=widgets
 QMAKE_CXXFLAGS	+= -fopenmp
 QMAKE_LFLAGS	+= -fopenmp
 
+
 CONFIG += c++14
 
 
@@ -20,7 +21,8 @@ DISTFILES += \
     Temp/WIP/equation.h \
     Temp/WIP/grid2d.h \
     Temp/WIP/integration.h \
-    Temp/WIP/point2d.h
+    Temp/WIP/point2d.h \
+    TODO
 
     
 
@@ -36,9 +38,13 @@ HEADERS += \
     Source/Grid/gridmanager.h \
     Source/Solver/solver1d.h \
     Source/SolverGui/solver1dgui.h \
-    Source/SparseMatrix/sparsematrix.h \
     Source/Domain/domainmanager.h \
-    Source/Domain/domain.h
+    Source/Domain/domain.h \
+    Source/Solver/Linear/linearsolver.h \
+    Source/Matrix/SparseMatrix/sparsematrix.h \
+    Source/Matrix/Matrix/matrix.h \
+    Source/Matrix/corematrix.h \
+    Source/Solver/solver.h
 
 SOURCES += \
     Source/axis.cpp \
@@ -52,6 +58,11 @@ SOURCES += \
     Source/Grid/gridmanager.cpp \
     Source/Solver/solver1d.cpp \
     Source/SolverGui/solver1dgui.cpp \
-    Source/SparseMatrix/sparsematrix.cpp \
     Source/Domain/domainmanager.cpp \
-    Source/Domain/domain.cpp
+    Source/Domain/domain.cpp \
+    Source/Matrix/SparseMatrix/sparsematrix.cpp \
+    Source/Solver/Linear/linearsolver.cpp \
+    Source/Matrix/Matrix/matrix.cpp \
+    Source/Matrix/corematrix.cpp \
+    Source/type.cpp \
+    Source/Solver/solver.cpp
