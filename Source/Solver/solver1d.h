@@ -2,7 +2,7 @@
 #define SOLVER1D_H
 
 #include "../Grid/gridmanager.h"
-#include "../SparseMatrix/sparsematrix.h"
+#include "../Matrix/SparseMatrix/sparsematrix.h"
 
 
 class Solver1D
