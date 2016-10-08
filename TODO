@@ -1,1 +1,2 @@
-Need to verify if Grid and Grid2D Class use the same index than Matrix Class
+All the operator for the Matrix need to be write in CoreMatrix Class as virtual
+And need to be reimplemented in SparseMAtrix for better efficiency
