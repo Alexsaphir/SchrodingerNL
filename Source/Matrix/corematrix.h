@@ -12,7 +12,7 @@ public:
 	CoreMatrix(uint row, uint column);
 
 	virtual cmplx getValue(uint i, uint j) const = 0;
-	virtual void setValue(uint i, uint j, const cmplx &value);
+	virtual void setValue(uint i, uint j, const cmplx &value) = 0;
 
 	uint row() const;
 	uint column() const;
