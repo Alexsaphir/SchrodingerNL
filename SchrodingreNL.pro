@@ -46,7 +46,8 @@ HEADERS += \
     Source/Matrix/corematrix.h \
     Source/Solver/solver.h \
     Source/Matrix/Matrix/columnmatrix.h \
-    Source/Matrix/Matrix/rowmatrix.h
+    Source/Matrix/Matrix/rowmatrix.h \
+    Source/Matrix/Matrix/DataProxy/columndataproxy.h
 
 SOURCES += \
     Source/axis.cpp \
@@ -69,4 +70,5 @@ SOURCES += \
     Source/type.cpp \
     Source/Solver/solver.cpp \
     Source/Matrix/Matrix/columnmatrix.cpp \
-    Source/Matrix/Matrix/rowmatrix.cpp
+    Source/Matrix/Matrix/rowmatrix.cpp \
+    Source/Matrix/Matrix/DataProxy/columndataproxy.cpp
