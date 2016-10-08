@@ -18,8 +18,8 @@ public:
 	virtual cmplx getValue(uint i, uint j) const = 0;
 	virtual void setValue(uint i, uint j, const cmplx &value) = 0;
 
-	uint row() const;
-	uint column() const;
+	virtual uint row() const;
+	virtual uint column() const;
 
 	virtual ~CoreMatrix();
 protected:
