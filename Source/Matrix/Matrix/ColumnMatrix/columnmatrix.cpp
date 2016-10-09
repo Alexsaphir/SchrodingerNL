@@ -1,6 +1,6 @@
 #include "columnmatrix.h"
 
-ColumnMatrix::ColumnMatrix(uint row): CoreMatrix(row, false)
+ColumnMatrix::ColumnMatrix(uint row): ColumnMatrixVirtual(row)
 {
 	V.fill(cmplx(0,0), row);
 }

@@ -1,9 +1,9 @@
 #ifndef COLUMNDATAPROXY_H
 #define COLUMNDATAPROXY_H
 
-#include "../../../Domain/domain.h"
-#include "../../vector.h"
-#include "../../../type.h"
+#include "../columnmatrixvirtual.h"
+#include "../../../../Domain/domain.h"
+#include "../../../../type.h"
 
 class ColumnDataProxy: public Vector
 {

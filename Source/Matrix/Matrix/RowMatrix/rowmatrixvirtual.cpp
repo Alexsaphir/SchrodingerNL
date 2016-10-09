@@ -4,3 +4,8 @@ RowMatrixVirtual::RowMatrixVirtual()
 {
 
 }
+
+RowMatrixVirtual::~RowMatrixVirtual()
+{
+
+}

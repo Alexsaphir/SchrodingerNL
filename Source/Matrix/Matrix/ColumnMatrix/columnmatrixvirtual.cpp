@@ -1,6 +1,16 @@
 #include "columnmatrixvirtual.h"
 
-ColumnMatrixVirtual::ColumnMatrixVirtual()
+ColumnMatrixVirtual::ColumnMatrixVirtual(): CoreMatrix()
+{
+
+}
+
+ColumnMatrixVirtual::ColumnMatrixVirtual(row): CoreMatrix(row, false)
+{
+
+}
+
+ColumnMatrixVirtual::~ColumnMatrixVirtual()
 {
 
 }

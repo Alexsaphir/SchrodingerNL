@@ -3,10 +3,10 @@
 
 #include <QVector>
 
-#include "../vector.h"
-#include "../../type.h"
+#include "columnmatrixvirtual.h"
+#include "../../../type.h"
 
-class ColumnMatrix: public Vector
+class ColumnMatrix: public ColumnMatrixVirtual
 {
 public:
 	ColumnMatrix(uint row);
