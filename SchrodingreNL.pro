@@ -24,7 +24,7 @@ DISTFILES += \
     Temp/WIP/point2d.h \
     TODO
 
-    
+
 
 HEADERS += \
     Source/axis.h \
@@ -45,10 +45,12 @@ HEADERS += \
     Source/Matrix/Matrix/matrix.h \
     Source/Matrix/corematrix.h \
     Source/Solver/solver.h \
-    Source/Matrix/Matrix/columnmatrix.h \
-    Source/Matrix/Matrix/rowmatrix.h \
-    Source/Matrix/Matrix/DataProxy/columndataproxy.h \
-    Source/Matrix/Matrix/DataProxy/rowdataproxy.h
+    Source/Matrix/Matrix/ColumnMatrix/DataProxy/columndataproxy.h \
+    Source/Matrix/Matrix/ColumnMatrix/columnmatrix.h \
+    Source/Matrix/Matrix/RowMatrix/DataProxy/rowdataproxy.h \
+    Source/Matrix/Matrix/RowMatrix/rowmatrix.h \
+    Source/Matrix/Matrix/ColumnMatrix/columnmatrixvirtual.h \
+    Source/Matrix/Matrix/RowMatrix/rowmatrixvirtual.h
 
 SOURCES += \
     Source/axis.cpp \
@@ -70,7 +72,9 @@ SOURCES += \
     Source/Matrix/corematrix.cpp \
     Source/type.cpp \
     Source/Solver/solver.cpp \
-    Source/Matrix/Matrix/columnmatrix.cpp \
-    Source/Matrix/Matrix/rowmatrix.cpp \
-    Source/Matrix/Matrix/DataProxy/columndataproxy.cpp \
-    Source/Matrix/Matrix/DataProxy/rowdataproxy.cpp
+    Source/Matrix/Matrix/ColumnMatrix/DataProxy/columndataproxy.cpp \
+    Source/Matrix/Matrix/ColumnMatrix/columnmatrix.cpp \
+    Source/Matrix/Matrix/RowMatrix/DataProxy/rowdataproxy.cpp \
+    Source/Matrix/Matrix/RowMatrix/rowmatrix.cpp \
+    Source/Matrix/Matrix/ColumnMatrix/columnmatrixvirtual.cpp \
+    Source/Matrix/Matrix/RowMatrix/rowmatrixvirtual.cpp

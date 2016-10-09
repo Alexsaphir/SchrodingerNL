@@ -2,10 +2,10 @@
 #define COLUMNDATAPROXY_H
 
 #include "../../../Domain/domain.h"
-#include "../../corematrix.h"
+#include "../../vector.h"
 #include "../../../type.h"
 
-class ColumnDataProxy: public CoreMatrix
+class ColumnDataProxy: public Vector
 {
 public:
 	ColumnDataProxy();
