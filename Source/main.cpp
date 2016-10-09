@@ -1,15 +1,39 @@
 #include <QApplication>
+#include <QDebug>
 
-#include "SolverGui/solver1dgui.h"
+#include "Grid/grid1d.h"
+#include "Matrix/SparseMatrix/sparsematrix.h"
+#include "Matrix/Matrix/matrix.h"
+#include "Matrix/corematrix.h"
+#include "Matrix/Matrix/columnmatrix.h"
+#include "Matrix/Matrix/DataProxy/columndataproxy.h"
 
 int main(int argc, char **argv)
 {
-	QApplication app(argc, argv);
-	Solver1DGui W(Axis(-10,10,.1),0,0,.001);
-	W.initPulse();
-	W.refreshView();
-	W.show();
+	Grid1D G(Axis(-1,1,1));
+	Grid1D R(Axis(-1,1,1));
+	Domain *D = new Domain(cmplx(0,0));
+	D->AddAxis(Axis(-1,1,1));
+	D->AddAxis(Axis(-1,.1,1));
 
-	return app.exec();
 
+	QVector<CoreMatrix*> CM;
+	//CM.push_back(new SparseMatrix(3,3));
+	//CM.push_back(new Matrix(3,3));
+
+	CM.push_back(new ColumnDataProxy);
+
+
+
+	CM.at(0)->setValue(0,0,cmplx(.2,1));
+	//CM.at(1)->setValue(0,0,cmplx(10,10));
+
+
+
+	qDebug().noquote() << CM.at(0)->getValue(0, 0) << CM.at(1)->getValue(0, 0);
+
+	delete CM.at(0);
+	delete CM.at(1);
+
+	return 0;
 }
