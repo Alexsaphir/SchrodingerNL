@@ -5,7 +5,7 @@ MatrixAlgorithm::MatrixAlgorithm()
 
 }
 
-MatrixAlgorithm::MatrixAddition(const CoreMatrix *A, const CoreMatrix *B, CoreMatrix *C)
+void MatrixAlgorithm::MatrixAddition(const CoreMatrix *A, const CoreMatrix *B, CoreMatrix *C)
 {
 	if(!A || !B || !C)
 		return;//Null Matrix
@@ -20,4 +20,13 @@ MatrixAlgorithm::MatrixAddition(const CoreMatrix *A, const CoreMatrix *B, CoreMa
 			C->setValue(i,j, A->getValue(i,j)+B->getValue(i,j));
 		}
 	}
+}
+
+void MatrixAlgorithm::MatrixScalarMultiplication(cmplx s, const CoreMatrix *A, CoreMatrix *C)
+{
+	if(!A || !C)
+		return;
+	if(A->row()!=C->row())
+		return;
+	if(A->column()!=C->column())
 }

@@ -3,6 +3,7 @@
 
 #include "../corematrix.h"
 #include "../Matrix/matrix.h"
+#include "../../type.h"
 
 #include "../Matrix/ColumnMatrix/columnmatrix.h"
 #include "../Matrix/ColumnMatrix/columnmatrixvirtual.h"
@@ -20,6 +21,7 @@ public:
 	MatrixAlgorithm();
 
 	void MatrixAddition(const CoreMatrix *A, const CoreMatrix *B, CoreMatrix *C);//A+B=C
+	void MatrixScalarMultiplication(cmplx s, const CoreMatrix *A, CoreMatrix *C);//s*A=C
 };
 
 #endif // MATRIXALGORITHM_H
