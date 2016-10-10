@@ -50,7 +50,8 @@ HEADERS += \
     Source/Matrix/Matrix/RowMatrix/DataProxy/rowdataproxy.h \
     Source/Matrix/Matrix/RowMatrix/rowmatrix.h \
     Source/Matrix/Matrix/ColumnMatrix/columnmatrixvirtual.h \
-    Source/Matrix/Matrix/RowMatrix/rowmatrixvirtual.h
+    Source/Matrix/Matrix/RowMatrix/rowmatrixvirtual.h \
+    Source/Matrix/MatrixAlgorithm/matrixalgorithm.h
 
 SOURCES += \
     Source/axis.cpp \
@@ -77,4 +78,5 @@ SOURCES += \
     Source/Matrix/Matrix/RowMatrix/DataProxy/rowdataproxy.cpp \
     Source/Matrix/Matrix/RowMatrix/rowmatrix.cpp \
     Source/Matrix/Matrix/ColumnMatrix/columnmatrixvirtual.cpp \
-    Source/Matrix/Matrix/RowMatrix/rowmatrixvirtual.cpp
+    Source/Matrix/Matrix/RowMatrix/rowmatrixvirtual.cpp \
+    Source/Matrix/MatrixAlgorithm/matrixalgorithm.cpp
