@@ -1,11 +1,11 @@
 #include "rowdataproxy.h"
 
-RowDataProxy::RowDataProxy(): CoreMatrix()
+RowDataProxy::RowDataProxy(): RowMatrixVirtual()
 {
 	m_domain = NULL;
 }
 
-RowDataProxy::RowDataProxy(Domain *D): CoreMatrix(), m_domain(D)
+RowDataProxy::RowDataProxy(Domain *D): RowMatrixVirtual(), m_domain(D)
 {
 
 }

@@ -5,7 +5,7 @@
 #include "../../../../Domain/domain.h"
 #include "../../../../type.h"
 
-class ColumnDataProxy: public Vector
+class ColumnDataProxy: public ColumnMatrixVirtual
 {
 public:
 	ColumnDataProxy();
@@ -17,8 +17,8 @@ public:
 	virtual cmplx at(uint i) const;
 	virtual void set(uint i, const cmplx &value);
 	//Generic method
-	virtual cmplx getValue(uint i, uint j) const = 0;
-	virtual void setValue(uint i, uint j, const cmplx &value) = 0;
+	virtual cmplx getValue(uint i, uint j) const;
+	virtual void setValue(uint i, uint j, const cmplx &value);
 
 	virtual uint row() const;
 	virtual uint column() const;

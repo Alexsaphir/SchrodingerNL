@@ -17,7 +17,6 @@ public:
 	virtual cmplx getValue(uint i, uint j) const;
 	virtual void setValue(uint i, uint j, const cmplx &value);
 
-
 	virtual ~ColumnMatrix();
 
 private:

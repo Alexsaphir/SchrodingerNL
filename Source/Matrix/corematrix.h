@@ -21,6 +21,7 @@ public:
 	virtual uint row() const;
 	virtual uint column() const;
 
+
 	virtual ~CoreMatrix();
 protected:
 	uint m_row;

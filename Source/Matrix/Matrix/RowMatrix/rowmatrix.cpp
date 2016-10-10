@@ -1,6 +1,6 @@
 #include "rowmatrix.h"
 
-RowMatrix::RowMatrix(uint column): CoreMatrix(column, true)
+RowMatrix::RowMatrix(uint column): RowMatrixVirtual(column)
 {
 	V.fill(cmplx(0,0), column);
 }

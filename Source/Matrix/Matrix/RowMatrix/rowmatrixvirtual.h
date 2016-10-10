@@ -8,6 +8,7 @@ class RowMatrixVirtual: public CoreMatrix
 {
 public:
 	RowMatrixVirtual();
+	RowMatrixVirtual(uint column);
 
 
 	virtual cmplx at(uint i) const = 0;

@@ -8,7 +8,7 @@ class ColumnMatrixVirtual: public CoreMatrix
 {
 public:
 	ColumnMatrixVirtual();
-	ColumnMatrixVirtual(row);
+	ColumnMatrixVirtual(uint row);
 
 	virtual cmplx at(uint i) const = 0;
 	virtual void set(uint i, const cmplx &value) = 0;

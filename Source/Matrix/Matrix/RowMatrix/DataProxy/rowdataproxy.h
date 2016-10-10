@@ -1,11 +1,11 @@
 #ifndef ROWDATAPROXY_H
 #define ROWDATAPROXY_H
 
-#include "../../../Domain/domain.h"
-#include "../../corematrix.h"
-#include "../../../type.h"
+#include "../rowmatrixvirtual.h"
+#include "../../../../Domain/domain.h"
+#include "../../../../type.h"
 
-class RowDataProxy: public CoreMatrix
+class RowDataProxy: public RowMatrixVirtual
 {
 public:
 	RowDataProxy();
@@ -17,12 +17,11 @@ public:
 	virtual cmplx at(uint i) const;
 	virtual void set(uint i, const cmplx &value);
 	//Generic method
-	virtual cmplx getValue(uint i, uint j) const = 0;
-	virtual void setValue(uint i, uint j, const cmplx &value) = 0;
+	virtual cmplx getValue(uint i, uint j) const;
+	virtual void setValue(uint i, uint j, const cmplx &value);
 
 	virtual uint row() const;
 	virtual uint column() const;
-
 
 	~RowDataProxy();
 private:

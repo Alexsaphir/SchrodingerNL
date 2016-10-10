@@ -1,6 +1,11 @@
 #include "rowmatrixvirtual.h"
 
-RowMatrixVirtual::RowMatrixVirtual()
+RowMatrixVirtual::RowMatrixVirtual(): CoreMatrix()
+{
+
+}
+
+RowMatrixVirtual::RowMatrixVirtual(uint column): CoreMatrix(column, true)
 {
 
 }
