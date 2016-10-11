@@ -20,8 +20,12 @@ class MatrixAlgorithm
 public:
 	MatrixAlgorithm();
 
-	void MatrixAddition(const CoreMatrix *A, const CoreMatrix *B, CoreMatrix *C);//A+B=C
-	void MatrixScalarMultiplication(cmplx s, const CoreMatrix *A, CoreMatrix *C);//s*A=C
+	static void MatrixAddition(const CoreMatrix *A, const CoreMatrix *B, CoreMatrix *C);//A+B=C
+	static void MatrixScalarMultiplication(cmplx s, const CoreMatrix *A, CoreMatrix *C);//s*A=C
+
+	static void MatrixTranspose(const CoreMatrix *A, CoreMatrix *C);
+
+	static void MatrixMultiplication(const CoreMatrix *A, const CoreMatrix *B, CoreMatrix *C);
 };
 
 #endif // MATRIXALGORITHM_H
