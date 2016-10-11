@@ -23,7 +23,7 @@ void RowMatrix::set(uint i, const cmplx &value)
 cmplx RowMatrix::getValue(uint i, uint j) const
 {
 	//Row Matrix => Row=1 => i=1
-	if(i!=1)
+	if(i!=0)
 		return cmplx(0,0);
 	else
 		return at(j);

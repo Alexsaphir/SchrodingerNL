@@ -23,7 +23,7 @@ void ColumnMatrix::set(uint i, const cmplx &value)
 cmplx ColumnMatrix::getValue(uint i, uint j) const
 {
 	//Column Matrix => column=1 => j=1
-	if(j!=1)
+	if(j!=0)
 		return cmplx(0,0);
 	else
 		return at(i);

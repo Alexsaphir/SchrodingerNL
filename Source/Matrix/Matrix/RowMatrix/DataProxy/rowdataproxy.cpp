@@ -26,7 +26,7 @@ uint RowDataProxy::column() const
 
 cmplx RowDataProxy::getValue(uint i, uint j) const
 {
-	if(i!=1)
+	if(i!=0)
 		return cmplx(0,0);
 	return at(j);
 }
