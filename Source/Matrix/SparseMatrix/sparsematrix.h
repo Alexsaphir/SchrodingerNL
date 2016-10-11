@@ -22,7 +22,7 @@ public:
 
 	virtual ~SparseMatrix();
 private:
-	QMap<Position,cmplx> Map;
+	QVector<QMap<uint,cmplx>*> V;
 
 };
 

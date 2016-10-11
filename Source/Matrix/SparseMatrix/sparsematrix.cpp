@@ -2,19 +2,24 @@
 
 SparseMatrix::SparseMatrix(uint row, uint column): CoreMatrix(row, column)
 {
-
+	for(uint i(0); i<row; ++i)
+	{
+		V.push_back(new QMap<uint,cmplx>);
+	}
 }
 
 cmplx SparseMatrix::getValue(uint i, uint j) const
 {
-	return Map.value(QPair<int,int>(i,j), cmplx(0,0));//Return the value associated with the key. if the value is not find return cmplx(0,0)
+	if(i>=m_row)
+		return cmplx(0,0);
+	return V.at(i)->value(j, cmplx(0,0));//Return the value associated with the key. if the value is not find return cmplx(0,0)
 }
 
 void SparseMatrix::setValue(uint i, uint j, const cmplx &value)
 {
 	if (i>=m_row || j>=m_column)
 		return;//Index out of range
-	Map.insert(QPair<int,int>(i,j), value);//If P is not in the map add it, else replace only the value
+	V.at(i)->insert(j, value);//If P is not in the map add it, else replace only the value
 }
 
 void SparseMatrix::dotByGrid1D(Grid1D *S, Grid1D *R)
@@ -31,18 +36,24 @@ void SparseMatrix::dotByGrid1D(Grid1D *S, Grid1D *R)
 	}
 
 	//Begin calculus
-	QMapIterator<Position, cmplx> iterator(Map);
-	while (iterator.hasNext())
+	for(uint i(0); i<m_row;++i)
 	{
-
-		iterator.next();
-		qDebug() << iterator.key() << ": " << iterator.value().real();
-		int i=iterator.key().first;
-		R->setValue(i, R->getValue(i)+S->getValue(iterator.key().second)*iterator.value());
+		cmplx tmpR(0);
+		QMapIterator<uint, cmplx> iterator(*V.at(i));
+		while (iterator.hasNext())
+		{
+			iterator.next();
+			uint j(iterator.key());
+			tmpR+=iterator.value()*S->getValue(j);
+		}
+		R->setValue(i,tmpR);
 	}
 }
 
 SparseMatrix::~SparseMatrix()
 {
-
+	for(uint i(0); i<m_row; ++i)
+	{
+		delete V.at(i);
+	}
 }
