@@ -8,32 +8,62 @@
 #include "Matrix/Matrix/ColumnMatrix/columnmatrix.h"
 #include "Matrix/Matrix/ColumnMatrix/DataProxy/columndataproxy.h"
 
+#include "Matrix/MatrixAlgorithm/matrixalgorithm.h"
+
 int main(int argc, char **argv)
 {
-	Grid1D G(Axis(-1,1,1));
-	Grid1D R(Axis(-1,1,1));
-	Domain *D = new Domain(cmplx(0,0));
-	D->AddAxis(Axis(-1,1,1));
-	D->AddAxis(Axis(-1,.1,1));
-	D->initGrid();
+	SparseMatrix *SparseM = new SparseMatrix(2,2);
+	ColumnMatrix *B = new ColumnMatrix(2);
 
-	QVector<ColumnMatrixVirtual*> CM;
-	//CM.push_back(new SparseMatrix(3,3));
-	//CM.push_back(new Matrix(3,3));
+	ColumnMatrix *InitialGuess = new ColumnMatrix(2);
 
-	CM.push_back(new ColumnDataProxy(D));
+	//x+y
+	SparseM->setValue(0,0,1);
+	SparseM->setValue(0,1,1);
 
+	//x-y
+	SparseM->setValue(1,0,1);
+	SparseM->setValue(1,1,-1);
 
+	//x+y=1
+	B->set(0,1);
+	//x-y=2
+	B->set(1,2);
 
-	CM.at(0)->setValue(0,1,cmplx(.2,1));
-	//CM.at(1)->setValue(0,0,cmplx(10,10));
+	Type w(.5);
 
+	qDebug() << "\t" << InitialGuess->at(0) <<InitialGuess->at(1);
+	//What we do?????
 
+	bool Convergence(false);
+	int step(0);
+	uint n=SparseM->row();
+	while(step!=50)
+	{
+		for(uint i=0;i<n;++i)
+		{
+			cmplx sigma(0,0);
+			for(uint j=0;j<n;++j)
+			{
+				if (j!=i)
+				{
+					sigma+=SparseM->getValue(i,j)*InitialGuess->at(j);
+				}
+			}
+			cmplx Res=B->at(i)-sigma;
+			Res/= SparseM->getValue(i,i);
+			Res-=InitialGuess->at(i);
+			Res*=w;
+			Res+=InitialGuess->at(i);
+			InitialGuess->set(i, Res);
+		}
 
-	qDebug().noquote() << CM.at(0)->at(0) << CM.at(0)->getValue(0, 1);
+		qDebug() << "Check convergence"<< step;
+		qDebug() << "\t" << InitialGuess->at(0) <<InitialGuess->at(1);
+		++step;
 
-	delete CM.at(0);
-//	delete CM.at(1);
+	}
+
 
 	return 0;
 }
