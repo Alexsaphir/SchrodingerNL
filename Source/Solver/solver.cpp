@@ -5,6 +5,10 @@ Solver::Solver()
 
 }
 
+void Solver::initSolver()
+{
+
+}
 
 Solver::~Solver()
 {

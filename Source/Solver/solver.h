@@ -6,6 +6,7 @@ class Solver
 {
 public:
 	Solver();
+	virtual void initSolver();
 
 	virtual ~Solver();
 };
