@@ -10,59 +10,36 @@
 
 #include "Matrix/MatrixAlgorithm/matrixalgorithm.h"
 
+#include "Solver/Linear/linearsolver.h"
+
 int main(int argc, char **argv)
 {
-	SparseMatrix *SparseM = new SparseMatrix(2,2);
-	ColumnMatrix *B = new ColumnMatrix(2);
+	ColumnMatrix *B = new ColumnMatrix(5);
 
-	ColumnMatrix *InitialGuess = new ColumnMatrix(2);
+	ColumnMatrix *X = new ColumnMatrix(5);
 
-	//x+y
-	SparseM->setValue(0,0,1);
-	SparseM->setValue(0,1,1);
+	B->set(0,1);//BoundInf
+	B->set(2,3);
+	B->set(4,1);
 
-	//x-y
-	SparseM->setValue(1,0,1);
-	SparseM->setValue(1,1,-1);
+	LinearSolver LS(5);
+	LS.initSolver(10,.01);
 
-	//x+y=1
-	B->set(0,1);
-	//x-y=2
-	B->set(1,2);
-
-	Type w(.5);
-
-	qDebug() << "\t" << InitialGuess->at(0) <<InitialGuess->at(1);
-	//What we do?????
-
-	bool Convergence(false);
-	int step(0);
-	uint n=SparseM->row();
-	while(step!=50)
+	int nTime(0);
+	qDebug() << B->at(0).real() << B->at(1).real() << B->at(2).real() << B->at(3).real() << B->at(4).real();
+	while(nTime<=10)
 	{
-		for(uint i=0;i<n;++i)
-		{
-			cmplx sigma(0,0);
-			for(uint j=0;j<n;++j)
-			{
-				if (j!=i)
-				{
-					sigma+=SparseM->getValue(i,j)*InitialGuess->at(j);
-				}
-			}
-			cmplx Res=B->at(i)-sigma;
-			Res/= SparseM->getValue(i,i);
-			Res-=InitialGuess->at(i);
-			Res*=w;
-			Res+=InitialGuess->at(i);
-			InitialGuess->set(i, Res);
-		}
-
-		qDebug() << "Check convergence"<< step;
-		qDebug() << "\t" << InitialGuess->at(0) <<InitialGuess->at(1);
-		++step;
+		LS.SORMethod(B,X);
+		qDebug() << X->at(0).real() << X->at(1).real() << X->at(2).real() << X->at(3).real() << X->at(4).real();
+		nTime++;
+		//Permut Pointeur
+		ColumnMatrix *tmp;
+		tmp=B;
+		B=X;
+		X=tmp;
 
 	}
+
 
 
 	return 0;
