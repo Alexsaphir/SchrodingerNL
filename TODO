@@ -1,2 +1,8 @@
 All the operator for the Matrix need to be write in CoreMatrix Class as virtual
 And need to be reimplemented in SparseMAtrix for better efficiency
+
+
+The Domain class is obsolete because with the SparseMatrix in the Solver(for example the Linear Solver), the boundary condition can be treated with just an extra row at the beginning and the end.
+So we just need the Grid class to describe the discrete space.7
+
+The Grid class require, so, a GridManager to perform the multi-grid management.
