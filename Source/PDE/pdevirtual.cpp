@@ -4,3 +4,8 @@ PDEVirtual::PDEVirtual()
 {
 
 }
+
+PDEVirtual::~PDEVirtual()
+{
+
+}
