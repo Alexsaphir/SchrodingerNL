@@ -51,7 +51,12 @@ HEADERS += \
     Source/Matrix/Matrix/RowMatrix/rowmatrix.h \
     Source/Matrix/Matrix/ColumnMatrix/columnmatrixvirtual.h \
     Source/Matrix/Matrix/RowMatrix/rowmatrixvirtual.h \
-    Source/Matrix/MatrixAlgorithm/matrixalgorithm.h
+    Source/Matrix/MatrixAlgorithm/matrixalgorithm.h \
+    Source/PDE/Linear/pdelinearvirtual.h \
+    Source/PDE/Linear/1D/pdelinear1dvirtual.h \
+    Source/PDE/pdevirtual.h \
+    Source/PDE/Linear/1D/heat1d.h \
+    Source/SolverGui/pdegui1d.h
 
 SOURCES += \
     Source/axis.cpp \
@@ -79,4 +84,9 @@ SOURCES += \
     Source/Matrix/Matrix/RowMatrix/rowmatrix.cpp \
     Source/Matrix/Matrix/ColumnMatrix/columnmatrixvirtual.cpp \
     Source/Matrix/Matrix/RowMatrix/rowmatrixvirtual.cpp \
-    Source/Matrix/MatrixAlgorithm/matrixalgorithm.cpp
+    Source/Matrix/MatrixAlgorithm/matrixalgorithm.cpp \
+    Source/PDE/Linear/pdelinearvirtual.cpp \
+    Source/PDE/Linear/1D/pdelinear1dvirtual.cpp \
+    Source/PDE/pdevirtual.cpp \
+    Source/PDE/Linear/1D/heat1d.cpp \
+    Source/SolverGui/pdegui1d.cpp
