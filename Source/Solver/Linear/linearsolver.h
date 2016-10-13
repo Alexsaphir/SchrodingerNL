@@ -12,8 +12,10 @@ public:
 	LinearSolver(uint size);
 
 	virtual void initSolver(Type dt, Type dx);
+	SparseMatrix* getSparseMatrix() const;
 
 	void SORMethod(const ColumnMatrixVirtual *B, ColumnMatrixVirtual *X);
+	void SORMethod(const Grid1D *B, Grid1D *X);
 
 	virtual ~LinearSolver();
 private:
