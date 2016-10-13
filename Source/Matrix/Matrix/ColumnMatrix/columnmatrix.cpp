@@ -8,7 +8,7 @@ ColumnMatrix::ColumnMatrix(uint row): ColumnMatrixVirtual(row)
 cmplx ColumnMatrix::at(uint i) const
 {
 	if(i>=m_row)
-		return (0,0);
+		return cmplx(0,0);
 	else
 		return V.at(i);
 }
