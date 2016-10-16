@@ -3,7 +3,6 @@ QT+=widgets
 QMAKE_CXXFLAGS	+= -fopenmp
 QMAKE_LFLAGS	+= -fopenmp
 
-
 CONFIG += c++14
 
 
@@ -55,8 +54,7 @@ HEADERS += \
     Source/PDE/Linear/pdelinearvirtual.h \
     Source/PDE/Linear/1D/pdelinear1dvirtual.h \
     Source/PDE/pdevirtual.h \
-    Source/PDE/Linear/1D/heat1d.h \
-    Source/SolverGui/pdegui1d.h
+    Source/PDE/Linear/1D/heat1d.h
 
 SOURCES += \
     Source/axis.cpp \
@@ -88,5 +86,4 @@ SOURCES += \
     Source/PDE/Linear/pdelinearvirtual.cpp \
     Source/PDE/Linear/1D/pdelinear1dvirtual.cpp \
     Source/PDE/pdevirtual.cpp \
-    Source/PDE/Linear/1D/heat1d.cpp \
-    Source/SolverGui/pdegui1d.cpp
+    Source/PDE/Linear/1D/heat1d.cpp

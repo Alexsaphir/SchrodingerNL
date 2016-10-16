@@ -9,10 +9,8 @@ public:
 	PDELinear1DVirtual();
 	PDELinear1DVirtual(uint LS_size);
 
-	virtual void initMatrix()=0;
-	virtual void pulse()=0;
-	virtual void compute()=0;
-	virtual cmplx get(uint i) const=0;
+	virtual void computeNextStep() =0;
+	virtual void InitialState() = 0;
 
 	virtual ~PDELinear1DVirtual();
 };

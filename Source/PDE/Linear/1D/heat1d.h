@@ -12,10 +12,9 @@ public:
 	Heat1D();
 	Heat1D(const Axis &X, Type t, cmplx Binf, cmplx Bsup);
 
-	void initMatrix();
-	void pulse();
-	void compute();
-	cmplx get(uint i) const;
+
+	virtual void computeNextStep() =0;
+	virtual void InitialState() = 0;
 
 	virtual ~Heat1D();
 private:
