@@ -1,7 +1,11 @@
 #Personal ignore direction
 #Automatic Save From Gedit
 *~
+
+#Pdf and djvu file
 *.pdf
+*.djvu
+
 #Configuration file of Qt
 qt2.xml
 
