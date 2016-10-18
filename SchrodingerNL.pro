@@ -54,7 +54,8 @@ HEADERS += \
     Source/PDE/Linear/pdelinearvirtual.h \
     Source/PDE/Linear/1D/pdelinear1dvirtual.h \
     Source/PDE/pdevirtual.h \
-    Source/PDE/Linear/1D/heat1d.h
+    Source/PDE/Linear/1D/heat1d.h \
+    Source/frame.h
 
 SOURCES += \
     Source/axis.cpp \
@@ -86,4 +87,5 @@ SOURCES += \
     Source/PDE/Linear/pdelinearvirtual.cpp \
     Source/PDE/Linear/1D/pdelinear1dvirtual.cpp \
     Source/PDE/pdevirtual.cpp \
-    Source/PDE/Linear/1D/heat1d.cpp
+    Source/PDE/Linear/1D/heat1d.cpp \
+    Source/frame.cpp
