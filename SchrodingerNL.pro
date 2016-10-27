@@ -26,7 +26,6 @@ DISTFILES += \
 
 
 HEADERS += \
-    Source/axis.h \
     Source/point.h \
     Source/type.h \
     Source/Domain/domain1d.h \
@@ -35,7 +34,6 @@ HEADERS += \
     Source/Grid/grid1d.h \
     Source/Grid/grid2d.h \
     Source/Grid/gridmanager.h \
-    Source/Solver/solver1d.h \
     Source/SolverGui/solver1dgui.h \
     Source/Domain/domainmanager.h \
     Source/Domain/domain.h \
@@ -55,10 +53,13 @@ HEADERS += \
     Source/PDE/Linear/1D/pdelinear1dvirtual.h \
     Source/PDE/pdevirtual.h \
     Source/PDE/Linear/1D/heat1d.h \
-    Source/frame.h
+    Source/frame.h \
+    Source/BoundaryCondition/boundarycondition.h \
+    Source/Axis/axis.h \
+    Source/Axis/linearaxis.h \
+    Source/Axis/nonlinearaxis.h
 
 SOURCES += \
-    Source/axis.cpp \
     Source/main.cpp \
     Source/point.cpp \
     Source/Domain/domain1d.cpp \
@@ -67,7 +68,6 @@ SOURCES += \
     Source/Grid/grid1d.cpp \
     Source/Grid/grid2d.cpp \
     Source/Grid/gridmanager.cpp \
-    Source/Solver/solver1d.cpp \
     Source/SolverGui/solver1dgui.cpp \
     Source/Domain/domainmanager.cpp \
     Source/Domain/domain.cpp \
@@ -88,4 +88,8 @@ SOURCES += \
     Source/PDE/Linear/1D/pdelinear1dvirtual.cpp \
     Source/PDE/pdevirtual.cpp \
     Source/PDE/Linear/1D/heat1d.cpp \
-    Source/frame.cpp
+    Source/frame.cpp \
+    Source/BoundaryCondition/boundarycondition.cpp \
+    Source/Axis/axis.cpp \
+    Source/Axis/linearaxis.cpp \
+    Source/Axis/nonlinearaxis.cpp
