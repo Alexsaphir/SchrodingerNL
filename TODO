@@ -11,7 +11,10 @@ Grid1D and Grid2D need to be a polymorphism from Grid.
 
 Grid need to be a virtual class.
 
-Grid Class must represent a linear or non-linear Grid.
+//DONE:Grid Class must represent a linear or non-linear Grid.
+    These are the axes which represent the linearity or the nonlinearity
+
+Add a copy constructor to Axis
 
 
 Begin the documentation
