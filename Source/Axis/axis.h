@@ -3,7 +3,6 @@
 
 #include "../type.h"
 
-
 class Axis
 {
 public:
@@ -11,8 +10,12 @@ public:
 
 	Type getAxisMax() const;
 	Type getAxisMin() const;
+
 	virtual Type getAxisStep() const;
 	virtual Type getAxisStep(uint nPt) const =0;
+
+	virtual Axis* clone() const = 0;
+
 	uint getAxisN() const;
 protected:
 	Type Xmax;

@@ -26,3 +26,8 @@ Type LinearAxis::getAxisStep(uint nPt) const
 {
 	return Xstep;
 }
+
+Axis LinearAxis::clone() const
+{
+	return new LinearAxis(*this);
+}

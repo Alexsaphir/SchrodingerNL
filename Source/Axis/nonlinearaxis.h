@@ -8,11 +8,16 @@ class NonLinearAxis: public Axis
 {
 public:
 	NonLinearAxis();
+	NonLinearAxis(Type Xmn, Type Xmx);
+	NonLinearAxis(const NonLinearAxis &NLA);
+
 	virtual Type getAxisStep(uint nPt) const;
+
+	virtual Axis* clone() const;
 
 private:
 	virtual Type computeStep(uint nPt) const;
-	virtual void computeNumberPts();
+	virtual uint computeNumberPts() const;
 };
 
 #endif // NONLINEARAXIS_H

@@ -14,6 +14,8 @@ public:
 	virtual Type getAxisStep() const;
 	virtual Type getAxisStep(uint nPt) const;
 
+	virtual Axis* clone() const;
+
 private:
 	Type Xstep;
 };
