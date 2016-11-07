@@ -5,6 +5,21 @@ Point::Point()
 	V.append(0);
 }
 
+Point::Point(int x)
+{
+	V << x;
+}
+
+Point::Point(int x, int y)
+{
+	V << x << y;
+}
+
+Point::Point(int x, int y, int z)
+{
+	V << x << y << z;
+}
+
 int Point::Dim() const
 {
 	return V.size();

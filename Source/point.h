@@ -9,6 +9,9 @@ class Point
 {
 public:
 	Point();
+	Point(int x);
+	Point(int x, int y);
+	Point(int x, int y, int z);
 	int x() const;//V.at(0)
 	int y() const;//V.at(1)
 	int z() const;
