@@ -17,6 +17,7 @@ Schrodinger1D::Schrodinger1D(const Axis *F, int Past, int Future, Type timeStep)
 
 void Schrodinger1D::computeNextStep()
 {
+
 }
 
 void Schrodinger1D::initializeLinearSolver()
@@ -50,4 +51,9 @@ void Schrodinger1D::InitialState()
 
 		D->setValue(i,tmp);
 	}
+}
+
+Schrodinger1D::~Schrodinger1D()
+{
+
 }
