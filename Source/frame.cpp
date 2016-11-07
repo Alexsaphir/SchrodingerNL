@@ -14,7 +14,7 @@ Frame::Frame(const Axis *X)
 Frame::Frame(const Axis *X, const Axis *Y)
 {
 	Basis.push_back(X->clone());
-	Basis.push_back(X->clone());
+	Basis.push_back(Y->clone());
 	N = 2;
 }
 
