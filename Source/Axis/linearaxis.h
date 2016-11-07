@@ -15,6 +15,7 @@ public:
 	virtual Type getAxisStep(uint nPt) const;
 
 	virtual Axis* clone() const;
+	virtual ~LinearAxis();
 
 private:
 	Type Xstep;

@@ -17,6 +17,7 @@ public:
 	virtual Axis* clone() const = 0;
 
 	uint getAxisN() const;
+	virtual ~Axis();
 protected:
 	Type Xmax;
 	Type Xmin;

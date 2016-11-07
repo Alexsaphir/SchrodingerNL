@@ -39,3 +39,8 @@ Axis* LinearAxis::clone() const
 {
 	return new LinearAxis(*this);
 }
+
+LinearAxis::~LinearAxis()
+{
+
+}

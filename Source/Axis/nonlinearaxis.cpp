@@ -43,3 +43,8 @@ Axis* NonLinearAxis::clone() const
 {
 	return new NonLinearAxis(*this);
 }
+
+NonLinearAxis::~NonLinearAxis()
+{
+
+}

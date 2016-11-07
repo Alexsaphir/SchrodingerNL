@@ -23,3 +23,8 @@ Type Axis::getAxisStep() const
 {
 	return 0.;
 }
+
+Axis::~Axis()
+{
+
+}
