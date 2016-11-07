@@ -14,6 +14,8 @@ public:
 	
 	virtual void initializeLinearSolver();
 
+	virtual cmplx at(const Point &P) const;
+
 	~Schrodinger1D();
 	
 private:

@@ -17,7 +17,8 @@ Schrodinger1D::Schrodinger1D(const Axis *F, int Past, int Future, Type timeStep)
 
 void Schrodinger1D::computeNextStep()
 {
-
+	LS->SORMethod(Space->getCurrentColumn(), Space->getNextColumn());
+	Space->switchDomain();
 }
 
 void Schrodinger1D::initializeLinearSolver()
@@ -51,6 +52,10 @@ void Schrodinger1D::InitialState()
 
 		D->setValue(i,tmp);
 	}
+}
+cmplx Schrodinger1D::at(const Point &P) const
+{
+	return Space->getCurrentDomain()->getValue(P);
 }
 
 Schrodinger1D::~Schrodinger1D()
