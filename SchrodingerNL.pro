@@ -34,7 +34,6 @@ HEADERS += \
     Source/Grid/grid1d.h \
     Source/Grid/grid2d.h \
     Source/Grid/gridmanager.h \
-    Source/SolverGui/solver1dgui.h \
     Source/Domain/domainmanager.h \
     Source/Domain/domain.h \
     Source/Solver/Linear/linearsolver.h \
@@ -71,7 +70,6 @@ SOURCES += \
     Source/Grid/grid1d.cpp \
     Source/Grid/grid2d.cpp \
     Source/Grid/gridmanager.cpp \
-    Source/SolverGui/solver1dgui.cpp \
     Source/Domain/domainmanager.cpp \
     Source/Domain/domain.cpp \
     Source/Matrix/SparseMatrix/sparsematrix.cpp \
