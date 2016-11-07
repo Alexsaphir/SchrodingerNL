@@ -57,7 +57,8 @@ HEADERS += \
     Source/BoundaryCondition/boundarycondition.h \
     Source/Axis/axis.h \
     Source/Axis/linearaxis.h \
-    Source/Axis/nonlinearaxis.h
+    Source/Axis/nonlinearaxis.h \
+    Source/PDE/Linear/1D/schrodinger1d.h
 
 SOURCES += \
     Source/main.cpp \
@@ -92,4 +93,5 @@ SOURCES += \
     Source/BoundaryCondition/boundarycondition.cpp \
     Source/Axis/axis.cpp \
     Source/Axis/linearaxis.cpp \
-    Source/Axis/nonlinearaxis.cpp
+    Source/Axis/nonlinearaxis.cpp \
+    Source/PDE/Linear/1D/schrodinger1d.cpp
