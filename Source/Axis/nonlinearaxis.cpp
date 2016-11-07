@@ -1,11 +1,17 @@
 #include "nonlinearaxis.h"
 
-NonLinearAxis::NonLinearAxis(): Axis(), Xmax(0), Xmin(0), nbPts(1)
+NonLinearAxis::NonLinearAxis(): Axis()
 {
+	Xmax = 0;
+	Xmin = 0;
+	nbPts = 0;
 }
 
-NonLinearAxis::NonLinearAxis(Type Xmn, Type Xmx): Xmax(Xmx), Xmin(Xmn)
+
+NonLinearAxis::NonLinearAxis(Type Xmn, Type Xmx): Axis()
 {
+	Xmax = Xmx;
+	Xmin = Xmn;
 	nbPts = computeNumberPts();
 }
 
@@ -33,7 +39,7 @@ uint NonLinearAxis::computeNumberPts() const
 	return (Xmax-Xmin)/(.1)+1;
 }
 
-Axis NonLinearAxis::clone() const
+Axis* NonLinearAxis::clone() const
 {
 	return new NonLinearAxis(*this);
 }

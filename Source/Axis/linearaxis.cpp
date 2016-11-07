@@ -1,11 +1,19 @@
 #include "linearaxis.h"
 
-LinearAxis::LinearAxis(): Axis(), Xmax(0), Xmin(0), Xstep(0), nbPts(0)
+LinearAxis::LinearAxis(): Axis()
 {
+	Xmax = 0;
+	Xmin = 0;
+	Xstep = 0;
+	nbPts = 0;
 }
 
-LinearAxis::LinearAxis(Type Xmn, Type Xmx, Type Xsp): Axis(), Xmax(Xmx), Xmin(Xmn), Xstep(Xsp)
+LinearAxis::LinearAxis(Type Xmn, Type Xmx, Type Xsp): Axis()
 {
+	Xmax = Xmx;
+	Xmin = Xmn;
+	Xstep = Xsp;
+
 	nbPts = (Xmax-Xmin)/Xstep+1;
 }
 
@@ -27,7 +35,7 @@ Type LinearAxis::getAxisStep(uint nPt) const
 	return Xstep;
 }
 
-Axis LinearAxis::clone() const
+Axis* LinearAxis::clone() const
 {
 	return new LinearAxis(*this);
 }
