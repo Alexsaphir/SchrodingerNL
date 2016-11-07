@@ -13,6 +13,7 @@ Schrodinger1D::Schrodinger1D(const Axis *F, int Past, int Future, Type timeStep)
 	dx = F->getAxisStep();
 	dt = timeStep;
 	alpha = cmplx(0,dt/(dx*dx));
+
 }
 
 void Schrodinger1D::computeNextStep()
