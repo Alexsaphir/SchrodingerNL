@@ -27,7 +27,6 @@ private:
 	cmplx BoundSup;
 
 	Type dt,dx;
-	LinearSolver *LS;
 	ColumnDataProxy *C1,*C2;
 };
 
