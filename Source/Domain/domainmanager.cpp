@@ -15,6 +15,9 @@ DomainManager::DomainManager(int PastDomain, int FutureDomain, const Frame &F, c
 	}
 	offset = PastDomain;
 	Size = Stack.size();
+
+	CurrProxy = new ColumnDataProxy(getCurrentDomain());
+	NextProxy = new ColumnDataProxy(getNextDomain());
 }
 
 
@@ -55,6 +58,16 @@ void DomainManager::switchDomain()
 	begin = Stack.first();
 	Stack.removeFirst();
 	Stack.append(begin);
+}
+
+ColumnDataProxy* DomainManager::getCurrentColumn() const
+{
+	return CurrProxy;
+}
+
+ColumnDataProxy* DomainManager::getNextColumn() const
+{
+	return NextProxy;
 }
 
 DomainManager::~DomainManager()
