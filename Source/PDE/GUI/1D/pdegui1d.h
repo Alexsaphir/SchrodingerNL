@@ -10,6 +10,7 @@ class PDEGui1D: public PDEGuiVirtual
 {
 public:
 	PDEGui1D();
+	PDEGui1D(PDEVirtual *P);
 	~PDEGui1D();
 
 public slots:

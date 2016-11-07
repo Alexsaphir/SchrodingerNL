@@ -14,6 +14,20 @@ PDEGui1D::PDEGui1D(): PDEGuiVirtual()
 	view->fitInView( view->scene()->sceneRect(), Qt::KeepAspectRatio );
 }
 
+PDEGui1D::PDEGui1D(PDEVirtual *P): PDEGuiVirtual(P)
+{
+	scene = new QGraphicsScene;
+	view = new QGraphicsView(scene);
+
+	GridLayout->addWidget(view);
+
+
+	view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+	view->setDragMode(QGraphicsView::ScrollHandDrag);
+	view->scene()->installEventFilter(this);
+	view->fitInView( view->scene()->sceneRect(), Qt::KeepAspectRatio );
+}
+
 void PDEGui1D::refreshView()
 {
 	if(!Problem)

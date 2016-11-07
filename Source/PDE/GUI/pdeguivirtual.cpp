@@ -14,6 +14,20 @@ PDEGuiVirtual::PDEGuiVirtual(): QMainWindow()
 	this->resize(800,800);
 }
 
+PDEGuiVirtual::PDEGuiVirtual(PDEVirtual *P): QMainWindow()
+{
+	Problem = P;
+
+	SDI_Area = new QWidget;
+	GridLayout = new QGridLayout;
+
+	SDI_Area->setLayout(GridLayout);
+	setCentralWidget(SDI_Area);
+
+	setWindowTitle("PDE numerical simulation ");
+	this->resize(800,800);
+}
+
 bool PDEGuiVirtual::eventFilter(QObject *obj, QEvent *event)
 {
 	if (event->type() == QEvent::GraphicsSceneWheel)

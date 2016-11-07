@@ -14,6 +14,7 @@ class PDEGuiVirtual: public QMainWindow
 {
 public:
 	PDEGuiVirtual();
+	PDEGuiVirtual(PDEVirtual *P);
 	~PDEGuiVirtual();
 
 public slots:
