@@ -32,6 +32,7 @@ Frame::Frame::Frame(const Frame &F)
 {
 	for(int i=0; i<F.Basis.size(); ++i)
 		Basis.push_back(F.Basis.at(i)->clone());
+	N = F.size();
 }
 
 Axis* Frame::at(int i) const
