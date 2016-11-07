@@ -18,6 +18,11 @@ PDEVirtual::PDEVirtual(const Frame &F, int Past, int Future, cmplx BoundExt)
 	Space = new DomainManager(Past, Future, *Repere, BoundExt);
 }
 
+cmplx PDEVirtual::at(const Point &P) const
+{
+	return cmplx(0,0);
+}
+
 PDEVirtual::~PDEVirtual()
 {
 	delete Repere;

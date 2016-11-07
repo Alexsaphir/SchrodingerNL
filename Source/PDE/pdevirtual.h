@@ -3,6 +3,7 @@
 
 
 #include "../frame.h"
+#include "../point.h"
 #include "../type.h"
 #include "../Domain/domainmanager.h"
 
@@ -15,6 +16,8 @@ public:
 
 	virtual void computeNextStep() =0;
 	virtual void InitialState() = 0;
+
+	virtual cmplx at(const Point &P) const;
 
 	virtual ~PDEVirtual();
 
