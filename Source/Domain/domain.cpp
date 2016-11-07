@@ -2,7 +2,6 @@
 
 Domain::Domain() : Grid()
 {
-
 }
 
 Domain::Domain(const Domain &D) : Grid(D)
@@ -10,7 +9,17 @@ Domain::Domain(const Domain &D) : Grid(D)
 	BoundExt = D.BoundExt;
 }
 
-Domain::Domain(cmplx Bext) : Grid(), BoundExt(Bext)
+Domain::Domain(const Axis *X, cmplx Bext): Grid(Frame(X)), BoundExt(Bext)
+{
+
+}
+
+Domain::Domain(const Axis *X, const Axis *Y, cmplx Bext): Grid(Frame(X, Y)), BoundExt(Bext)
+{
+
+}
+
+Domain::Domain(const Frame &F, cmplx Bext): Grid(F), BoundExt(Bext)
 {
 
 }
@@ -34,4 +43,9 @@ cmplx Domain::getValue(int i) const
 cmplx Domain::getBoundaryCondition(const Point &Pos) const
 {
 	return BoundExt;
+}
+
+Domain::~Domain()
+{
+
 }

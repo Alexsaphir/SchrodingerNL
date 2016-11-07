@@ -1,16 +1,16 @@
 #include "grid1d.h"
 
 
-Grid1D::Grid1D(const Axis &X)
+Grid1D::Grid1D(const Axis *X)
 {
-	AxisX = X;
+	AxisX = X->clone();
 
 	V.fill(cmplx(0.,0.),getN());
 }
 
 Type Grid1D::getDx() const
 {
-	return AxisX.getAxisStep();
+	return AxisX->getAxisStep();
 }
 
 Type Grid1D::getPos(int i) const
@@ -30,17 +30,17 @@ cmplx Grid1D::getValue(int i) const
 
 Type Grid1D::getXmax() const
 {
-	return AxisX.getAxisMax();
+	return AxisX->getAxisMax();
 }
 
 Type Grid1D::getXmin() const
 {
-	return AxisX.getAxisMin();
+	return AxisX->getAxisMin();
 }
 
 int Grid1D::getN() const
 {
-	return AxisX.getAxisN();
+	return AxisX->getAxisN();
 }
 
 void Grid1D::setValue(int i, cmplx value)
@@ -51,5 +51,10 @@ void Grid1D::setValue(int i, cmplx value)
 		return;
 
 	V.replace(i, value);
+}
+
+Grid1D::~Grid1D()
+{
+	delete AxisX;
 }
 

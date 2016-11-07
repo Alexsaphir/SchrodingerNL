@@ -7,14 +7,18 @@ class Domain: public Grid
 {
 public:
 	Domain();
-	Domain(cmplx Bext);
+	Domain(const Frame &F, cmplx Bext);
+	Domain(const Axis *X, cmplx Bext);
+	Domain(const Axis *X, const Axis *Y, cmplx Bext);
 	Domain(const Domain &D);
 
 	cmplx getValue(const Point &Pos) const;
-	cmplx getValue(int i) const;
+	virtual cmplx getValue(int i) const;
+
+	virtual ~Domain();
 private:
 	cmplx getBoundaryCondition(const Point &Pos) const;
-private:
+protected:
 	cmplx BoundExt;
 };
 

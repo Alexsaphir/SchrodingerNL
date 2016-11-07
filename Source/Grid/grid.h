@@ -3,7 +3,8 @@
 
 #include <QVector>
 
-#include "../axis.h"
+#include "../Axis/axis.h"
+#include "../frame.h"
 #include "../point.h"
 #include "../type.h"
 
@@ -12,8 +13,9 @@ class Grid
 {
 public:
 	Grid();
+	Grid(const Frame &F);
 	Grid(const Grid &G);
-	void AddAxis(const Axis &X);
+
 	int getAxisN() const;
 	int getIndexFromPos(const Point &Pos) const;
 	int getN(int AxisN) const;
@@ -24,20 +26,18 @@ public:
 	void initGrid();
 	bool isInGrid(const Point &Pos) const;
 	bool isInGrid(int i) const;
-	bool ready() const;
 	void setValue(const Point &Pos, cmplx value);
 	void setValue(int i, cmplx value);
 
-
+	~Grid();
 private:
 	Axis *getAxis(int i) const;
 
 
 
 private:
-	QVector<Axis*> Repere;
+	Frame *Repere;
 	QVector<cmplx> V;
-	bool isInit;
 	int N;//Precomputed size of V
 };
 

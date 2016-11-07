@@ -1,6 +1,6 @@
 #include "domainmanager.h"
 
-DomainManager::DomainManager(int PastDomain, int FutureDomain,cmplx Bext)
+DomainManager::DomainManager(int PastDomain, int FutureDomain, const Frame &F, cmplx Bext)
 {
 	if(PastDomain<0)
 		PastDomain = 0;
@@ -10,20 +10,13 @@ DomainManager::DomainManager(int PastDomain, int FutureDomain,cmplx Bext)
 
 	for(int i=0; i<(PastDomain + FutureDomain + 1); ++i)
 	{
-		Domain *tmp = new Domain(Bext);
+		Domain *tmp = new Domain(F, Bext);
 		Stack.append(tmp);
 	}
 	offset = PastDomain;
 	Size = Stack.size();
 }
 
-void DomainManager::AddAxis(const Axis &X)
-{
-	if(isInit)
-		return;
-	for(int i=0; i<Size;++i)
-		Stack.at(i)->AddAxis(X);
-}
 
 Domain* DomainManager::getCurrentDomain() const
 {
@@ -54,13 +47,6 @@ Domain* DomainManager::getOldDomain() const
 int DomainManager::getSizeStack() const
 {
 	return Size;
-}
-
-void DomainManager::initDomainManager()
-{
-	isInit =true;
-	for(int i=0; i<Size;++i)
-		Stack.at(i)->initGrid();
 }
 
 void DomainManager::switchDomain()

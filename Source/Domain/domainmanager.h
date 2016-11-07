@@ -9,7 +9,7 @@
 class DomainManager
 {
 public:
-	DomainManager(int PastDomain, int FutureDomain, cmplx Bext);
+	DomainManager(int PastDomain, int FutureDomain, const Frame &F, cmplx Bext);
 
 	int getSizeStack() const;
 
@@ -18,8 +18,6 @@ public:
 	Domain* getNextDomain() const;
 	Domain* getOldDomain() const;
 
-	void AddAxis(const Axis &X);
-	void initDomainManager();
 	void switchDomain();
 
 	~DomainManager();

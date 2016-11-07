@@ -1,18 +1,21 @@
 #include "domain2d.h"
 
-Domain2D::Domain2D(const Axis &X, const Axis &Y, cmplx Bext) : Grid2D(X, Y)
+Domain2D::Domain2D(const Axis *X, const Axis *Y, cmplx Bext) : Domain(X, Y, Bext)
 {
-	BoundExt = Bext;
 }
 
 cmplx Domain2D::getValue(int i, int j) const
 {
-	if(isInGrid(i, j))
-		return Grid2D::getValue(i, j);
+	if(Domain::isInGrid(Point(i,j)))
+		return Domain::Grid::getValue(Point(i,j));
 	else
 	{
 		//Boundary conditions
-
 		return BoundExt;
 	}
+}
+
+Domain2D::~Domain2D()
+{
+
 }

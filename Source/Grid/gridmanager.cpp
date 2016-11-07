@@ -1,6 +1,6 @@
 #include "../Grid/gridmanager.h"
 
-GridManager::GridManager(const Axis &X, cmplx Binf, cmplx Bsup, int i, int d)
+GridManager::GridManager(const Axis *X, cmplx Binf, cmplx Bsup, int i, int d)
 {
 	if(i<=0)
 		i=1;

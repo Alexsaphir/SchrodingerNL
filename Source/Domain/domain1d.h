@@ -1,19 +1,19 @@
 #ifndef DOMAIN1D_H
 #define DOMAIN1D_H
 
-#include "../Grid/grid1d.h"
+#include "domain.h"
 
 
 
-class Domain1D: public Grid1D
+class Domain1D: public Domain
 {
 public:
-	Domain1D(const Axis &X, cmplx Binf, cmplx Bsup);
+	Domain1D(const Axis *X, cmplx Binf, cmplx Bsup);
 
-	cmplx getValue(int i) const;
+	virtual cmplx getValue(int i) const;
 
-	void doFourrier();
-	void undoFourrier();
+	~Domain1D();
+
 private:
 	cmplx BoundInf;//getValue(-1)
 	cmplx BoundSup;//getValue(N+1)

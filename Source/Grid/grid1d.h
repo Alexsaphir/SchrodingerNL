@@ -5,14 +5,14 @@
 
 
 #include "../type.h"
-#include "../axis.h"
+#include "../Axis/axis.h"
 
 
 class Grid1D
 {
 public:
 
-	Grid1D(const Axis &X);
+	Grid1D(const Axis *X);
 
 	Type getDx() const;
 	Type getPos(int i) const;
@@ -22,11 +22,12 @@ public:
 	int getN() const;
 	void setValue(int i, cmplx value);
 
+	~Grid1D();
 
 
 private:
 	QVector<cmplx> V;
-	Axis AxisX;
+	Axis *AxisX;
 };
 
 #endif // GRID1D_H

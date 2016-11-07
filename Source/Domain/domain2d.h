@@ -1,17 +1,16 @@
 #ifndef DOMAIN2D_H
 #define DOMAIN2D_H
 
-#include "../Grid/grid2d.h"
+#include "domain.h"
 
-class Domain2D : public Grid2D
+class Domain2D : public Domain
 {
 public:
-	Domain2D(const Axis &X, const Axis &Y, cmplx Bext);
+	Domain2D(const Axis *X, const Axis *Y, cmplx Bext);
 
 	cmplx getValue(int i, int j) const;
 
-private:
-	cmplx BoundExt;//In 2D boundary condition are more difficult than in 1D
+	~Domain2D();
 };
 
 #endif // DOMAIN2D_H
