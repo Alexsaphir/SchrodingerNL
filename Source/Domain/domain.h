@@ -11,7 +11,7 @@ public:
 	Domain(const Axis *X, cmplx BoundExt);
 	Domain(const Axis *X, const Axis *Y, cmplx BoundExt);
 	Domain(const Domain &D);
-	virtual ~Domain();
+	~Domain();
 private:
 	cmplx getBoundaryCondition(const Point &Pos) const;
 protected:

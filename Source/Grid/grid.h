@@ -4,7 +4,7 @@
 #include "Private/gridprivate.h"
 
 
-class Grid: protected GridPrivate
+class Grid: public GridPrivate
 {
 public:
 	Grid();
