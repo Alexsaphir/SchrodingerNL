@@ -5,7 +5,7 @@ LinearAxis::LinearAxis(): Axis(0, 0, 1)
 	m_Xstep = 0;
 }
 
-LinearAxis::LinearAxis(Type Xmin, Type Xmax, Type Xstep): Axis(Xmin, Xmax, (Xmax-Xmin)/Xstep+1)
+LinearAxis::LinearAxis(Type Xmin, Type Xmax, Type Xstep): Axis(Xmin, Xmax, static_cast<int>((Xmax-Xmin)/Xstep)+1)
 {
 	m_Xstep = Xstep;
 }
@@ -32,5 +32,4 @@ Axis* LinearAxis::clone() const
 
 LinearAxis::~LinearAxis()
 {
-
 }
