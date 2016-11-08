@@ -1,51 +1,35 @@
 #include "domain.h"
 
-Domain::Domain() : Grid()
+Domain::Domain(): DomainPrivate(), m_Frame(NULL)
 {
 }
 
-Domain::Domain(const Domain &D) : Grid(D)
+Domain::Domain(const Domain &D): DomainPrivate(new Frame(*D.m_Frame), D.m_BoundExt)
 {
-	BoundExt = D.BoundExt;
+	m_Frame = getFrame();
 }
 
-Domain::Domain(const Axis *X, cmplx Bext): Grid(Frame(X)), BoundExt(Bext)
+Domain::Domain(const Axis *X, cmplx BoundExt): DomainPrivate(new Frame(X), BoundExt)
 {
-
+	m_Frame = getFrame();
 }
 
-Domain::Domain(const Axis *X, const Axis *Y, cmplx Bext): Grid(Frame(X, Y)), BoundExt(Bext)
+Domain::Domain(const Axis *X, const Axis *Y, cmplx BoundExt): DomainPrivate(new Frame(X, Y), BoundExt)
 {
-
+	m_Frame = getFrame();
 }
 
-Domain::Domain(const Frame &F, cmplx Bext): Grid(F), BoundExt(Bext)
+Domain::Domain(const Frame &F, cmplx BoundExt): DomainPrivate(new Frame(F), BoundExt)
 {
-
-}
-
-cmplx Domain::getValue(const Point &Pos) const
-{
-	int i(getIndexFromPos(Pos));
-	if(i == -1)
-		return getBoundaryCondition(Pos);
-	return Grid::getValue(i);
-}
-
-cmplx Domain::getValue(int i) const
-{
-	//We can't use many boundary condition
-	if(i<0 || i>=getN())
-		return BoundExt;
-	return Grid::getValue(i);
+	m_Frame = getFrame();
 }
 
 cmplx Domain::getBoundaryCondition(const Point &Pos) const
 {
-	return BoundExt;
+	return m_BoundExt;
 }
 
 Domain::~Domain()
 {
-
+	delete m_Frame;
 }

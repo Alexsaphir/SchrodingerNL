@@ -12,13 +12,12 @@ cmplx Domain1D::getValue(int i) const
 //	Constant boundary
 	if(i<0)
 		return BoundInf;
-	if(i>=this->getN())
+	if(i>=this->getSizeOfGrid())
 		return BoundSup;
 
-	return Grid::getValue(i);
+	return GridPrivate::getValue(i);
 }
 
 Domain1D::~Domain1D()
 {
-
 }

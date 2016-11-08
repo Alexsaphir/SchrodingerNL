@@ -1,25 +1,21 @@
 #ifndef DOMAIN_H
 #define DOMAIN_H
 
-#include "../Grid/grid.h"
+#include "Private/domainprivate.h"
 
-class Domain: public Grid
+class Domain: public DomainPrivate
 {
 public:
 	Domain();
-	Domain(const Frame &F, cmplx Bext);
-	Domain(const Axis *X, cmplx Bext);
-	Domain(const Axis *X, const Axis *Y, cmplx Bext);
+	Domain(const Frame &F, cmplx BoundExt);
+	Domain(const Axis *X, cmplx BoundExt);
+	Domain(const Axis *X, const Axis *Y, cmplx BoundExt);
 	Domain(const Domain &D);
-
-	cmplx getValue(const Point &Pos) const;
-	virtual cmplx getValue(int i) const;
-
 	virtual ~Domain();
 private:
 	cmplx getBoundaryCondition(const Point &Pos) const;
 protected:
-	cmplx BoundExt;
+	const Frame *m_Frame;
 };
 
 #endif // DOMAIN_H
