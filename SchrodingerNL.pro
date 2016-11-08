@@ -60,7 +60,8 @@ HEADERS += \
     Source/PDE/Linear/1D/schrodinger1d.h \
     Source/PDE/GUI/1D/pdegui1d.h \
     Source/PDE/GUI/pdeguivirtual.h \
-    Source/Grid/Private/gridprivate.h
+    Source/Grid/Private/gridprivate.h \
+    Source/Domain/Private/domainprivate.h
 
 SOURCES += \
     Source/main.cpp \
@@ -98,4 +99,5 @@ SOURCES += \
     Source/PDE/Linear/1D/schrodinger1d.cpp \
     Source/PDE/GUI/1D/pdegui1d.cpp \
     Source/PDE/GUI/pdeguivirtual.cpp \
-    Source/Grid/Private/gridprivate.cpp
+    Source/Grid/Private/gridprivate.cpp \
+    Source/Domain/Private/domainprivate.cpp
