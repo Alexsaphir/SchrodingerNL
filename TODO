@@ -19,3 +19,5 @@ Domain Class is require because Grid class don't support the index -1 and N
 //Warning:The ColumnMatrisProxy don't use an optimized method to access to the data so the sparse matrix can have a wide spread.
 
 Begin the documentation
+
+//WARNING:Need to check if all uint replaced by int are > 0.
