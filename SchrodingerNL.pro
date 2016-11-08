@@ -59,7 +59,8 @@ HEADERS += \
     Source/Axis/nonlinearaxis.h \
     Source/PDE/Linear/1D/schrodinger1d.h \
     Source/PDE/GUI/1D/pdegui1d.h \
-    Source/PDE/GUI/pdeguivirtual.h
+    Source/PDE/GUI/pdeguivirtual.h \
+    Source/Grid/Private/gridprivate.h
 
 SOURCES += \
     Source/main.cpp \
@@ -96,4 +97,5 @@ SOURCES += \
     Source/Axis/nonlinearaxis.cpp \
     Source/PDE/Linear/1D/schrodinger1d.cpp \
     Source/PDE/GUI/1D/pdegui1d.cpp \
-    Source/PDE/GUI/pdeguivirtual.cpp
+    Source/PDE/GUI/pdeguivirtual.cpp \
+    Source/Grid/Private/gridprivate.cpp
