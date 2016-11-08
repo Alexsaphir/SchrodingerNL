@@ -31,7 +31,7 @@ Domain* DomainManager::getDomain(int i) const
 	//Current == 0
 	//Next == 1
 	//Old == -1
-	if( (offset-i)<0 || (offset+i)>=Size)
+	if( (offset+i)<0 || (offset+i)>Size)
 		return Stack.at(offset);
 
 	return Stack.at(offset+i);
