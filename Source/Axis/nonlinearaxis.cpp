@@ -1,42 +1,40 @@
 #include "nonlinearaxis.h"
 
-NonLinearAxis::NonLinearAxis(): Axis()
+NonLinearAxis::NonLinearAxis(): Axis(0, 0, 1)
 {
-	Xmax = 0;
-	Xmin = 0;
-	nbPts = 0;
+	m_XStep.push_back(0);
 }
 
 
-NonLinearAxis::NonLinearAxis(Type Xmn, Type Xmx): Axis()
+NonLinearAxis::NonLinearAxis(Type Xmin, Type Xmax): Axis(Xmin, Xmax, computeNumberPts())
 {
-	Xmax = Xmx;
-	Xmin = Xmn;
-	nbPts = computeNumberPts();
+	for(int i=0; i<m_nbPts; ++i)
+	{
+		m_XStep.push_back(computeStep(i));
+	}
 }
 
-NonLinearAxis::NonLinearAxis(const NonLinearAxis &NLA)
+NonLinearAxis::NonLinearAxis(const NonLinearAxis &NLA): Axis(NLA), m_XStep(NLA.m_XStep)
 {
-	Xmax = NLA.Xmax;
-	Xmin = NLA.Xmin;
-	nbPts = NLA.nbPts;
 }
 
-Type NonLinearAxis::getAxisStep(uint nPt) const
+Type NonLinearAxis::getAxisStep(int nPt) const
 {
-	if (nPt>=nbPts)
+	if (nPt>=m_nbPts)
 		return 0.;
-	return computeStep(nPt);
+	return m_XStep.at(nPt);
 }
 
-Type NonLinearAxis::computeStep(uint nPt) const
+Type NonLinearAxis::computeStep(int nPt) const
 {
-	return (Xmax-Xmin)/((Type)nbPts);
+	if (nPt>=m_nbPts)
+		return 0;
+	return (m_Xmax-m_Xmin)/(static_cast<Type>(m_nbPts));
 }
 
-uint NonLinearAxis::computeNumberPts() const
+int NonLinearAxis::computeNumberPts() const
 {
-	return (Xmax-Xmin)/(.1)+1;
+	return static_cast<int>((m_Xmax-m_Xmin)*10+1);
 }
 
 Axis* NonLinearAxis::clone() const

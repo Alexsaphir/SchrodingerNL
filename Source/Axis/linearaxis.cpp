@@ -1,38 +1,28 @@
 #include "linearaxis.h"
 
-LinearAxis::LinearAxis(): Axis()
+LinearAxis::LinearAxis(): Axis(0, 0, 1)
 {
-	Xmax = 0;
-	Xmin = 0;
-	Xstep = 0;
-	nbPts = 0;
+	m_Xstep = 0;
 }
 
-LinearAxis::LinearAxis(Type Xmn, Type Xmx, Type Xsp): Axis()
+LinearAxis::LinearAxis(Type Xmin, Type Xmax, Type Xstep): Axis(Xmin, Xmax, (Xmax-Xmin)/Xstep+1)
 {
-	Xmax = Xmx;
-	Xmin = Xmn;
-	Xstep = Xsp;
-
-	nbPts = (Xmax-Xmin)/Xstep+1;
+	m_Xstep = Xstep;
 }
 
-LinearAxis::LinearAxis(const LinearAxis &LA)
+LinearAxis::LinearAxis(const LinearAxis &LA): Axis(LA)
 {
-	Xmax	= LA.Xmax;
-	Xmin	= LA.Xmin;
-	Xstep	= LA.Xstep;
-	nbPts	= LA.nbPts;
+	this->m_Xstep = LA.m_Xstep;
 }
 
 Type LinearAxis::getAxisStep() const
 {
-	return Xstep;
+	return m_Xstep;
 }
 
-Type LinearAxis::getAxisStep(uint nPt) const
+Type LinearAxis::getAxisStep(int nPt) const
 {
-	return Xstep;
+	return m_Xstep;
 }
 
 Axis* LinearAxis::clone() const

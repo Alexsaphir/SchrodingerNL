@@ -8,17 +8,17 @@ class LinearAxis: public Axis
 {
 public:
 	LinearAxis();
-	LinearAxis(Type Xmn, Type Xmx, Type Xsp);
+	LinearAxis(Type Xmin, Type Xmax, Type Xstep);
 	LinearAxis(const LinearAxis &LA);
+	~LinearAxis();
 
-	virtual Type getAxisStep() const;
-	virtual Type getAxisStep(uint nPt) const;
+	Type getAxisStep() const;
+	Type getAxisStep(int nPt) const;
 
-	virtual Axis* clone() const;
-	virtual ~LinearAxis();
+	Axis* clone() const;
 
 private:
-	Type Xstep;
+	Type m_Xstep;
 };
 
 #endif // LINEARAXIS_H

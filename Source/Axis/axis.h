@@ -7,21 +7,22 @@ class Axis
 {
 public:
 	Axis();
+	Axis(Type Xmin, Type Xmax, int nbPts);
+	Axis(const Axis &A);
+	virtual ~Axis();
 
 	Type getAxisMax() const;
 	Type getAxisMin() const;
+	int getAxisN() const;
 
 	virtual Type getAxisStep() const;
-	virtual Type getAxisStep(uint nPt) const =0;
+	virtual Type getAxisStep(int nPt) const =0;
 
 	virtual Axis* clone() const = 0;
-
-	uint getAxisN() const;
-	virtual ~Axis();
 protected:
-	Type Xmax;
-	Type Xmin;
-	uint nbPts;
+	Type m_Xmin;
+	Type m_Xmax;
+	int m_nbPts;
 };
 
 #endif // AXIS_H
