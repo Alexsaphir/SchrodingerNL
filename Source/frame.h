@@ -14,16 +14,20 @@ public:
 	Frame(const Axis *X);
 	Frame(const Axis *X, const Axis *Y);
 	Frame(const Frame &F);
-	Axis* getAxis(int i) const;
-	Axis* at(int i) const;
+	const Axis *getAxis(int i) const;
+	const Axis *at(int i) const;
 	int size() const;
 	bool empty() const;
 
 	~Frame();
 
 private:
-	QVector<Axis*> Basis;
-	int N;
+	QVector<const Axis*> m_Basis;
+	int m_N;//Size of m_Basis
 };
 
 #endif // FRAME_H
+
+
+//the Basis is see as a colletioc
+// at(i) don't check if index is valid
