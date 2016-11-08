@@ -13,17 +13,16 @@
 class SparseMatrix: public CoreMatrix
 {
 public:
-	SparseMatrix(uint row, uint column);
-
-	virtual cmplx getValue(uint i, uint j) const;
-	virtual void setValue(uint i, uint j, const cmplx &value);
+	SparseMatrix(int row, int column);
+	~SparseMatrix();
+	cmplx getValue(int i, int j) const;
+	void setValue(int i, int j, const cmplx &value);
 
 	void dotByGrid1D(Grid1D *S, Grid1D *R);
 
-	virtual ~SparseMatrix();
-private:
-	QVector<QMap<uint,cmplx>*> V;
 
+private:
+	QVector<QMap<int,cmplx>*> V;
 };
 
 #endif // SPARSEMATRIX_H

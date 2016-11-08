@@ -1,11 +1,11 @@
 #include "columnmatrix.h"
 
-ColumnMatrix::ColumnMatrix(uint row): ColumnMatrixVirtual(row)
+ColumnMatrix::ColumnMatrix(int row): ColumnMatrixVirtual(row)
 {
 	V.fill(cmplx(0,0), row);
 }
 
-cmplx ColumnMatrix::at(uint i) const
+cmplx ColumnMatrix::at(int i) const
 {
 	if(i>=m_row)
 		return cmplx(0,0);
@@ -13,14 +13,14 @@ cmplx ColumnMatrix::at(uint i) const
 		return V.at(i);
 }
 
-void ColumnMatrix::set(uint i, const cmplx &value)
+void ColumnMatrix::set(int i, const cmplx &value)
 {
 	if(i>=m_row)
 		return;
 	V.replace(i, value);
 }
 
-cmplx ColumnMatrix::getValue(uint i, uint j) const
+cmplx ColumnMatrix::getValue(int i, int j) const
 {
 	//Column Matrix => column=1 => j=1
 	if(j!=0)
@@ -29,7 +29,7 @@ cmplx ColumnMatrix::getValue(uint i, uint j) const
 		return at(i);
 }
 
-void ColumnMatrix::setValue(uint i, uint j, const cmplx &value)
+void ColumnMatrix::setValue(int i, int j, const cmplx &value)
 {
 	if(j!=1)
 		return;

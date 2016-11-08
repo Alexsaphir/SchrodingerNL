@@ -8,13 +8,13 @@ class ColumnMatrixVirtual: public CoreMatrix
 {
 public:
 	ColumnMatrixVirtual();
-	ColumnMatrixVirtual(uint row);
+	ColumnMatrixVirtual(int row);
 
-	virtual cmplx at(uint i) const = 0;
-	virtual void set(uint i, const cmplx &value) = 0;
+	virtual cmplx at(int i) const = 0;
+	virtual void set(int i, const cmplx &value) = 0;
 
-	virtual cmplx getValue(uint i, uint j) const = 0;
-	virtual void setValue(uint i, uint j, const cmplx &value) = 0;
+	virtual cmplx getValue(int i, int j) const = 0;
+	virtual void setValue(int i, int j, const cmplx &value) = 0;
 
 	virtual ~ColumnMatrixVirtual();
 };

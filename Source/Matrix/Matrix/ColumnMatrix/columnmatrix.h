@@ -9,13 +9,13 @@
 class ColumnMatrix: public ColumnMatrixVirtual
 {
 public:
-	ColumnMatrix(uint row);
+	ColumnMatrix(int row);
 
-	virtual cmplx at(uint i) const;
-	virtual void set(uint i, const cmplx &value);
+	virtual cmplx at(int i) const;
+	virtual void set(int i, const cmplx &value);
 
-	virtual cmplx getValue(uint i, uint j) const;
-	virtual void setValue(uint i, uint j, const cmplx &value);
+	virtual cmplx getValue(int i, int j) const;
+	virtual void setValue(int i, int j, const cmplx &value);
 
 	virtual ~ColumnMatrix();
 

@@ -4,7 +4,7 @@ CoreMatrix::CoreMatrix(): m_row(0), m_column(0)
 {
 }
 
-CoreMatrix::CoreMatrix(uint n, bool isRowMatrix)
+CoreMatrix::CoreMatrix(int n, bool isRowMatrix)
 {
 	if(isRowMatrix)
 	{
@@ -18,31 +18,30 @@ CoreMatrix::CoreMatrix(uint n, bool isRowMatrix)
 	}
 }
 
-CoreMatrix::CoreMatrix(uint row, uint column): m_row(row), m_column(column)
+CoreMatrix::CoreMatrix(int row, int column): m_row(row), m_column(column)
 {
 }
 
-uint CoreMatrix::column() const
+int CoreMatrix::column() const
 {
 	return m_column;
 }
 
-uint CoreMatrix::row() const
+int CoreMatrix::row() const
 {
 	return m_row;
 }
 
 CoreMatrix::~CoreMatrix()
 {
-
 }
 
-cmplx CoreMatrix::at(uint i) const
+cmplx CoreMatrix::at(int i) const
 {
 	return cmplx(0,0);//If method if not redefined this isn't a vector
 }
 
-void CoreMatrix::set(uint i, const cmplx &value)
+void CoreMatrix::set(int i, const cmplx &value)
 {
 	return;
 }

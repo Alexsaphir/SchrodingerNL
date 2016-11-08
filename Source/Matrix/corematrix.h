@@ -9,23 +9,22 @@ class CoreMatrix
 {
 public:
 	CoreMatrix();
-	CoreMatrix(uint n, bool isRowMatrix);
-	CoreMatrix(uint row, uint column);
-//Specific method for vector Matrix
-	virtual cmplx at(uint i) const;
-	virtual void set(uint i, const cmplx &value);
-//Generic method
-	virtual cmplx getValue(uint i, uint j) const = 0;
-	virtual void setValue(uint i, uint j, const cmplx &value) = 0;
-
-	virtual uint row() const;
-	virtual uint column() const;
-
-
+	CoreMatrix(int n, bool isRowMatrix);
+	CoreMatrix(int row, int column);
 	virtual ~CoreMatrix();
+
+//Specific method for vector Matrix
+	virtual cmplx at(int i) const;
+	virtual void set(int i, const cmplx &value);
+//Generic method
+	virtual cmplx getValue(int i, int j) const = 0;
+	virtual void setValue(int i, int j, const cmplx &value) = 0;
+
+	virtual int row() const;
+	virtual int column() const;
 protected:
-	uint m_row;
-	uint m_column;
+	int m_row;
+	int m_column;
 };
 
 #endif // COREMATRIX_H

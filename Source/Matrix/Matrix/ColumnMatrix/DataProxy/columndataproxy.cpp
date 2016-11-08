@@ -10,14 +10,14 @@ ColumnDataProxy::ColumnDataProxy(Domain *D): ColumnMatrixVirtual(), m_domain(D)
 
 }
 
-cmplx ColumnDataProxy::at(uint i) const
+cmplx ColumnDataProxy::at(int i) const
 {
 	if(i>=row())
 		return cmplx(0,0);
 	return m_domain->getValue(i);
 }
 
-uint ColumnDataProxy::column() const
+int ColumnDataProxy::column() const
 {
 	if(row()==0)
 		return 0;
@@ -25,22 +25,22 @@ uint ColumnDataProxy::column() const
 		return 1;
 }
 
-cmplx ColumnDataProxy::getValue(uint i, uint j) const
+cmplx ColumnDataProxy::getValue(int i, int j) const
 {
 	if(j!=0)
 		return cmplx(0,0);
 	return at(i);
 }
 
-uint ColumnDataProxy::row() const
+int ColumnDataProxy::row() const
 {
 
 	if(!m_domain)
 		return 0;//m_domain are set to NULL
-	return m_domain->getN();
+	return m_domain->getSizeOfGrid();
 }
 
-void ColumnDataProxy::set(uint i, const cmplx &value)
+void ColumnDataProxy::set(int i, const cmplx &value)
 {
 	if(i>=row())
 		return;
@@ -52,7 +52,7 @@ void ColumnDataProxy::setDomain(Domain *D)
 	m_domain = D;
 }
 
-void ColumnDataProxy::setValue(uint i, uint j, const cmplx &value)
+void ColumnDataProxy::setValue(int i, int j, const cmplx &value)
 {
 	qDebug() << "call";
 	if(j!=1)

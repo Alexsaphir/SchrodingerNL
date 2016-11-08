@@ -23,7 +23,7 @@ Frame::Frame(QVector<Axis*> axes)
 	m_N = axes.size();
 	if(m_N==0)
 		return;
-	for(uint i=0; i<m_N; ++i)
+	for(int i=0; i<m_N; ++i)
 		m_Basis.push_back(axes.at(i)->clone());
 
 }

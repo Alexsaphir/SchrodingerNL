@@ -1,23 +1,23 @@
 #include "matrix.h"
 
-Matrix::Matrix(uint row, uint column): CoreMatrix(row , column)
+Matrix::Matrix(int row, int column): CoreMatrix(row , column)
 {
 	V.fill(cmplx(0.,0.),m_row*m_column);
 }
 
-cmplx Matrix::getValue(uint i, uint j) const
+cmplx Matrix::getValue(int i, int j) const
 {
 	return V.at(index(i,j));
 }
 
-void Matrix::setValue(uint i, uint j, const cmplx &value)
+void Matrix::setValue(int i, int j, const cmplx &value)
 {
 	if (i>=m_row || j>=m_column)
 		return;
 	V.replace(j + m_column*i, value);
 }
 
-uint Matrix::index(uint i, uint j) const
+int Matrix::index(int i, int j) const
 {
 	if (i>=m_row || j>=m_column)
 		return 0;
@@ -26,5 +26,4 @@ uint Matrix::index(uint i, uint j) const
 
 Matrix::~Matrix()
 {
-
 }

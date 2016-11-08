@@ -5,7 +5,7 @@ RowMatrixVirtual::RowMatrixVirtual(): CoreMatrix()
 
 }
 
-RowMatrixVirtual::RowMatrixVirtual(uint column): CoreMatrix(column, true)
+RowMatrixVirtual::RowMatrixVirtual(int column): CoreMatrix(column, true)
 {
 
 }

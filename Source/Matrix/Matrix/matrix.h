@@ -9,14 +9,14 @@
 class Matrix: public CoreMatrix
 {
 public:
-	Matrix(uint row, uint column);
+	Matrix(int row, int column);
 
-	virtual cmplx getValue(uint i, uint j) const;
-	virtual void setValue(uint i, uint j, const cmplx &value);
+	virtual cmplx getValue(int i, int j) const;
+	virtual void setValue(int i, int j, const cmplx &value);
 
 	virtual ~Matrix();
 private:
-	inline uint index(uint i, uint j) const;
+	inline int index(int i, int j) const;
 private:
 	QVector<cmplx> V;
 };

@@ -14,14 +14,14 @@ public:
 	void setDomain(Domain *D);
 
 	//Specific method for Row or Column Matrix
-	virtual cmplx at(uint i) const;
-	virtual void set(uint i, const cmplx &value);
+	virtual cmplx at(int i) const;
+	virtual void set(int i, const cmplx &value);
 	//Generic method
-	virtual cmplx getValue(uint i, uint j) const;
-	virtual void setValue(uint i, uint j, const cmplx &value);
+	virtual cmplx getValue(int i, int j) const;
+	virtual void setValue(int i, int j, const cmplx &value);
 
-	virtual uint row() const;
-	virtual uint column() const;
+	virtual int row() const;
+	virtual int column() const;
 
 
 	~ColumnDataProxy();
