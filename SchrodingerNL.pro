@@ -5,7 +5,6 @@ QMAKE_LFLAGS	+= -fopenmp
 
 CONFIG += c++14
 
-
 DISTFILES += \
     Scilab/schrod.sce \
     LICENSE \
@@ -21,7 +20,8 @@ DISTFILES += \
     Temp/WIP/grid2d.h \
     Temp/WIP/integration.h \
     Temp/WIP/point2d.h \
-    TODO
+    TODO \
+    Temp/TEST_SCHRODINGER1D_main
 
 
 
@@ -60,8 +60,10 @@ HEADERS += \
     Source/PDE/Linear/1D/schrodinger1d.h \
     Source/PDE/GUI/1D/pdegui1d.h \
     Source/PDE/GUI/pdeguivirtual.h \
-    Source/Grid/Private/gridprivate.h \
-    Source/Domain/Private/domainprivate.h
+    Source/Domain/Base/domainbase.h \
+    Source/Domain/Base/domainmanagerbase.h \
+    Source/Grid/Base/gridbase.h \
+    Source/debugclass.h
 
 SOURCES += \
     Source/main.cpp \
@@ -99,5 +101,7 @@ SOURCES += \
     Source/PDE/Linear/1D/schrodinger1d.cpp \
     Source/PDE/GUI/1D/pdegui1d.cpp \
     Source/PDE/GUI/pdeguivirtual.cpp \
-    Source/Grid/Private/gridprivate.cpp \
-    Source/Domain/Private/domainprivate.cpp
+    Source/Domain/Base/domainbase.cpp \
+    Source/Domain/Base/domainmanagerbase.cpp \
+    Source/Grid/Base/gridbase.cpp \
+    Source/debugclass.cpp
