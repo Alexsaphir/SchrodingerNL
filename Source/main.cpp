@@ -1,25 +1,23 @@
-#include <QApplication>
 #include <QDebug>
 
-#include "Grid/grid1d.h"
-#include "Matrix/SparseMatrix/sparsematrix.h"
-#include "Matrix/Matrix/matrix.h"
-#include "Matrix/corematrix.h"
-#include "Matrix/Matrix/ColumnMatrix/columnmatrix.h"
-#include "Matrix/Matrix/ColumnMatrix/DataProxy/columndataproxy.h"
-
-#include "Matrix/MatrixAlgorithm/matrixalgorithm.h"
-
-#include "Solver/Linear/linearsolver.h"
+#include "Axis/linearaxis.h"
+#include "frame.h"
 
 int main(int argc, char **argv)
 {
-	QApplication app(argc, argv);
+	LinearAxis *X(NULL);
+	Axis *Y(NULL);
 
+	X = new LinearAxis(-10., 10., .1);
+	Y = new LinearAxis(*X);
 
-	return app.exec();
+	Frame *F;
 
+	F = new Frame(X, Y);
 
+	delete X;
+	delete Y;
+	delete F;
 
-
+	return 0;
 }
