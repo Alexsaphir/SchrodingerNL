@@ -7,10 +7,10 @@ PDEGui1D::PDEGui1D(): PDEGuiVirtual()
 
 	GridLayout->addWidget(view);
 
-
 	view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 	view->setDragMode(QGraphicsView::ScrollHandDrag);
 	view->scene()->installEventFilter(this);
+	refreshView();
 	view->fitInView( view->scene()->sceneRect(), Qt::KeepAspectRatio );
 }
 
@@ -21,10 +21,10 @@ PDEGui1D::PDEGui1D(PDEVirtual *P): PDEGuiVirtual(P)
 
 	GridLayout->addWidget(view);
 
-
 	view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 	view->setDragMode(QGraphicsView::ScrollHandDrag);
 	view->scene()->installEventFilter(this);
+	refreshView();
 	view->fitInView( view->scene()->sceneRect(), Qt::KeepAspectRatio );
 }
 
@@ -42,9 +42,9 @@ void PDEGui1D::refreshView()
 	QPainterPath path;
 	path.moveTo(0.,-std::norm(Problem->at(0)));
 
-	Axis *Axe = Problem->Repere->at(0);
+	const Axis *Axe = Problem->m_Frame->at(0);
 
-	for(uint i=1; i<Axe->getAxisN();++i)
+	for(int i=1; i<Axe->getAxisN();++i)
 	{
 		path.lineTo((Type)(i)*Axe->getAxisStep(i)*.1,-std::norm(Problem->at(i)));//*.01 reduce the spread
 	}
