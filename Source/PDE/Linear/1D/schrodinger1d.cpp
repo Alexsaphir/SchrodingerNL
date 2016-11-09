@@ -19,7 +19,7 @@ Schrodinger1D::Schrodinger1D(const Axis *F, int Past, int Future, Type timeStep)
 void Schrodinger1D::computeNextStep()
 {
 	qDebug() << "compute" <<m_Space->getSizeStack();
-	//LS->SORMethod(m_Space->getCurrentColumn(), m_Space->getNextColumn());
+	LS->SORMethod(m_Space->getCurrentColumn(), m_Space->getNextColumn());
 	qDebug() << "Current" << m_Space->getDomain(0);
 	qDebug() << "Next" << m_Space->getDomain(-1);
 	m_Space->switchDomain();

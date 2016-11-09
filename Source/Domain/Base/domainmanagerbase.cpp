@@ -1,6 +1,6 @@
 #include "domainmanagerbase.h"
 
-DomainManagerBase::DomainManagerBase(): m_Frame(NULL), m_Size(0), m_offset(0)
+DomainManagerBase::DomainManagerBase(): m_Frame(NULL), m_Size(0), m_offset(0), m_CurrProxy(NULL), m_NextProxy(NULL)
 {
 }
 
@@ -18,6 +18,9 @@ DomainManagerBase::DomainManagerBase(int PastDomain, int FutureDomain, const Fra
 	{
 		m_Stack.append(new DomainBase(m_Frame, BoundExt));
 	}
+
+	m_CurrProxy = new ColumnDataProxy();
+	m_NextProxy = new ColumnDataProxy();
 }
 
 int DomainManagerBase::getSizeStack()
@@ -58,8 +61,22 @@ void DomainManagerBase::switchDomain()
 	m_Stack.removeFirst();
 }
 
+ColumnDataProxy* DomainManagerBase::getCurrentColumn() const
+{
+	m_CurrProxy->setDomain(getCurrentDomain());
+	return m_CurrProxy;
+}
+
+ColumnDataProxy* DomainManagerBase::getNextColumn() const
+{
+	m_NextProxy->setDomain(getNextDomain());
+	return m_NextProxy;
+}
+
 DomainManagerBase::~DomainManagerBase()
 {
+	delete m_CurrProxy;
+	delete m_NextProxy;
 	for(int i=0; i<m_Size; ++i)
 		delete m_Stack.at(i);
 }

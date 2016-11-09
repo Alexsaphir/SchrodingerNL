@@ -5,6 +5,7 @@
 
 #include "domainbase.h"
 #include "../../frame.h"
+#include "../../Matrix/Matrix/ColumnMatrix/DataProxy/columndataproxy.h"
 
 class DomainManagerBase
 {
@@ -22,10 +23,17 @@ public:
 
 	void switchDomain();
 
+	ColumnDataProxy* getCurrentColumn() const;
+	ColumnDataProxy* getNextColumn() const;
+
 protected:
 	const Frame *m_Frame;
 	int m_Size;//Number of DomainBase
 	int m_offset;//Indice of the Current Domain
+
+	ColumnDataProxy *m_CurrProxy;//WIP
+	ColumnDataProxy *m_NextProxy;//WIP
+
 	QList<DomainBase*> m_Stack;
 };
 
