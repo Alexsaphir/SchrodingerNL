@@ -18,15 +18,18 @@ Schrodinger1D::Schrodinger1D(const Axis *F, int Past, int Future, Type timeStep)
 
 void Schrodinger1D::computeNextStep()
 {
-	LS->SORMethod(Space->getCurrentColumn(), Space->getNextColumn());
-	Space->switchDomain();
+	qDebug() << "compute" <<m_Space->getSizeStack();
+	//LS->SORMethod(m_Space->getCurrentColumn(), m_Space->getNextColumn());
+	qDebug() << "Current" << m_Space->getDomain(0);
+	qDebug() << "Next" << m_Space->getDomain(-1);
+	m_Space->switchDomain();
 }
 
 void Schrodinger1D::initializeLinearSolver()
 {
 
 	SparseMatrix* M=LS->getSparseMatrix();
-	for(int i=1; (i<Repere->size()-1); ++i)
+	for(int i=1; (i<m_Frame->at(0)->getAxisN()-1); ++i)
 	{
 		M->setValue(i, i, 1.+alpha);
 		M->setValue(i, i-1, -alpha);
@@ -36,18 +39,16 @@ void Schrodinger1D::initializeLinearSolver()
 
 void Schrodinger1D::InitialState()
 {
-	if(!Repere)
+	if(!m_Frame)
 		return;
-	if(!Space)
+	if(!m_Space)
 		return;
 	if(!LS)
 		return;
-	Domain* D=Space->getCurrentDomain();
-	for(int i=0; i<Repere->size(); ++i)
+	DomainBase* D=m_Space->getCurrentDomain();
+	for(int i=0; i<m_Frame->at(0)->getAxisN(); ++i)
 	{
-		Type x= Repere->getAxis(0)->getAxisStep()*(Type)i+Repere->getAxis(0)->getAxisMin();//Compute true position of x
-
-
+		Type x= m_Frame->getAxis(0)->getAxisStep()*(Type)i+m_Frame->getAxis(0)->getAxisMin();//Compute true position of x
 		cmplx w(0,100.*x);
 		cmplx tmp=std::exp(-(x*x)/(Type)4.)*std::exp(w);
 
@@ -56,7 +57,8 @@ void Schrodinger1D::InitialState()
 }
 cmplx Schrodinger1D::at(const Point &P) const
 {
-	return Space->getCurrentDomain()->getValue(P);
+	//qDebug() << "call at";
+	return m_Space->getCurrentDomain()->getValue(P);
 }
 
 Schrodinger1D::~Schrodinger1D()
