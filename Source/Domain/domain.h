@@ -1,9 +1,9 @@
 #ifndef DOMAIN_H
 #define DOMAIN_H
 
-#include "Private/domainprivate.h"
+#include "Base/domainbase.h"
 
-class Domain: public DomainPrivate
+class Domain: public DomainBase
 {
 public:
 	Domain();
@@ -12,8 +12,10 @@ public:
 	Domain(const Axis *X, const Axis *Y, cmplx BoundExt);
 	Domain(const Domain &D);
 	~Domain();
+
 private:
 	cmplx getBoundaryCondition(const Point &Pos) const;
+
 protected:
 	const Frame *m_Frame;
 };
