@@ -15,15 +15,15 @@ public:
 	void setDomain(DomainBase *D);
 
 	//Specific method for Row or Column Matrix
-	virtual cmplx at(int i) const;
-	virtual void set(int i, const cmplx &value);
+	cmplx at(int i) const;
+	void set(int i, const cmplx &value);
 
 	//Generic method
-	virtual cmplx getValue(int i, int j) const;
-	virtual void setValue(int i, int j, const cmplx &value);
+	cmplx getValue(int i, int j) const;
+	void setValue(int i, int j, const cmplx &value);
 
-	virtual int row() const;
-	virtual int column() const;
+	int row() const;
+	int column() const;
 
 private:
 	DomainBase *m_domain;
