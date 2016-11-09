@@ -4,12 +4,12 @@
 #include <QVector>
 
 #include "../type.h"
-#include "../axis.h"
+#include "../Axis/axis.h"
 
 class Grid2D
 {
 public:
-	Grid2D(const Axis &X, const Axis &Y);
+	Grid2D(const Axis *X, const Axis *Y);
 
 	Type getDx() const;
 	Type getDy() const;
@@ -29,8 +29,8 @@ public:
 private:
 	QVector<cmplx> V;
 
-	Axis AxisX;
-	Axis AxisY;
+	Axis *AxisX;
+	Axis *AxisY;
 };
 
 #endif // GRID2D_H

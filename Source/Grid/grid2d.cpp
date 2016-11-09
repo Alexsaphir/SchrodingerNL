@@ -1,30 +1,30 @@
 #include "grid2d.h"
 
-Grid2D::Grid2D(const Axis &X, const Axis &Y)
+Grid2D::Grid2D(const Axis *X, const Axis *Y)
 {
-	AxisX = X;
-	AxisY = Y;
+	AxisX = X->clone();
+	AxisY = Y->clone();
 	V.fill(cmplx(0.,0.),getNx()*getDy());
 }
 
 Type Grid2D::getDx() const
 {
-	return AxisX.getAxisStep();
+	return AxisX->getAxisStep();
 }
 
 Type Grid2D::getDy() const
 {
-	return AxisY.getAxisStep();
+	return AxisY->getAxisStep();
 }
 
 int Grid2D::getNx() const
 {
-	return AxisX.getAxisN();
+	return AxisX->getAxisN();
 }
 
 int Grid2D::getNy() const
 {
-	return AxisY.getAxisN();
+	return AxisY->getAxisN();
 }
 
 Type Grid2D::getPosX(int i, int j) const
@@ -53,22 +53,22 @@ cmplx Grid2D::getValue(int i, int j) const
 
 Type Grid2D::getXmax() const
 {
-	return AxisX.getAxisMax();
+	return AxisX->getAxisMax();
 }
 
 Type Grid2D::getXmin() const
 {
-	return AxisX.getAxisMin();
+	return AxisX->getAxisMin();
 }
 
 Type Grid2D::getYmax() const
 {
-	return AxisY.getAxisMax();
+	return AxisY->getAxisMax();
 }
 
 Type Grid2D::getYmin() const
 {
-	return AxisY.getAxisMin();
+	return AxisY->getAxisMin();
 }
 
 bool Grid2D::isInGrid(int i, int j) const
