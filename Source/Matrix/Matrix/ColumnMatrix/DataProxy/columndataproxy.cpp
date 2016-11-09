@@ -5,7 +5,7 @@ ColumnDataProxy::ColumnDataProxy(): ColumnMatrixVirtual()
 	m_domain = NULL;
 }
 
-ColumnDataProxy::ColumnDataProxy(Domain *D): ColumnMatrixVirtual(), m_domain(D)
+ColumnDataProxy::ColumnDataProxy(DomainBase *D): ColumnMatrixVirtual(), m_domain(D)
 {
 
 }
@@ -47,7 +47,7 @@ void ColumnDataProxy::set(int i, const cmplx &value)
 	m_domain->setValue(i, value);
 }
 
-void ColumnDataProxy::setDomain(Domain *D)
+void ColumnDataProxy::setDomain(DomainBase *D)
 {
 	m_domain = D;
 }

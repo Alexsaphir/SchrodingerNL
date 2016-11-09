@@ -5,7 +5,7 @@ RowDataProxy::RowDataProxy(): RowMatrixVirtual()
 	m_domain = NULL;
 }
 
-RowDataProxy::RowDataProxy(Domain *D): RowMatrixVirtual(), m_domain(D)
+RowDataProxy::RowDataProxy(DomainBase *D): RowMatrixVirtual(), m_domain(D)
 {
 
 }
@@ -45,7 +45,7 @@ void RowDataProxy::set(int i, const cmplx &value)
 	m_domain->setValue(i, value);
 }
 
-void RowDataProxy::setDomain(Domain *D)
+void RowDataProxy::setDomain(DomainBase *D)
 {
 	m_domain = D;
 }
