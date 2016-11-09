@@ -18,7 +18,7 @@ void LinearSolver::initSolver()
 void LinearSolver::SORMethod(const ColumnMatrixVirtual *B, ColumnMatrixVirtual *X)
 {
 	int n(System->row());
-	Type w(1.5);
+	Type w(.5);
 	//set X to 0
 	for(int i(0); i<n; ++i)
 		X->set(i,0);
@@ -50,7 +50,7 @@ void LinearSolver::SORMethod(const ColumnMatrixVirtual *B, ColumnMatrixVirtual *
 void LinearSolver::SORMethod(const Grid1D *B, Grid1D *X)
 {
 	int n(System->row());
-	Type w(1.5);
+	Type w(.5);
 	//set X to 0
 	for(int i(1); i<n-1; ++i)
 		X->setValue(i,0);

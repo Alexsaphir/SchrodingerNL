@@ -1,67 +1,56 @@
 #include <QDebug>
 
+#include "Solver/Linear/linearsolver.h"
 #include "Axis/linearaxis.h"
-#include "frame.h"
-#include "Grid/Base/gridbase.h"
-#include "Grid/grid.h"
 #include "Domain/Base/domainbase.h"
-#include "Domain/domain.h"
-#include "Domain/Base/domainmanagerbase.h"
-#include "Domain/domainmanager.h"
+#include "Matrix/Matrix/ColumnMatrix/DataProxy/columndataproxy.h"
+#include "Matrix/Matrix/ColumnMatrix/columnmatrix.h"
+#include "debugclass.h"
 
 int main(int argc, char **argv)
 {
-	LinearAxis *X(NULL);
-	Axis *Y(NULL);
-	X = new LinearAxis(-1., 1., 1);
-	Y = new LinearAxis(*X);
-
+	Axis *axe;
+	axe = new LinearAxis(-1,1,1);
 	Frame *F;
-	F = new Frame(X, Y);
+	F = new Frame(axe);
 
-	GridBase *GB1;
-	GridBase *GB2;
-	GB1 = new GridBase(F);
-	GB2 = new GridBase(*GB1);
+	ColumnMatrix *B;
+	ColumnMatrix *X;
+	B = new ColumnMatrix(3);
+	X = new ColumnMatrix(3);
 
-	Grid *G1;
-	Grid *G2;
-	G1 = new Grid(*F);
-	G2 = new Grid(*G1);
-
-	DomainBase *DB1;
-	DomainBase *DB2;
-	DB1 = new DomainBase(F, cmplx(0,0));
-	DB2 = new DomainBase(*DB1);
-
-	Domain *D1;
-	Domain *D2;
-	Domain *D3;
-	D1 = new Domain(*F, cmplx(0,0));
-	D2 = new Domain(*D1);
-	D3 = new Domain(X, Y, cmplx(0,0));
-
-	DomainManagerBase *DMB;
-	DMB = new DomainManagerBase(1, 1, F, cmplx(0,0));
-
-	DomainManager *DM;
-	DM = new DomainManager(1, 1, *F, cmplx(0,0));
+	DomainBase *B_DB;
+	DomainBase *X_DB;
+	B_DB = new DomainBase(F, cmplx(0,0));
 
 
-	delete X;
-	delete Y;
+
+	LinearSolver *LS;
+	LS = new LinearSolver(3);
+
+	SparseMatrix *SM(LS->getSparseMatrix());
+	SM->setValue(0, 0, 2);
+	SM->setValue(0, 1, -1);
+	SM->setValue(1, 0, 1);
+	SM->setValue(1, 1, 5);
+	SM->setValue(2,2,1);//If we remove this line we can't find a solution
+	//The problem in Schrodinger1D it's maybe a bug like this
+	SM = NULL;
+
+	B->set(0,3);
+	B->set(1,1);
+
+	LS->SORMethod(B, X);
+
+	qDebug() << X->at(0) << X->at(1) << X->at(2);
+
+	delete axe;
 	delete F;
-	delete GB1;
-	delete GB2;
-	delete G1;
-	delete G2;
-	delete DB1;
-	delete DB2;
-	delete D1;
-	delete D2;
-	delete D3;
-	delete DMB;
-	delete DM;
+	delete B;
+	delete X;
+	delete LS;
+	delete B_DB;
+	delete X_DB;
 
 	return 0;
 }
