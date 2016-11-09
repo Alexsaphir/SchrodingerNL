@@ -3,35 +3,24 @@
 
 #include <QList>
 
-#include "domain.h"
+#include "Base/domainbase.h"
+#include "Base/domainmanagerbase.h"
 #include "../Matrix/Matrix/ColumnMatrix/DataProxy/columndataproxy.h"
 
-class DomainManager
+class DomainManager : public DomainManagerBase
 {
 public:
-	DomainManager(int PastDomain, int FutureDomain, const Frame &F, cmplx Bext);
-
-	int getSizeStack() const;
-
-	Domain* getDomain(int i) const;
-	Domain* getCurrentDomain() const;
-	Domain* getNextDomain() const;
-	Domain* getOldDomain() const;
+	DomainManager(int PastDomain, int FutureDomain, const Frame &F, cmplx BoundExt);
+	~DomainManager();
 
 	ColumnDataProxy *getCurrentColumn() const;
 	ColumnDataProxy *getNextColumn() const;
 
-	void switchDomain();
-
-	~DomainManager();
-
 private:
-	QList<Domain*> Stack;
-	ColumnDataProxy *CurrProxy;
-	ColumnDataProxy *NextProxy;
-	int Size;
-	int offset;//Indice of the Current Domain
-	bool isInit;
+	const Frame *m_Frame;
+
+	ColumnDataProxy *CurrProxy;//WIP
+	ColumnDataProxy *NextProxy;//WIP
 };
 
 #endif // DOMAINMANAGER_H
