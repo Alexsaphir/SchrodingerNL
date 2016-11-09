@@ -12,7 +12,8 @@ PDELinearVirtual::PDELinearVirtual(const Frame &F): PDEVirtual(F)
 
 PDELinearVirtual::PDELinearVirtual(const Frame &F, int Past, int Future, cmplx BoundExt): PDEVirtual(F, Past, Future, BoundExt)
 {
-	LS = new LinearSolver(F.size());
+	//We need to compute the number of points in Frame
+	LS = new LinearSolver(m_Space->getCurrentDomain()->getSizeOfGrid());
 }
 
 PDELinearVirtual::~PDELinearVirtual()
