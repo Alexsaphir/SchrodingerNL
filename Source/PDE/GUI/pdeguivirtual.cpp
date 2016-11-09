@@ -42,7 +42,7 @@ bool PDEGuiVirtual::eventFilter(QObject *obj, QEvent *event)
 		if ( (key->key()==Qt::Key_Enter) )
 		{
 			//Enter or return was pressed-
-			if (!Problem)
+			if (Problem)
 				Problem->computeNextStep();
 		}
 		refreshView();
