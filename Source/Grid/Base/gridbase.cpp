@@ -31,7 +31,7 @@ GridBase::GridBase(const Frame *F): m_Frame(F)
 
 }
 
-GridBase::GridBase(const GridBase &GP): m_N(GP.m_N), m_V(GP.m_V), m_Frame(GP.m_Frame), m_Dimension(GP.m_Dimension)
+GridBase::GridBase(const GridBase &GP): m_N(GP.m_N), m_V(GP.m_V), m_Frame(GP.m_Frame), m_Dimension(new Point(*GP.m_Dimension))
 {//Copy Constructor
 }
 
