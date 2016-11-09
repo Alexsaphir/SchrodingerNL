@@ -10,6 +10,7 @@ class LinearSolver: public Solver
 public:
 	LinearSolver();
 	LinearSolver(int size);
+	virtual ~LinearSolver();
 
 	virtual void initSolver(Type dt, Type dx);
 	SparseMatrix* getSparseMatrix() const;

@@ -14,12 +14,12 @@ public:
 	Frame(const Axis *X);
 	Frame(const Axis *X, const Axis *Y);
 	Frame(const Frame &F);
+	~Frame();
+
 	const Axis *getAxis(int i) const;
 	const Axis *at(int i) const;
 	int size() const;
 	bool empty() const;
-
-	~Frame();
 
 private:
 	QVector<const Axis*> m_Basis;

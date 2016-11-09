@@ -11,12 +11,11 @@ class Heat1D: PDELinear1DVirtual
 public:
 	Heat1D();
 	Heat1D(const Axis &X, Type t, cmplx Binf, cmplx Bsup);
-
+	virtual ~Heat1D();
 
 	virtual void computeNextStep() =0;
 	virtual void InitialState() = 0;
 
-	virtual ~Heat1D();
 private:
 	Grid1D *Grid1;
 	Grid1D *Grid2;

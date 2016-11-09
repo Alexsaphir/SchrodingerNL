@@ -14,6 +14,7 @@ public:
 	Point(int x);
 	Point(int x, int y);
 	Point(int x, int y, int z);
+
 	int x() const;//V.at(0)
 	int y() const;//V.at(1)
 	int z() const;
@@ -22,8 +23,6 @@ public:
 	int getValue(int i) const;
 	int Dim() const;
 	void setValue(int i, int Coord);
-
-	//bool isIn(const Grid *G);
 
 private:
 	QVector<int> m_V;

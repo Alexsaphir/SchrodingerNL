@@ -22,6 +22,7 @@ public:
 
 	virtual int row() const;
 	virtual int column() const;
+
 protected:
 	int m_row;
 	int m_column;

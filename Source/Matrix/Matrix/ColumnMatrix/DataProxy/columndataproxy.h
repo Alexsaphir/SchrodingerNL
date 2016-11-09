@@ -10,6 +10,7 @@ class ColumnDataProxy: public ColumnMatrixVirtual
 public:
 	ColumnDataProxy();
 	ColumnDataProxy(Domain *D);
+	~ColumnDataProxy();
 
 	void setDomain(Domain *D);
 

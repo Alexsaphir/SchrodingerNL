@@ -10,14 +10,13 @@ class ColumnMatrix: public ColumnMatrixVirtual
 {
 public:
 	ColumnMatrix(int row);
+	virtual ~ColumnMatrix();
 
 	virtual cmplx at(int i) const;
 	virtual void set(int i, const cmplx &value);
 
 	virtual cmplx getValue(int i, int j) const;
 	virtual void setValue(int i, int j, const cmplx &value);
-
-	virtual ~ColumnMatrix();
 
 private:
 	QVector<cmplx> V;

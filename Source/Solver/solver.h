@@ -6,9 +6,9 @@ class Solver
 {
 public:
 	Solver();
-	virtual void initSolver();
-
 	virtual ~Solver();
+
+	virtual void initSolver();
 };
 
 #endif // SOLVER_H
