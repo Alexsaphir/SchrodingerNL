@@ -7,7 +7,6 @@ RowDataProxy::RowDataProxy(): RowMatrixVirtual()
 
 RowDataProxy::RowDataProxy(DomainBase *D): RowMatrixVirtual(), m_domain(D)
 {
-
 }
 
 cmplx RowDataProxy::at(int i) const
@@ -59,5 +58,4 @@ void RowDataProxy::setValue(int i, int j, const cmplx &value)
 
 RowDataProxy::~RowDataProxy()
 {
-
 }

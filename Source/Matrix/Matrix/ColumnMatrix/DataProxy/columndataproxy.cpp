@@ -7,7 +7,6 @@ ColumnDataProxy::ColumnDataProxy(): ColumnMatrixVirtual()
 
 ColumnDataProxy::ColumnDataProxy(DomainBase *D): ColumnMatrixVirtual(), m_domain(D)
 {
-
 }
 
 cmplx ColumnDataProxy::at(int i) const
@@ -54,7 +53,6 @@ void ColumnDataProxy::setDomain(DomainBase *D)
 
 void ColumnDataProxy::setValue(int i, int j, const cmplx &value)
 {
-	qDebug() << "call";
 	if(j!=1)
 		return;
 	set(i, value);
@@ -62,5 +60,4 @@ void ColumnDataProxy::setValue(int i, int j, const cmplx &value)
 
 ColumnDataProxy::~ColumnDataProxy()
 {
-
 }
