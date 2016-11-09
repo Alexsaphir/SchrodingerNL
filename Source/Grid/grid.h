@@ -1,10 +1,10 @@
 #ifndef GRID_H
 #define GRID_H
 
-#include "Private/gridprivate.h"
+#include "Base/gridbase.h"
 
 
-class Grid: public GridPrivate
+class Grid: public GridBase
 {
 public:
 	Grid();
