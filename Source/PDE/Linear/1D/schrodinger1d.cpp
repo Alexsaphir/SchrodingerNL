@@ -7,7 +7,7 @@ Schrodinger1D::Schrodinger1D(): PDELinear1DVirtual()
 	alpha = cmplx(0,0);
 }
 
-Schrodinger1D::Schrodinger1D(const Axis *F, int Past, int Future, Type timeStep): PDELinear1DVirtual(Frame(F), Past, Future, cmplx(0,0))
+Schrodinger1D::Schrodinger1D(const Axis *F, Type timeStep): PDELinear1DVirtual(Frame(F), 0, 1, cmplx(0,0))
 {
 
 	dx = F->getAxisStep();
@@ -56,6 +56,7 @@ void Schrodinger1D::InitialState()
 		D->setValue(i,tmp);
 	}
 }
+
 cmplx Schrodinger1D::at(const Point &P) const
 {
 	//qDebug() << "call at";

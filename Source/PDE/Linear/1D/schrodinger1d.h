@@ -7,7 +7,7 @@ class Schrodinger1D: public PDELinear1DVirtual
 {
 public:
 	Schrodinger1D();
-	Schrodinger1D(const Axis *F, int Past, int Future, Type timeStep);
+	Schrodinger1D(const Axis *F, Type timeStep);
 
 	virtual void computeNextStep();
 	virtual void InitialState();
