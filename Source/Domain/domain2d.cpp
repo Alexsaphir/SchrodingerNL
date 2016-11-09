@@ -4,10 +4,16 @@ Domain2D::Domain2D(const Axis *X, const Axis *Y, cmplx Bext) : Domain(X, Y, Bext
 {
 }
 
+cmplx Domain2D::getValue(int i) const
+{
+	return DomainBase::getValue(i);
+}
+
+
 cmplx Domain2D::getValue(int i, int j) const
 {
 	if(Domain::isInGrid(Point(i,j)))
-		return GridPrivate::getValue(Point(i,j));
+		return DomainBase::getValue(Point(i,j));
 	else
 	{
 		//Boundary conditions

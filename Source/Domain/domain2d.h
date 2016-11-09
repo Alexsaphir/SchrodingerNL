@@ -9,6 +9,7 @@ public:
 	Domain2D(const Axis *X, const Axis *Y, cmplx Bext);
 	~Domain2D();
 
+	cmplx getValue(int i) const;
 	cmplx getValue(int i, int j) const;
 };
 

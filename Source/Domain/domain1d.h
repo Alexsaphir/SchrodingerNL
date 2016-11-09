@@ -10,9 +10,8 @@ class Domain1D: public Domain
 public:
 	Domain1D(const Axis *X, cmplx Binf, cmplx Bsup);
 	~Domain1D();
+
 	cmplx getValue(int i) const;
-
-
 
 private:
 	cmplx BoundInf;//getValue(-1)

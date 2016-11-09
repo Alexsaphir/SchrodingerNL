@@ -15,7 +15,7 @@ cmplx Domain1D::getValue(int i) const
 	if(i>=this->getSizeOfGrid())
 		return BoundSup;
 
-	return GridPrivate::getValue(i);
+	return GridBase::getValue(i);
 }
 
 Domain1D::~Domain1D()
