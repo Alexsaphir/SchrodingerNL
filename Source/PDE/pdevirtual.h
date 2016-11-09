@@ -5,7 +5,7 @@
 #include "../frame.h"
 #include "../point.h"
 #include "../type.h"
-#include "../Domain/domainmanager.h"
+#include "../Domain/Base/domainmanagerbase.h"
 
 class PDEVirtual
 {
@@ -22,8 +22,8 @@ public:
 	virtual ~PDEVirtual();
 
 public:
-	Frame *Repere;
-	DomainManager *Space;
+	Frame *m_Frame;
+	DomainManagerBase *m_Space;
 
 };
 

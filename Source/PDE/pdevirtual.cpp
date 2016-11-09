@@ -1,21 +1,18 @@
 #include "pdevirtual.h"
 
-PDEVirtual::PDEVirtual()
+PDEVirtual::PDEVirtual(): m_Frame(NULL), m_Space(NULL)
 {
-	Repere = NULL;
-	Space = NULL;
 }
 
-PDEVirtual::PDEVirtual(const Frame &F)
+PDEVirtual::PDEVirtual(const Frame &F): m_Frame(new Frame(F))
 {
-	Repere = new Frame(F);
-	Space = new DomainManager(0, 0, *Repere, 0.);
+	m_Space = new DomainManagerBase(0, 0, m_Frame, 0.);
 }
 
 PDEVirtual::PDEVirtual(const Frame &F, int Past, int Future, cmplx BoundExt)
 {
-	Repere = new Frame(F);
-	Space = new DomainManager(Past, Future, *Repere, BoundExt);
+	m_Frame = new Frame(F);
+	m_Space = new DomainManagerBase(Past, Future, m_Frame, BoundExt);
 }
 
 cmplx PDEVirtual::at(const Point &P) const
@@ -25,6 +22,6 @@ cmplx PDEVirtual::at(const Point &P) const
 
 PDEVirtual::~PDEVirtual()
 {
-	delete Repere;
-	delete Space;
+	delete m_Frame;
+	delete m_Space;
 }
