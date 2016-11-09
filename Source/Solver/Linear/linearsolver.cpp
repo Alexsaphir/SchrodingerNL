@@ -11,19 +11,8 @@ LinearSolver::LinearSolver(int size)
 }
 
 
-void LinearSolver::initSolver(Type dt, Type dx)
+void LinearSolver::initSolver()
 {
-	if(!System)
-		return;
-	Type alpha=dt/dx/dx;
-	System->setValue(0, 0, 1.);//Boundary inf condition
-	for(int i(1); i<(System->row()-1); ++i)
-	{
-		System->setValue(i, i, 1.+2.*alpha);
-		System->setValue(i, i-1, -alpha);//int => 0-1==2^32
-		System->setValue(i, i+1, -alpha);//if out of order, it's catch by the sparseMatrix
-	}
-	System->setValue(System->row()-1, System->row()-1, 1.);//Boundary sup condition
 }
 
 void LinearSolver::SORMethod(const ColumnMatrixVirtual *B, ColumnMatrixVirtual *X)
@@ -58,19 +47,6 @@ void LinearSolver::SORMethod(const ColumnMatrixVirtual *B, ColumnMatrixVirtual *
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 void LinearSolver::SORMethod(const Grid1D *B, Grid1D *X)
 {
 	int n(System->row());
@@ -103,18 +79,10 @@ void LinearSolver::SORMethod(const Grid1D *B, Grid1D *X)
 	}
 }
 
-
-
-
-
-
-
-
 SparseMatrix* LinearSolver::getSparseMatrix() const
 {
 	return System;
 }
-
 
 LinearSolver::~LinearSolver()
 {
