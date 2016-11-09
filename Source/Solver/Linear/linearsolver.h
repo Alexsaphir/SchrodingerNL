@@ -16,7 +16,6 @@ public:
 	SparseMatrix* getSparseMatrix() const;
 
 	void SORMethod(const ColumnMatrixVirtual *B, ColumnMatrixVirtual *X);
-	void SORMethod(const Grid1D *B, Grid1D *X);
 
 
 private:

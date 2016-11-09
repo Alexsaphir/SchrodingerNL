@@ -19,9 +19,9 @@ void LinearSolver::SORMethod(const ColumnMatrixVirtual *B, ColumnMatrixVirtual *
 {
 	int n(System->row());
 	Type w(.5);
-	//set X to 0
+	//set X to 0, it's a bad idea
 	for(int i(0); i<n; ++i)
-		X->set(i,0);
+		X->set(i,B->at(i));
 
 	int step(0);
 	while(step!=50)
@@ -42,38 +42,6 @@ void LinearSolver::SORMethod(const ColumnMatrixVirtual *B, ColumnMatrixVirtual *
 			Res*=w;
 			Res+=X->at(i);
 			X->set(i, Res);
-		}
-		++step;
-	}
-}
-
-void LinearSolver::SORMethod(const Grid1D *B, Grid1D *X)
-{
-	int n(System->row());
-	Type w(.5);
-	//set X to 0
-	for(int i(1); i<n-1; ++i)
-		X->setValue(i,0);
-
-	int step(0);
-	while(step!=50)
-	{
-		for(int i=0;i<n;++i)
-		{
-			cmplx sigma(0,0);
-			for(int j=0;j<n;++j)
-			{
-				if (j!=i)
-				{
-					sigma+=System->getValue(i,j)*X->getValue(j);
-				}
-			}
-			cmplx Res=B->getValue(i)-sigma;
-			Res/= System->getValue(i,i);
-			Res-=X->getValue(i);
-			Res*=w;
-			Res+=X->getValue(i);
-			X->setValue(i, Res);
 		}
 		++step;
 	}
