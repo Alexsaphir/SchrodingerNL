@@ -1,5 +1,5 @@
-#ifndef GRIDPRIVATE_H
-#define GRIDPRIVATE_H
+#ifndef GRIDBASE_H
+#define GRIDBASE_H
 
 #include <QVector>
 
@@ -8,13 +8,13 @@
 #include "../../point.h"
 #include "../../type.h"
 
-class GridPrivate
+class GridBase
 {
 public:
-	GridPrivate();
-	GridPrivate(const Frame *F);
-	GridPrivate(const GridPrivate &GP);
-	~GridPrivate();
+	GridBase();
+	GridBase(const Frame *F);
+	GridBase(const GridBase &GP);
+	~GridBase();
 
 	//Frame getters
 	int getNumberOfAxis() const;
@@ -38,17 +38,16 @@ public:
 
 protected:
 	const Axis* getAxis(int i) const;
-	const Frame* getFrame() const;
 
 protected:
 	int m_N;//Precomputed size of m_V
 	QVector<cmplx> m_V;
-	const Frame *m_Repere;
+	const Frame *m_Frame;
 	const Point *m_Dimension;
 
 };
 
-#endif // GRIDPRIVATE_H
+#endif // GRIDBASE_H
 
-//GridPrivate doesn't manage the allocation of Repere
-//All index pass to a method of GridPrivate is supposed to be already check
+//GridBase doesn't manage the allocation of Repere
+//All index pass to a method of GridBase is supposed to be already check
