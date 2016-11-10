@@ -13,9 +13,9 @@ int main(int argc, char **argv)
 	PDEGui1D *Gui_Schrodinger = NULL;
 	Axis *Z = NULL;
 
-	Z = new LinearAxis(-50,50,.1);
+	Z = new LinearAxis(-10,10,.1);
 
-	PDE_Schrodinger = new Schrodinger1D(Z, 0, 1, 1);
+	PDE_Schrodinger = new Schrodinger1D(Z, .1);
 	PDE_Schrodinger->initializeLinearSolver();
 	PDE_Schrodinger->InitialState();
 

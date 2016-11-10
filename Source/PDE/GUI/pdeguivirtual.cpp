@@ -41,6 +41,7 @@ bool PDEGuiVirtual::eventFilter(QObject *obj, QEvent *event)
 		QKeyEvent* key = static_cast<QKeyEvent*>(event);
 		if ( (key->key()==Qt::Key_Enter) )
 		{
+			qDebug() << "call";
 			//Enter or return was pressed-
 			if (Problem)
 				Problem->computeNextStep();

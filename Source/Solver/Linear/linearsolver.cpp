@@ -21,11 +21,13 @@ void LinearSolver::SORMethod(const ColumnMatrixVirtual *B, ColumnMatrixVirtual *
 	Type w(.5);
 	//set X to 0, it's a bad idea
 	for(int i(0); i<n; ++i)
+		//X->set(i, cmplx(0,0));
 		X->set(i,B->at(i));
 
 	int step(0);
 	while(step!=50)
 	{
+//#pragma omp parallel for
 		for(int i=0;i<n;++i)
 		{
 			cmplx sigma(0,0);

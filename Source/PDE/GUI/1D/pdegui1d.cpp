@@ -46,7 +46,8 @@ void PDEGui1D::refreshView()
 
 	for(int i=1; i<Axe->getAxisN();++i)
 	{
-		path.lineTo((Type)(i)*Axe->getAxisStep(i)*.1,-std::norm(Problem->at(i)));//*.01 reduce the spread
+		//path.lineTo((Type)(i)*Axe->getAxisStep(i)*.1,-std::norm(Problem->at(i)));//*.1 reduce the spread
+		path.lineTo((Type)(i)*Axe->getAxisStep(i)*.1,-Problem->at(i).imag());
 	}
 	view->scene()->addPath(path,Pen);
 }

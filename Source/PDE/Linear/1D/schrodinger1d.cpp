@@ -12,7 +12,7 @@ Schrodinger1D::Schrodinger1D(const Axis *F, Type timeStep): PDELinear1DVirtual(F
 
 	dx = F->getAxisStep();
 	dt = timeStep;
-	alpha = cmplx(0,dt/(dx*dx));
+	alpha = cmplx(0,dt/(dx*dx*2.));
 
 }
 
@@ -26,13 +26,18 @@ void Schrodinger1D::initializeLinearSolver()
 {
 
 	SparseMatrix* M=LS->getSparseMatrix();
-	M->setValue(0, 0, 1);
-	M->setValue(m_Space->getCurrentDomain()->getSizeOfGrid()-1, m_Space->getCurrentDomain()->getSizeOfGrid()-1, 1);
+	//M->setValue(0, 0, 1);
+	M->setValue(0, 0, 1.-2.*alpha);
+	M->setValue(0, 1, 2.*alpha);
+	//M->setValue(m_Space->getCurrentDomain()->getSizeOfGrid()-1, m_Space->getCurrentDomain()->getSizeOfGrid()-1, 1);
+	M->setValue(m_Space->getCurrentDomain()->getSizeOfGrid()-1, m_Space->getCurrentDomain()->getSizeOfGrid()-2, 2.*alpha);
+	M->setValue(m_Space->getCurrentDomain()->getSizeOfGrid()-1, m_Space->getCurrentDomain()->getSizeOfGrid()-1, 1.-2.*alpha);
+
 	for(int i=1; (i<m_Space->getCurrentDomain()->getSizeOfGrid()-1); ++i)
 	{
-		M->setValue(i, i, 1.+alpha);
-		M->setValue(i, i-1, -alpha);
-		M->setValue(i, i+1, -alpha);
+		M->setValue(i, i, 1.-2.*alpha);
+		M->setValue(i, i-1, alpha);
+		M->setValue(i, i+1, alpha);
 	}
 
 	//Boundary Condition == 0
@@ -50,7 +55,7 @@ void Schrodinger1D::InitialState()
 	for(int i=1; i<m_Frame->at(0)->getAxisN()-1; ++i)
 	{
 		Type x= m_Frame->getAxis(0)->getAxisStep()*(Type)i+m_Frame->getAxis(0)->getAxisMin();//Compute true position of x
-		cmplx w(0,100.*x);
+		cmplx w(0,3.*x);
 		cmplx tmp=std::exp(-(x*x)/(Type)4.)*std::exp(w);
 
 		D->setValue(i,tmp);
