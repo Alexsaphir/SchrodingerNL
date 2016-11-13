@@ -63,7 +63,8 @@ HEADERS += \
     Source/Domain/Base/domainbase.h \
     Source/Domain/Base/domainmanagerbase.h \
     Source/Grid/Base/gridbase.h \
-    Source/debugclass.h
+    Source/debugclass.h \
+    Source/Solver/NonLinear/nonlinearsolver.h
 
 SOURCES += \
     Source/main.cpp \
@@ -104,4 +105,5 @@ SOURCES += \
     Source/Domain/Base/domainbase.cpp \
     Source/Domain/Base/domainmanagerbase.cpp \
     Source/Grid/Base/gridbase.cpp \
-    Source/debugclass.cpp
+    Source/debugclass.cpp \
+    Source/Solver/NonLinear/nonlinearsolver.cpp
