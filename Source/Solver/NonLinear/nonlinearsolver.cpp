@@ -12,7 +12,7 @@ NonLinearSolver::NonLinearSolver(int sizeSystem)
 	Systeme = new SparseMatrix(sizeSystem, sizeSystem);
 }
 
-SparseMatrix* NonLinearSolver::getSysteme()
+SparseMatrix* NonLinearSolver::getSysteme() const
 {
 	return Systeme;
 }

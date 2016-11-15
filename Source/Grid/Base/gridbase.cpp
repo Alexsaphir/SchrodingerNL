@@ -94,7 +94,7 @@ int GridBase::getIndexFromPos(const Point &Pos) const
 	int index(Pos.getValue(0));
 	if(m_Frame->size()==1)
 		return index;
-	//We now that Repere.size()>=2
+	//We know that Repere.size()>=2
 	index*=m_Frame->at(1)->getAxisN();
 	index+=Pos.getValue(1);
 
