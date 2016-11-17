@@ -47,11 +47,19 @@ int Point::getValue(int i) const
 
 void Point::setValue(int i, int Coord)
 {
-	if(i<0)
+	if(i < 0)
 		return;
 	while(m_V.size()<i+1)//Test if there are enought item in the QVector
 		m_V.append(0);
 	m_V.replace(i, Coord);
+}
+void Point::remove(int Coord)
+{
+	if(Coord < 0)
+		return;
+	if(Coord >= m_V.size())
+		return;
+	m_V.remove(Coord);
 }
 
 int Point::x() const

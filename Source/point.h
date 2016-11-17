@@ -23,6 +23,7 @@ public:
 	int getValue(int i) const;
 	int Dim() const;
 	void setValue(int i, int Coord);
+	void remove(int Coord);
 
 private:
 	QVector<int> m_V;
