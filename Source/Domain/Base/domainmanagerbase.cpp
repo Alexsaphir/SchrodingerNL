@@ -1,6 +1,6 @@
 #include "domainmanagerbase.h"
 
-DomainManagerBase::DomainManagerBase(): m_Frame(NULL), m_Size(0), m_offset(0), m_CurrProxy(NULL), m_NextProxy(NULL)
+DomainManagerBase::DomainManagerBase(): m_Frame(NULL), m_Size(0), m_offset(0)
 {
 }
 
@@ -20,9 +20,6 @@ DomainManagerBase::DomainManagerBase(int PastDomain, int FutureDomain, const Fra
 		m_ProxyColumn.append(new ColumnDataProxy(m_Stack.last()));
 		m_ProxyRow.append(new RowDataProxy(m_Stack.last()));
 	}
-
-	m_CurrProxy = new ColumnDataProxy();
-	m_NextProxy = new ColumnDataProxy();
 }
 
 int DomainManagerBase::getSizeStack()
@@ -87,9 +84,9 @@ ColumnDataProxy* DomainManagerBase::getColumnAtTime(int t) const
 	//Current == 0
 	//Next == 1
 	//Old == -1
-	if( (m_offset+i)<0 || (m_offset+i)>=m_Size)
+	if( (m_offset+t)<0 || (m_offset+t)>=m_Size)
 		return NULL;
-	return m_ProxyColumn.at(m_offset+i);
+	return m_ProxyColumn.at(m_offset+t);
 }
 
 RowDataProxy* DomainManagerBase::getRowAtTime(int t) const
@@ -97,15 +94,14 @@ RowDataProxy* DomainManagerBase::getRowAtTime(int t) const
 	//Current == 0
 	//Next == 1
 	//Old == -1
-	if( (m_offset+i)<0 || (m_offset+i)>=m_Size)
+	if( (m_offset+t)<0 || (m_offset+t)>=m_Size)
 		return NULL;
-	return m_ProxyRow.at(m_offset+i);
+	return m_ProxyRow.at(m_offset+t);
 }
 
 DomainManagerBase::~DomainManagerBase()
 {
-	delete m_CurrProxy;
-	delete m_NextProxy;
+
 	for(int i=0; i<m_Size; ++i)
 	{
 		delete m_Stack.at(i);
