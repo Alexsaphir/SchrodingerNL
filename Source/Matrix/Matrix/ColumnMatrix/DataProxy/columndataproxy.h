@@ -3,7 +3,7 @@
 
 #include "../columnmatrixvirtual.h"
 #include "../../../../Domain/Base/domainbase.h"
-#include "../../../../type.h"
+class DomainBase;
 
 class ColumnDataProxy: public ColumnMatrixVirtual
 {
@@ -11,8 +11,6 @@ public:
 	ColumnDataProxy();
 	ColumnDataProxy(DomainBase *D);
 	~ColumnDataProxy();
-
-	void setDomain(DomainBase *D);
 
 	//Specific method for Row or Column Matrix
 	cmplx at(int i) const;

@@ -3,7 +3,8 @@
 
 #include "../rowmatrixvirtual.h"
 #include "../../../../Domain/Base/domainbase.h"
-#include "../../../../type.h"
+
+class DomainBase;
 
 class RowDataProxy: public RowMatrixVirtual
 {

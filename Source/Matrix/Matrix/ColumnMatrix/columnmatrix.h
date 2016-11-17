@@ -4,7 +4,6 @@
 #include <QVector>
 
 #include "columnmatrixvirtual.h"
-#include "../../../type.h"
 
 class ColumnMatrix: public ColumnMatrixVirtual
 {

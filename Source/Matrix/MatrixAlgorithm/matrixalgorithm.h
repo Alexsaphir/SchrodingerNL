@@ -3,7 +3,6 @@
 
 #include "../corematrix.h"
 #include "../Matrix/matrix.h"
-#include "../../type.h"
 
 #include "../Matrix/ColumnMatrix/columnmatrix.h"
 #include "../Matrix/ColumnMatrix/columnmatrixvirtual.h"

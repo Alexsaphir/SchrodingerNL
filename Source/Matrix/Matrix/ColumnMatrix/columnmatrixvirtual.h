@@ -2,7 +2,6 @@
 #define COLUMNMATRIXVIRTUAL_H
 
 #include "../../corematrix.h"
-#include "../../../type.h"
 
 class ColumnMatrixVirtual: public CoreMatrix
 {

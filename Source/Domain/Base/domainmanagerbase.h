@@ -4,9 +4,6 @@
 #include <QList>
 
 #include "domainbase.h"
-#include "../../frame.h"
-#include "../../Matrix/Matrix/ColumnMatrix/DataProxy/columndataproxy.h"
-#include "../../Matrix/Matrix/RowMatrix/DataProxy/rowdataproxy.h"
 
 class DomainManagerBase
 {
@@ -38,8 +35,6 @@ protected:
 	int m_offset;//Indice of the Current Domain
 
 	QList<DomainBase*> m_Stack;
-	QList<ColumnDataProxy*> m_ProxyColumn;
-	QList<RowDataProxy*> m_ProxyRow;
 };
 
 #endif // DOMAINMANAGERBASE_H

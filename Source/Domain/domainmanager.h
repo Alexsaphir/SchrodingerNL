@@ -5,7 +5,6 @@
 
 #include "Base/domainbase.h"
 #include "Base/domainmanagerbase.h"
-#include "../Matrix/Matrix/ColumnMatrix/DataProxy/columndataproxy.h"
 
 class DomainManager : public DomainManagerBase
 {
@@ -18,9 +17,6 @@ public:
 
 private:
 	const Frame *m_Frame;
-
-	ColumnDataProxy *CurrProxy;//WIP
-	ColumnDataProxy *NextProxy;//WIP
 };
 
 #endif // DOMAINMANAGER_H

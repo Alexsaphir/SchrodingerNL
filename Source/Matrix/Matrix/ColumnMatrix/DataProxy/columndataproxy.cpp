@@ -46,11 +46,6 @@ void ColumnDataProxy::set(int i, const cmplx &value)
 	m_domain->setValue(i, value);
 }
 
-void ColumnDataProxy::setDomain(DomainBase *D)
-{
-	m_domain = D;
-}
-
 void ColumnDataProxy::setValue(int i, int j, const cmplx &value)
 {
 	if(j!=1)

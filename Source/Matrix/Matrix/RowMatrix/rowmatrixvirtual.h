@@ -2,7 +2,6 @@
 #define ROWMATRIXVIRTUAL_H
 
 #include "../../corematrix.h"
-#include "../../../type.h"
 
 class RowMatrixVirtual: public CoreMatrix
 {

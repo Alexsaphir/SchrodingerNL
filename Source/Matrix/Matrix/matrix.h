@@ -3,7 +3,6 @@
 
 #include <QVector>
 
-#include "../../type.h"
 #include "../corematrix.h"
 
 class Matrix: public CoreMatrix
