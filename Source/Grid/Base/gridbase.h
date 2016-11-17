@@ -20,6 +20,7 @@ public:
 	int getNumberOfAxis() const;
 	int getSizeOfAxis(int AxisN) const;
 	Type getStepOfAxis(int AxisN) const;
+	Point getDimension() const;
 
 	int getIndexFromPos(const Point &Pos) const;
 

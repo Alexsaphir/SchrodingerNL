@@ -77,6 +77,11 @@ bool GridBase::isInGrid(const Point &Pos) const
 	return true;
 }
 
+Point GridBase::getDimension() const
+{
+	return Point(*m_Dimension);
+}
+
 bool GridBase::isInGrid(int i) const
 {
 	if((m_N >= i) || (i<0))
@@ -139,6 +144,6 @@ void GridBase::setValue(int i, cmplx value)
 
 GridBase::~GridBase()
 {
-	//m_Repere is not delete because it's not the job of this class to manage this object
+	//m_Frame is not delete because it's not the job of this class to manage this object
 	delete m_Dimension;
 }
