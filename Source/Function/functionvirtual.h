@@ -14,8 +14,11 @@ public:
 
 	virtual FunctionVirtual* clone() const = 0;
 
-	virtual cmplx evaluateAt(DomainBase *D) const = 0;
+	virtual cmplx computePartialDerivativeAt(CoreMatrix *C, int var) const =0;
+	virtual cmplx computePartialDerivativeAt(DomainBase *D, int var) const =0;
+
 	virtual cmplx evaluateAt(CoreMatrix *C) const = 0;
+	virtual cmplx evaluateAt(DomainBase *D) const = 0;
 	virtual cmplx evaluateAt(RowMatrixVirtual* R) const = 0;
 	virtual cmplx evaluateAt(ColumnMatrixVirtual *C) const = 0;
 };
