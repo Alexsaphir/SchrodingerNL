@@ -5,14 +5,14 @@
 #include "../frame.h"
 #include "../point.h"
 #include "../type.h"
-#include "../Domain/Base/domainmanagerbase.h"
+#include "../Grid/Base/gridmanagerbase.h"
 
 class PDEVirtual
 {
 public:
 	PDEVirtual();
 	PDEVirtual(const Frame &F);
-	PDEVirtual(const Frame &F, int Past, int Future, cmplx BoundExt);
+	PDEVirtual(const Frame &F, int Past, int Future);
 
 	virtual void computeNextStep() =0;
 	virtual void InitialState() = 0;
@@ -23,7 +23,7 @@ public:
 
 public:
 	Frame *m_Frame;
-	DomainManagerBase *m_Space;
+	GridManagerBase *m_Space;
 
 };
 

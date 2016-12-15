@@ -2,7 +2,6 @@
 
 SystemeVirtual::SystemeVirtual(): m_N(0), m_jacobian(NULL)
 {
-
 }
 
 SystemeVirtual::SystemeVirtual(int nbEqua): m_N(nbEqua)
@@ -34,9 +33,9 @@ void SystemeVirtual::computeJacobian(CoreMatrix *X)
 	}
 }
 
-void SystemeVirtual::computeJacobian(DomainBase *X)
+void SystemeVirtual::computeJacobian(GridBase *G)
 {
-
+	this->computeJacobian(G->getColumn());
 }
 
 void SystemeVirtual::evaluate(CoreMatrix *X, CoreMatrix *Result) const
@@ -53,16 +52,21 @@ void SystemeVirtual::evaluate(CoreMatrix *X, CoreMatrix *Result) const
 		Result->set(i, m_V.at(i)->evaluateAt(X));
 }
 
-void SystemeVirtual::evaluate(DomainBase *X) const
+void SystemeVirtual::evaluate(GridBase *G) const
 {
-	DomainBase *temp = new DomainBase(*X);
-	this->evaluate(temp, X);
+	GridBase *temp = new GridBase(*G);
+	this->evaluate(temp, G);
 	delete temp;
 }
 
-void SystemeVirtual::evaluate(DomainBase *X, DomainBase *Result) const
+void SystemeVirtual::evaluate(GridBase *G, GridBase *Result) const
 {
-	this->evaluate(X->getColumn(), Result->getColumn());
+	this->evaluate(G->getColumn(), Result->getColumn());
+}
+
+SparseMatrix* SystemeVirtual::getJacobian() const
+{
+	return m_jacobian;
 }
 
 SystemeVirtual::~SystemeVirtual()

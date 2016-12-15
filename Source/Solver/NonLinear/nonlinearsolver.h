@@ -3,6 +3,7 @@
 
 #include "../../type.h"
 #include "../../Matrix/SparseMatrix/sparsematrix.h"
+#include "../../Systeme/systemevirtual.h"
 
 class NonLinearSolver
 {
@@ -11,11 +12,7 @@ public:
 	NonLinearSolver(int sizeSystem);
 	~NonLinearSolver();
 
-	SparseMatrix* getSysteme() const;
-	void GaussSeidel() const;
-
-protected:
-	SparseMatrix *Systeme;
+	void Newton(SystemeVirtual *S, GridBase *Result, GridBase *InitialGuess) const;
 };
 
 #endif // NONLINEARSOLVER_H

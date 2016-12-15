@@ -16,12 +16,14 @@ public:
 
 	void addFunction(const FunctionVirtual *F);
 
-	void computeJacobian(CoreMatrix *X);
-	void computeJacobian(DomainBase *X);
+	virtual void computeJacobian(CoreMatrix *X);
+	virtual void computeJacobian(GridBase *G);
+
+	SparseMatrix* getJacobian() const;
 
 	void evaluate(CoreMatrix *X, CoreMatrix *Result) const;
-	void evaluate(DomainBase *X) const;
-	void evaluate(DomainBase *X, DomainBase *Result) const;
+	void evaluate(GridBase *G) const;
+	void evaluate(GridBase *G, GridBase *Result) const;
 
 
 private:

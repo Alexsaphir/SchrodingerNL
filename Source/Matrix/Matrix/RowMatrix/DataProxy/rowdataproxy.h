@@ -2,18 +2,17 @@
 #define ROWDATAPROXY_H
 
 #include "../rowmatrixvirtual.h"
-#include "../../../../Domain/Base/domainbase.h"
+#include "../../../../Grid/Base/gridbase.h"
 
-class DomainBase;
+class GridBase;
 
 class RowDataProxy: public RowMatrixVirtual
 {
 public:
 	RowDataProxy();
-	RowDataProxy(DomainBase *D);
+	RowDataProxy(GridBase *D);
 	~RowDataProxy();
 
-	void setDomain(DomainBase *D);
 
 	//Specific method for Row or Column Matrix
 	cmplx at(int i) const;
@@ -27,7 +26,7 @@ public:
 	int column() const;
 
 private:
-	DomainBase *m_domain;
+	GridBase *m_domain;
 };
 
 #endif // ROWDATAPROXY_H

@@ -31,6 +31,8 @@ void LinearSolver::SORMethod(const ColumnMatrixVirtual *B, ColumnMatrixVirtual *
 		for(int i=0;i<n;++i)
 		{
 			cmplx sigma(0,0);
+
+#pragma omp parallel for
 			for(int j=0;j<n;++j)
 			{
 				if (j!=i)

@@ -2,27 +2,27 @@
 
 NonLinearSolver::NonLinearSolver()
 {
-	Systeme = new SparseMatrix(0, 0);
 }
 
 NonLinearSolver::NonLinearSolver(int sizeSystem)
 {
-	if(sizeSystem<0)
-		sizeSystem = 0;
-	Systeme = new SparseMatrix(sizeSystem, sizeSystem);
 }
 
-SparseMatrix* NonLinearSolver::getSysteme() const
+void NonLinearSolver::Newton(SystemeVirtual *S, GridBase *Result, GridBase *InitialGuess) const
 {
-	return Systeme;
-}
+	GridBase *B=new GridBase(*InitialGuess);
 
-void NonLinearSolver::GaussSeidel() const
-{
+	//compute B=-f(InitialGuess)
+	S->evaluate(InitialGuess, B);
+	for(int i=0; i<B->getSizeOfGrid(); ++i)
+	{
+		B->setValue(i, -B->getValue(i));
+		Result->setValue(i, InitialGuess->getValue(i));//Copy InitialGuess in Result
+	}
 
+	S->computeJacobian(Result);
 }
 
 NonLinearSolver::~NonLinearSolver()
 {
-	delete Systeme;
 }

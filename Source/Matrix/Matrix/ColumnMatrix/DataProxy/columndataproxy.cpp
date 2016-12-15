@@ -5,7 +5,7 @@ ColumnDataProxy::ColumnDataProxy(): ColumnMatrixVirtual()
 	m_domain = NULL;
 }
 
-ColumnDataProxy::ColumnDataProxy(DomainBase *D): ColumnMatrixVirtual(), m_domain(D)
+ColumnDataProxy::ColumnDataProxy(GridBase *D): ColumnMatrixVirtual(), m_domain(D)
 {
 }
 

@@ -5,6 +5,8 @@ GridBase::GridBase()
 	m_Frame = NULL;
 	m_V.squeeze();//Delete all pre allocation of memory to have an empty QVector
 	m_Dimension = NULL;
+    m_ProxyColumn = NULL;
+    m_ProxyRow = NULL;
 }
 
 GridBase::GridBase(const Frame *F): m_Frame(F)
@@ -29,6 +31,8 @@ GridBase::GridBase(const Frame *F): m_Frame(F)
 	m_V.fill(cmplx(0,0), m_N);
 	m_Dimension = new Point(tmpSize);
 
+    m_ProxyColumn = new ColumnDataProxy(this);
+    m_ProxyRow = new RowDataProxy(this);
 }
 
 GridBase::GridBase(const GridBase &GP): m_N(GP.m_N), m_V(GP.m_V), m_Frame(GP.m_Frame), m_Dimension(new Point(*GP.m_Dimension))
@@ -71,7 +75,7 @@ bool GridBase::isInGrid(const Point &Pos) const
 		return false;//m_Repere->size() is a precompute value
 	for(int i=0; i<m_Frame->size(); ++i)
 	{
-		if(m_Dimension->at(i) != Pos.at(i))
+        if(m_Dimension->at(i) < Pos.at(i) || Pos.at(i) < 0)
 			return false;
 	}
 	return true;
@@ -142,8 +146,20 @@ void GridBase::setValue(int i, cmplx value)
 	m_V.replace(i, value);
 }
 
+ColumnDataProxy* GridBase::getColumn() const
+{
+    return m_ProxyColumn;
+}
+
+RowDataProxy* GridBase::getRow() const
+{
+    return m_ProxyRow;
+}
+
 GridBase::~GridBase()
 {
 	//m_Frame is not delete because it's not the job of this class to manage this object
 	delete m_Dimension;
+    delete m_ProxyColumn;
+    delete m_ProxyRow;
 }

@@ -3,27 +3,16 @@
 
 #include <QList>
 
-#include "../Domain/domain1d.h"
+#include "Base/gridmanagerbase.h"
 
-class GridManager
+class GridManager: public GridManagerBase
 {
 public:
-	GridManager(const Axis *X, cmplx Binf, cmplx Bsup, int i, int d);
-
-	int getSizeStack() const;
-	Domain1D* getDomain(int i) const;
-	Domain1D* getCurrentDomain() const;
-	Domain1D* getNextDomain() const;
-	Domain1D* getOldDomain() const;
-
-	void switchDomain();
-
+	GridManager(int PastDomain, int FutureDomain, const Frame &F);
 	~GridManager();
 
 private:
-	QList<Domain1D*> Stack;
-	int Size;
-	int offset;
+	const Frame *m_Frame;
 };
 
 #endif // GRIDMANAGER_H

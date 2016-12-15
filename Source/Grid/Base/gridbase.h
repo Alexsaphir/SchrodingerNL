@@ -6,7 +6,12 @@
 #include "../../Axis/axis.h"
 #include "../../frame.h"
 #include "../../point.h"
-#include "../../type.h"
+
+#include "../../Matrix/Matrix/ColumnMatrix/DataProxy/columndataproxy.h"
+#include "../../Matrix/Matrix/RowMatrix/DataProxy/rowdataproxy.h"
+
+class RowDataProxy;
+class ColumnDataProxy;
 
 class GridBase
 {
@@ -37,6 +42,9 @@ public:
 	bool isInGrid(const Point &Pos) const;
 	bool isInGrid(int i) const;
 
+    ColumnDataProxy* getColumn() const;
+    RowDataProxy* getRow() const;
+
 protected:
 	const Axis* getAxis(int i) const;
 
@@ -45,10 +53,11 @@ protected:
 	QVector<cmplx> m_V;
 	const Frame *m_Frame;
 	const Point *m_Dimension;
-
+    ColumnDataProxy *m_ProxyColumn;
+    RowDataProxy *m_ProxyRow;
 };
 
 #endif // GRIDBASE_H
 
-//GridBase doesn't manage the allocation of Repere
+//GridBase doesn't manage the allocation of m_Frame
 //All index pass to a method of GridBase is supposed to be already check

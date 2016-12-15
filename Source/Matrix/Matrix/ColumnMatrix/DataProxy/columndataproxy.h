@@ -2,14 +2,15 @@
 #define COLUMNDATAPROXY_H
 
 #include "../columnmatrixvirtual.h"
-#include "../../../../Domain/Base/domainbase.h"
-class DomainBase;
+#include "../../../../Grid/Base/gridbase.h"
+
+class GridBase;
 
 class ColumnDataProxy: public ColumnMatrixVirtual
 {
 public:
 	ColumnDataProxy();
-	ColumnDataProxy(DomainBase *D);
+	ColumnDataProxy(GridBase *D);
 	~ColumnDataProxy();
 
 	//Specific method for Row or Column Matrix
@@ -24,7 +25,7 @@ public:
 	int column() const;
 
 private:
-	DomainBase *m_domain;
+	GridBase *m_domain;
 };
 
 #endif // COLUMNDATAPROXY_H

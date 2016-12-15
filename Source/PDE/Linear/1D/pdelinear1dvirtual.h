@@ -7,7 +7,7 @@ class PDELinear1DVirtual: public PDELinearVirtual
 {
 public:
 	PDELinear1DVirtual();
-	PDELinear1DVirtual(const Frame &F, int Past, int Future, cmplx BoundExt);
+	PDELinear1DVirtual(const Frame &F, int Past, int Future);
 	virtual ~PDELinear1DVirtual();
 
 	virtual void computeNextStep() =0;
