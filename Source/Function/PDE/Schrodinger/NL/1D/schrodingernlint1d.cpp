@@ -7,13 +7,40 @@ SchrodingerNLInt1D::SchrodingerNLInt1D(int i, GridManagerBase *G, Type dx, Type 
 	m_idtk = cmplx(0,dt*k);
 }
 
+FunctionVirtual* SchrodingerNLInt1D::clone() const
+{
+	return new SchrodingerNLInt1D(*this);
+
+}
+
+cmplx SchrodingerNLInt1D::computePartialDerivativeAt(CoreMatrix *C, int var) const
+{
+	return this->df(C, var);
+}
+
+cmplx SchrodingerNLInt1D::computePartialDerivativeAt(GridBase *D, int var) const
+{
+	return this->computePartialDerivativeAt(D->getColumn(), var);
+}
+
+cmplx SchrodingerNLInt1D::evaluateAt(CoreMatrix *C) const
+{
+	return this->f(C);
+}
+
+cmplx SchrodingerNLInt1D::evaluateAt(GridBase *D) const
+{
+	return this->evaluateAt(D->getColumn());
+}
 
 cmplx SchrodingerNLInt1D::f(CoreMatrix *C) const
 {
 	cmplx tmp(0,0);
+
 	cmplx uipnp(C->at(m_intIndex+1));
 	cmplx uimnp(C->at(m_intIndex-1));
 	cmplx uinp(C->at(m_intIndex));
+
 	tmp += (uipnp + uimnp - 2.*uinp);
 	tmp *= m_idtdiv2dx;
 	tmp += m_idtk*(std::norm(uinp)*uinp);
@@ -32,7 +59,7 @@ cmplx SchrodingerNLInt1D::df(CoreMatrix *C, int var) const
 		tmp += m_idtdiv2dx*(-2.);
 		Type x = uinp.real();
 		Type y = uinp.imag();
-		cmplx dnl((3.)*x*x+y*y-(2.)*x*y,);
+		//cmplx dnl((3.)*x*x+y*y-(2.)*x*y,);
 	}
 	else if(var == m_intIndex-1)
 	{
