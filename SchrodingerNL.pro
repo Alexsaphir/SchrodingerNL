@@ -53,15 +53,12 @@ HEADERS += \
     Source/PDE/pdevirtual.h \
     Source/PDE/Linear/1D/heat1d.h \
     Source/frame.h \
-    Source/BoundaryCondition/boundarycondition.h \
     Source/Axis/axis.h \
     Source/Axis/linearaxis.h \
     Source/Axis/nonlinearaxis.h \
     Source/PDE/Linear/1D/schrodinger1d.h \
     Source/PDE/GUI/1D/pdegui1d.h \
     Source/PDE/GUI/pdeguivirtual.h \
-    Source/Domain/Base/domainbase.h \
-    Source/Domain/Base/domainmanagerbase.h \
     Source/Grid/Base/gridbase.h \
     Source/debugclass.h \
     Source/Solver/NonLinear/nonlinearsolver.h \
@@ -72,14 +69,10 @@ HEADERS += \
 SOURCES += \
     Source/main.cpp \
     Source/point.cpp \
-    Source/Domain/domain1d.cpp \
-    Source/Domain/domain2d.cpp \
     Source/Grid/grid.cpp \
     Source/Grid/grid1d.cpp \
     Source/Grid/grid2d.cpp \
     Source/Grid/gridmanager.cpp \
-    Source/Domain/domainmanager.cpp \
-    Source/Domain/domain.cpp \
     Source/Matrix/SparseMatrix/sparsematrix.cpp \
     Source/Solver/Linear/linearsolver.cpp \
     Source/Matrix/Matrix/matrix.cpp \
@@ -98,15 +91,12 @@ SOURCES += \
     Source/PDE/pdevirtual.cpp \
     Source/PDE/Linear/1D/heat1d.cpp \
     Source/frame.cpp \
-    Source/BoundaryCondition/boundarycondition.cpp \
     Source/Axis/axis.cpp \
     Source/Axis/linearaxis.cpp \
     Source/Axis/nonlinearaxis.cpp \
     Source/PDE/Linear/1D/schrodinger1d.cpp \
     Source/PDE/GUI/1D/pdegui1d.cpp \
     Source/PDE/GUI/pdeguivirtual.cpp \
-    Source/Domain/Base/domainbase.cpp \
-    Source/Domain/Base/domainmanagerbase.cpp \
     Source/Grid/Base/gridbase.cpp \
     Source/debugclass.cpp \
     Source/Solver/NonLinear/nonlinearsolver.cpp \
