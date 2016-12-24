@@ -7,7 +7,7 @@ GridManagerBase::GridManagerBase(int PastDomain, int FutureDomain, const Frame *
 	if (FutureDomain<0)
 		FutureDomain = 0;
 
-
+	m_Frame = new Frame(*F);
 
 	m_offset = PastDomain;
 	m_Size = PastDomain + FutureDomain + 1;
