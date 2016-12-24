@@ -27,9 +27,6 @@ HEADERS += \
     Source/Axis/axis.h \
     Source/Axis/linearaxis.h \
     Source/Axis/nonlinearaxis.h \
-    Source/Function/PDE/functionpdeindexvirtual.h \
-    Source/Function/PDE/functionpdevirtual.h \
-    Source/Function/functionvirtual.h \
     Source/Grid/Base/gridbase.h \
     Source/Grid/Base/gridmanagerbase.h \
     Source/Grid/grid.h \
@@ -46,32 +43,15 @@ HEADERS += \
     Source/Matrix/MatrixAlgorithm/matrixalgorithm.h \
     Source/Matrix/SparseMatrix/sparsematrix.h \
     Source/Matrix/corematrix.h \
-    Source/PDE/GUI/1D/pdegui1d.h \
-    Source/PDE/GUI/pdeguivirtual.h \
-    Source/PDE/Linear/1D/heat1d.h \
-    Source/PDE/Linear/1D/pdelinear1dvirtual.h \
-    Source/PDE/Linear/1D/schrodinger1d.h \
-    Source/PDE/Linear/pdelinearvirtual.h \
-    Source/PDE/pdevirtual.h \
-    Source/Solver/Linear/Base/linearsolverbase.h \
-    Source/Solver/Linear/linearsolver.h \
-    Source/Solver/NonLinear/nonlinearsolver.h \
-    Source/Solver/solver.h \
-    Source/Systeme/systemevirtual.h \
     Source/debugclass.h \
     Source/frame.h \
     Source/point.h \
-    Source/type.h \
-    Source/Function/PDE/Schrodinger/NL/1D/schrodingernlint1d.h \
-    Source/Function/PDE/Schrodinger/NL/1D/schrodingernlbound1d.h
+    Source/type.h
 
 SOURCES += \
     Source/Axis/axis.cpp \
     Source/Axis/linearaxis.cpp \
     Source/Axis/nonlinearaxis.cpp \
-    Source/Function/PDE/functionpdeindexvirtual.cpp \
-    Source/Function/PDE/functionpdevirtual.cpp \
-    Source/Function/functionvirtual.cpp \
     Source/Grid/Base/gridbase.cpp \
     Source/Grid/Base/gridmanagerbase.cpp \
     Source/Grid/grid.cpp \
@@ -88,24 +68,10 @@ SOURCES += \
     Source/Matrix/MatrixAlgorithm/matrixalgorithm.cpp \
     Source/Matrix/SparseMatrix/sparsematrix.cpp \
     Source/Matrix/corematrix.cpp \
-    Source/PDE/GUI/1D/pdegui1d.cpp \
-    Source/PDE/GUI/pdeguivirtual.cpp \
-    Source/PDE/Linear/1D/heat1d.cpp \
-    Source/PDE/Linear/1D/pdelinear1dvirtual.cpp \
-    Source/PDE/Linear/1D/schrodinger1d.cpp \
-    Source/PDE/Linear/pdelinearvirtual.cpp \
-    Source/PDE/pdevirtual.cpp \
-    Source/Solver/Linear/Base/linearsolverbase.cpp \
-    Source/Solver/Linear/linearsolver.cpp \
-    Source/Solver/NonLinear/nonlinearsolver.cpp \
-    Source/Solver/solver.cpp \
-    Source/Systeme/systemevirtual.cpp \
     Source/debugclass.cpp \
     Source/frame.cpp \
     Source/main.cpp \
     Source/point.cpp \
-    Source/type.cpp \
-    Source/Function/PDE/Schrodinger/NL/1D/schrodingernlint1d.cpp \
-    Source/Function/PDE/Schrodinger/NL/1D/schrodingernlbound1d.cpp
+    Source/type.cpp
 
 
