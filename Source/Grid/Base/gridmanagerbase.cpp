@@ -82,4 +82,5 @@ GridManagerBase::~GridManagerBase()
 	{
 		delete m_Stack.at(i);
 	}
+	delete m_Frame;
 }
