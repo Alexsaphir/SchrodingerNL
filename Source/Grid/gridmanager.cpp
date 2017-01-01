@@ -8,5 +8,4 @@ GridManager::GridManager(int PastDomain, int FutureDomain, const Frame &F): Grid
 
 GridManager::~GridManager()
 {
-	delete m_Frame;
 }
