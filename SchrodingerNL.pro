@@ -46,7 +46,8 @@ HEADERS += \
     Source/debugclass.h \
     Source/frame.h \
     Source/point.h \
-    Source/type.h
+    Source/type.h \
+    Source/Gui/pdegui1d.h
 
 SOURCES += \
     Source/Axis/axis.cpp \
@@ -72,6 +73,7 @@ SOURCES += \
     Source/frame.cpp \
     Source/main.cpp \
     Source/point.cpp \
-    Source/type.cpp
+    Source/type.cpp \
+    Source/Gui/pdegui1d.cpp
 
 
