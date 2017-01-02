@@ -6,6 +6,7 @@
 #include "Grid/gridmanager.h"
 #include "Gui/pdegui1d.h"
 #include "Matrix/SparseMatrix/sparsematrix.h"
+#include "Matrix/Matrix/ColumnMatrix/columnmatrix.h"
 
 const Type dt(.1);
 const Type dx(1);
@@ -80,10 +81,42 @@ void ComputeJacobian(const GridBase *X,SparseMatrix *Jac, GridManager *Data)
 	}
 }
 
-void LinearSolver(const SparseMatrix *A)
+void LinearSolver(const SparseMatrix *A, ColumnMatrixVirtual *X, ColumnMatrixVirtual *Y, const ColumnMatrixVirtual *B)
 {
+	//We use Jacobi solver for sparse Matrix
+	//X contains the intial guess and store the result at the end
+	//Y is a temporary Storage
+	//We can modify the value of X and Y because they are given by recopy
 
+	int N=X->row();//Number of row
+	int iter(0);
+	int iter_max(50);
+	if(iter_max%2)
+		iter_max++;
+
+	while(iter<iter_max)
+	{
+		//Compute an interation of the solution
+		for(int i=0; i<N; ++i)
+		{
+			cmplx tmp(0.,0.);
+			for(int j=0; j<N; ++j)
+			{
+				if(i!=j)
+				{
+					tmp-=A->getValue(i, j)*X->at(j);
+				}
+			}
+			tmp += B->at(i);
+			tmp=tmp/A->getValue(i,i);
+			Y->set(i, tmp);
+		}
+		//Y contains the new iteration of X
+		std::swap(X,Y);
+		iter++;
+	}
 }
+
 
 int main(int argc, char **argv)
 {
@@ -132,11 +165,31 @@ int main(int argc, char **argv)
 
 
 
+	SparseMatrix *S;
+	S = new SparseMatrix(2,2);
+	S->setValue(0,0,2.);
+	S->setValue(0,1,1.);
+	S->setValue(1,0,5.);
+	S->setValue(1,1,7.);
+	ColumnMatrix *x;
+	x = new ColumnMatrix(2);
+	x->set(0,1);
+	x->set(1,1);
+	ColumnMatrix *Y;
+	Y = new ColumnMatrix(2);
+	ColumnMatrix *b;
+	b = new ColumnMatrix(2);
+	b->set(0,11.);
+	b->set(1,13.);
 
+	LinearSolver(S,x,Y,b);
 
+	qDebug() << x->at(0) << x->at(1);
 
-
-
+	delete S;
+	delete x;
+	delete Y;
+	delete b;
 
 	delete B;
 	delete Jac;
