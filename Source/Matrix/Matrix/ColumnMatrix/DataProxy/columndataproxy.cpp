@@ -1,12 +1,14 @@
 #include "columndataproxy.h"
 
-ColumnDataProxy::ColumnDataProxy(): ColumnMatrixVirtual()
+ColumnDataProxy::ColumnDataProxy(): ColumnMatrixVirtual(0)
 {
 	m_domain = NULL;
 }
 
 ColumnDataProxy::ColumnDataProxy(GridBase *D): ColumnMatrixVirtual(), m_domain(D)
 {
+	m_column = 1;
+	m_row = D->getSizeOfGrid();
 }
 
 cmplx ColumnDataProxy::at(int i) const
