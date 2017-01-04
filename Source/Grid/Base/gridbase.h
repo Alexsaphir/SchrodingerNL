@@ -45,7 +45,7 @@ public:
     ColumnDataProxy* getColumn() const;
     RowDataProxy* getRow() const;
 
-protected:
+
 	const Axis* getAxis(int i) const;
 
 protected:

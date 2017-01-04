@@ -35,7 +35,7 @@ GridBase::GridBase(const Frame *F): m_Frame(F)
     m_ProxyRow = new RowDataProxy(this);
 }
 
-GridBase::GridBase(const GridBase &GP): m_N(GP.m_N), m_V(GP.m_V), m_Frame(GP.m_Frame), m_Dimension(new Point(*GP.m_Dimension))
+GridBase::GridBase(const GridBase &GP): m_N(GP.m_N), m_V(GP.m_V), m_Frame(GP.m_Frame), m_Dimension(new Point(*GP.m_Dimension)), m_ProxyColumn(new ColumnDataProxy(this)), m_ProxyRow(new RowDataProxy(this))
 {//Copy Constructor
 }
 
@@ -160,6 +160,6 @@ GridBase::~GridBase()
 {
 	//m_Frame is not delete because it's not the job of this class to manage this object
 	delete m_Dimension;
-    delete m_ProxyColumn;
+	delete m_ProxyColumn;
     delete m_ProxyRow;
 }
