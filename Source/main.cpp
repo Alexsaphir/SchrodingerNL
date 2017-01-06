@@ -55,7 +55,6 @@ void f(const GridBase *X, GridBase *Y, GridManager *Data)
 
 	//Right-BC
 	Y->setValue(N-1,cmplx(N-1,0));
-	Y->setValue(N-1,cmplx(0,0));
 }
 
 void showGrid(GridBase *X , QApplication *app)
