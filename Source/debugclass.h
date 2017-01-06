@@ -7,10 +7,11 @@
 #include <complex>
 
 #include "Axis/axis.h"
+#include "Matrix/corematrix.h"
 
 QDebug operator<< (QDebug dbg, const cmplx &z);
 QDebug operator<< (QDebug dbg, const Axis &z);
-
+QDebug operator<< (QDebug dbg, const CoreMatrix &M);
 
 
 #endif // DEBUGCLASS_H

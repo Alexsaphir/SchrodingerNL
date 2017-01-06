@@ -14,3 +14,18 @@ QDebug operator<< (QDebug dbg, const Axis &z)
 	dbg << "[" << QString::number(z.getAxisMin()) << ":" << QString::number(z.getAxisStep()) << ":" << QString::number(z.getAxisMax()) << "]";
 	return dbg;
 }
+
+QDebug operator<< (QDebug dbg, const CoreMatrix &M)
+{
+	//dbg << " ";
+	for(int i=0; i<M.row(); ++i)
+	{
+		for(int j=0; j<M.column(); ++j)
+		{
+			dbg << std::norm(M.getValue(i,j)) ;
+		}
+
+		dbg << "\n";
+	}
+	return dbg;
+}
