@@ -62,16 +62,16 @@ void PDEGui1D::refreshView()
 	Pen.setCosmetic(true);
 
 	QPainterPath path;
-	path.moveTo(0.,-std::norm(Problem->getValue(0)));
+	//path.moveTo(0.,-std::norm(Problem->getValue(0)));
+	path.moveTo(0.,-Problem->getValue(0).real());
 
 	Type dx = Problem->getStepOfAxis(0);
 	int N = Problem->getSizeOfAxis(0);
 
 	for(int i=1; i<N;++i)
 	{
-		//path.lineTo((Type)(i)*Axe->getAxisStep(i)*.1,-std::norm(Problem->at(i)));//*.1 reduce the spread
-		//qDebug() << std::norm(Problem->getValue(i));
-		path.lineTo((Type)(i)*Problem->getStepOfAxis(0),-std::norm(Problem->getValue(i)));
+//		path.lineTo((Type)(i)*Problem->getStepOfAxis(0),-std::norm(Problem->getValue(i)));
+		path.lineTo((Type)(i)*Problem->getStepOfAxis(0),-Problem->getValue(i).real());
 	}
 	view->scene()->addPath(path,Pen);
 }

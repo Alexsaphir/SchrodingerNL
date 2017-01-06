@@ -8,9 +8,9 @@
 #include "Matrix/SparseMatrix/sparsematrix.h"
 #include "Matrix/Matrix/ColumnMatrix/columnmatrix.h"
 
-const Type dt(.1);
+const Type dt(1);
 const Type dx(1);
-const cmplx alpha(0,dt/dx/dx);
+const cmplx alpha(0,dt/dx/dx/2);
 
 void pulse(GridBase *G)
 {
@@ -54,7 +54,7 @@ void f(const GridBase *X, GridBase *Y, GridManager *Data)
 	}
 
 	//Right-BC
-	Y->setValue(N-1,cmplx(N-1,0));
+	Y->setValue(N-1,cmplx(0,0));
 }
 
 void showGrid(GridBase *X , QApplication *app)
@@ -130,30 +130,60 @@ void LinearSolver(const SparseMatrix *A, ColumnMatrixVirtual *X, ColumnMatrixVir
 	}
 }
 
+void LinearSolverOpti1(const SparseMatrix *A, ColumnMatrixVirtual *X, ColumnMatrixVirtual *Y, const ColumnMatrixVirtual *B)
+{
+	//We solve Ax=-B
+	//We use Jacobi solver for sparse Matrix
+	//X contains the intial guess and store the result at the end
+	//Y is a temporary Storage
+	//We can modify the value of X and Y because they are given by recopy
+
+	int N=X->row();//Number of row
+	int iter(0);
+	int iter_max(50);
+	if(iter_max%2)
+		iter_max++;
+
+	while(iter<iter_max)
+	{
+		//Compute an interation of the solution
+#pragma omp parallel for
+		for(int i=0; i<N; ++i)
+		{
+			cmplx tmp(0.,0.);
+			for(int j=0; j<N; ++j)
+			{
+				if(i!=j)
+				{
+					tmp-=A->getValue(i, j)*X->at(j);
+				}
+			}
+			tmp += -B->at(i);
+			tmp=tmp/A->getValue(i,i);
+			Y->set(i, tmp);
+		}
+		//Y contains the new iteration of X
+		std::swap(X,Y);
+		iter++;
+	}
+}
 
 int main(int argc, char **argv)
 {
 	QApplication app(argc, argv);
 	//Create the Frame with only one dimension
 	Axis *X;
-	X = new LinearAxis(-5., 5.,dx);
-
-	const int N(X->getAxisN());
-
+	X = new LinearAxis(-1, 1,dx);
 	Frame *F;
 	F = new Frame(X);
 
-	//Create the GridManager with 1 current time and 1 future time
+	//Create the GridManager with 1 current time and 1 future time and 3 temporary Grid
 	GridManager *Manager;
-	Manager = new GridManager(0,1,*F);
-
+	Manager = new GridManager(0,1,3,*F);
+	const int N(Manager->getCurrentGrid()->getSizeOfGrid());
+	qDebug() << alpha;
 	//Init the Current Grid with the pulse
-	for(int i=0; i<F->getAxis(0)->getAxisN(); ++i)
-	{
-		Type x = F->getAxis(0)->getAxisMin()+F->getAxis(0)->getAxisStep()*(Type)(i);
-		cmplx w(0,100.*x);
-		Manager->getCurrentGrid()->setValue(i,std::exp(-x*x/4.)*std::exp(w));
-	}
+	pulse(Manager->getCurrentGrid());
 
 	//Show the initial state aka the current grid
 	showGrid(Manager->getCurrentGrid(), &app);
@@ -163,7 +193,13 @@ int main(int argc, char **argv)
 
 	//Initial Guess x0
 	GridBase *InitialGuess;
-	InitialGuess = Manager->getCurrentGrid();
+	InitialGuess = Manager->getTemporaryDomain(0);
+
+	//recopy current in Initalguess
+	for(int i=0;i<N;++i)
+	{
+		InitialGuess->setValue(i, 1.);
+	}
 
 	//Create the Jacobian of the system
 	SparseMatrix *Jac;
@@ -171,40 +207,8 @@ int main(int argc, char **argv)
 	//Compute the Jacobian with Initial guess value
 	ComputeJacobian(InitialGuess, Jac, Manager);
 
-	//Compute f(x0) and stock the value in temporary Grid
-	GridBase *B;
-	B = new GridBase(F);
-	f(InitialGuess, B, Manager);
+	qDebug() << *Jac;
 
-
-
-	SparseMatrix *S;
-	S = new SparseMatrix(2,2);
-	S->setValue(0,0,2.);
-	S->setValue(0,1,1.);
-	S->setValue(1,0,5.);
-	S->setValue(1,1,7.);
-	ColumnMatrix *x;
-	x = new ColumnMatrix(2);
-	x->set(0,1);
-	x->set(1,1);
-	ColumnMatrix *Y;
-	Y = new ColumnMatrix(2);
-	ColumnMatrix *b;
-	b = new ColumnMatrix(2);
-	b->set(0,11.);
-	b->set(1,13.);
-
-	LinearSolver(S,x,Y,b);
-
-	qDebug() << x->at(0) << x->at(1);
-
-	delete S;
-	delete x;
-	delete Y;
-	delete b;
-
-	delete B;
 	delete Jac;
 	delete Manager;
 	delete F;
