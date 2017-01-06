@@ -12,6 +12,19 @@ const Type dt(.1);
 const Type dx(1);
 const cmplx alpha(0,dt/dx/dx);
 
+void pulse(GridBase *G)
+{
+	int N=G->getSizeOfGrid();
+	const Axis *F=G->getAxis(0);
+	for(int i=0; i<N; ++i)
+	{
+		Type x = F->getAxisMin()+F->getAxisStep()*(Type)(i);
+		cmplx w(0,10.*x);
+		G->setValue(i,std::exp(-x*x/4.)*std::exp(w));
+	}
+	G->setValue(0,0.);
+	G->setValue(N-1,0.);
+}
 
 void f(const GridBase *X, GridBase *Y, GridManager *Data)
 {
