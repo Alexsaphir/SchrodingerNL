@@ -11,8 +11,10 @@ public:
 	Matrix(int row, int column);
 	virtual ~Matrix();
 
-	virtual cmplx getValue(int i, int j) const;
-	virtual void setValue(int i, int j, const cmplx &value);
+	cmplx getValue(int i, int j) const;
+	cmplx getValue(int i) const;
+	void setValue(int i, int j, const cmplx &value);
+	void setValue(int i, const cmplx &value);
 
 private:
 	inline int index(int i, int j) const;

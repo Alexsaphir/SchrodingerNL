@@ -18,10 +18,15 @@ public:
 	virtual void set(int i, const cmplx &value);
 //Generic method
 	virtual cmplx getValue(int i, int j) const = 0;
+	virtual cmplx getValue(int i) const;
 	virtual void setValue(int i, int j, const cmplx &value) = 0;
+	virtual void setValue(int i, const cmplx &value);
 
 	virtual int row() const;
 	virtual int column() const;
+
+	virtual void operator+=(CoreMatrix const& M);
+	virtual void operator-=(CoreMatrix const& M);
 
 protected:
 	int m_row;

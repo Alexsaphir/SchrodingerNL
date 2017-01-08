@@ -32,8 +32,14 @@ int CoreMatrix::row() const
 	return m_row;
 }
 
-CoreMatrix::~CoreMatrix()
+cmplx CoreMatrix::getValue(int i) const
 {
+	return at(i);
+}
+
+void CoreMatrix::setValue(int i, const cmplx &value)
+{
+	set(i, value);
 }
 
 cmplx CoreMatrix::at(int i) const
@@ -44,4 +50,32 @@ cmplx CoreMatrix::at(int i) const
 void CoreMatrix::set(int i, const cmplx &value)
 {
 	return;
+}
+
+void CoreMatrix::operator +=(CoreMatrix const& M)
+{
+	if (this->m_column != M.m_column)
+		return;
+	if (this->m_row != M.m_row)
+		return;
+	for(int i=0; i<(this->m_row*this->m_column); ++i)
+	{
+		this->setValue(i, this->getValue(i)+M.getValue(i));
+	}
+}
+
+void CoreMatrix::operator -=(CoreMatrix const& M)
+{
+	if (this->m_column != M.m_column)
+		return;
+	if (this->m_row != M.m_row)
+		return;
+	for(int i=0; i<(this->m_row*this->m_column); ++i)
+	{
+		this->setValue(i, this->getValue(i)-M.getValue(i));
+	}
+}
+
+CoreMatrix::~CoreMatrix()
+{
 }
