@@ -146,6 +146,12 @@ void GridBase::setValue(int i, cmplx value)
 	m_V.replace(i, value);
 }
 
+void GridBase::reset()
+{
+	for(int i=0; i<m_N; ++i)
+		m_V.replace(i, cmplx(0,0));
+}
+
 ColumnDataProxy* GridBase::getColumn() const
 {
     return m_ProxyColumn;
@@ -154,6 +160,16 @@ ColumnDataProxy* GridBase::getColumn() const
 RowDataProxy* GridBase::getRow() const
 {
     return m_ProxyRow;
+}
+
+void GridBase::operator +=(const GridBase &G)
+{
+	*(this->getColumn())+=*(G.getColumn());
+}
+
+void GridBase::operator -=(const GridBase &G)
+{
+	*(this->getColumn())-=*(G.getColumn());
 }
 
 GridBase::~GridBase()

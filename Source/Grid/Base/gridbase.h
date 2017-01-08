@@ -42,11 +42,16 @@ public:
 	bool isInGrid(const Point &Pos) const;
 	bool isInGrid(int i) const;
 
+	void reset();//Set all value of the grid to cmplx(0,0)
+
     ColumnDataProxy* getColumn() const;
     RowDataProxy* getRow() const;
 
 
 	const Axis* getAxis(int i) const;
+
+	void operator+=(const GridBase &G);
+	void operator-=(const GridBase &G);
 
 protected:
 	int m_N;//Precomputed size of m_V
