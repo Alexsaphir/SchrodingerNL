@@ -8,8 +8,8 @@
 #include "Matrix/SparseMatrix/sparsematrix.h"
 #include "Matrix/Matrix/ColumnMatrix/columnmatrix.h"
 
-const Type dt(1);
-const Type dx(1);
+const Type dt(.0001);
+const Type dx(.1);
 const cmplx alpha(0,dt/dx/dx/2);
 
 void pulse(GridBase *G)
@@ -103,9 +103,7 @@ void LinearSolver(const SparseMatrix *A, ColumnMatrixVirtual *X, ColumnMatrixVir
 
 	int N=X->row();//Number of row
 	int iter(0);
-	int iter_max(50);
-	if(iter_max%2)
-		iter_max++;
+	int iter_max(500);
 
 	while(iter<iter_max)
 	{
@@ -125,6 +123,7 @@ void LinearSolver(const SparseMatrix *A, ColumnMatrixVirtual *X, ColumnMatrixVir
 			Y->set(i, tmp);
 		}
 		//Y contains the new iteration of X
+
 		std::swap(X,Y);
 		iter++;
 	}
@@ -168,12 +167,67 @@ void LinearSolverOpti1(const SparseMatrix *A, ColumnMatrixVirtual *X, ColumnMatr
 	}
 }
 
+void NewtonRaphson(GridManager *Manager)
+{
+	//We solve directly the next step of the problem
+	//We choose the initial guess to be the current step
+
+	GridBase *InitialGuess = Manager->getCurrentGrid();
+	GridBase *B = Manager->getTemporaryDomain(0);//We use a grid from the temporary stack
+	SparseMatrix *Jac;
+	Jac = new SparseMatrix(InitialGuess->getSizeOfGrid(), InitialGuess->getSizeOfGrid());
+
+
+	GridBase *X;
+	GridBase *Xold;
+	GridBase *Xtmp;
+
+	Xold = InitialGuess;
+	X = Manager->getTemporaryDomain(2);
+	Xtmp = Manager->getTemporaryDomain(1);
+
+
+
+
+	*X+=*InitialGuess;
+	for(int i=0; i<100; ++i)
+	{
+		f(Xold, B, Manager);//We have B
+		ComputeJacobian(Xold, Jac, Manager);//We have A
+		LinearSolverOpti1(Jac, X->getColumn(), Xtmp->getColumn(), B->getColumn());//We can solve the linear system
+		//to have X we need to add Xold to X
+		*X+=*Xold;
+
+		if(i==0)
+			Xold=Manager->getNextGrid();
+		std::swap(Xold, X);
+		std::swap(X, Xtmp);
+	}
+	if(Xold != Manager->getNextGrid())
+	{
+		if(X == Manager->getNextGrid())
+		{
+			X->reset();
+			*X+=*Xold;
+		}
+		else
+		{
+			Xtmp->reset();
+			*Xtmp+=*Xold;
+		}
+	}
+
+	//Recopy X in the NextGrid
+	delete Jac;
+
+}
+
 int main(int argc, char **argv)
 {
 	QApplication app(argc, argv);
 	//Create the Frame with only one dimension
 	Axis *X;
-	X = new LinearAxis(-1, 1,dx);
+	X = new LinearAxis(-5, 5,dx);
 	Frame *F;
 	F = new Frame(X);
 
@@ -189,27 +243,12 @@ int main(int argc, char **argv)
 	showGrid(Manager->getCurrentGrid(), &app);
 
 
-	//Compute the second step
+	NewtonRaphson(Manager);
+	showGrid(Manager->getNextGrid(), &app);
 
-	//Initial Guess x0
-	GridBase *InitialGuess;
-	InitialGuess = Manager->getTemporaryDomain(0);
 
-	//recopy current in Initalguess
-	for(int i=0;i<N;++i)
-	{
-		InitialGuess->setValue(i, 1.);
-	}
 
-	//Create the Jacobian of the system
-	SparseMatrix *Jac;
-	Jac = new SparseMatrix(N, N);
-	//Compute the Jacobian with Initial guess value
-	ComputeJacobian(InitialGuess, Jac, Manager);
 
-	qDebug() << *Jac;
-
-	delete Jac;
 	delete Manager;
 	delete F;
 	delete X;
