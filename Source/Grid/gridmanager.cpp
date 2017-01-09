@@ -18,7 +18,6 @@ GridManager::GridManager(int PastDomain, int FutureDomain, int TmpDomain, const 
 	}
 }
 
-
 void GridManager::swapStackTmp(const GridBase *S, const GridBase *T)
 {
 
