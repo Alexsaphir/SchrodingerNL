@@ -8,7 +8,7 @@
 #include "Matrix/SparseMatrix/sparsematrix.h"
 #include "Matrix/Matrix/ColumnMatrix/columnmatrix.h"
 
-const Type dt(.0001);
+const Type dt(.001);
 const Type dx(.1);
 const cmplx alpha(0,dt/dx/dx/2);
 
@@ -139,7 +139,7 @@ void LinearSolverOpti1(const SparseMatrix *A, ColumnMatrixVirtual *X, ColumnMatr
 
 	int N=X->row();//Number of row
 	int iter(0);
-	int iter_max(50);
+	int iter_max(25);
 	if(iter_max%2)
 		iter_max++;
 
@@ -190,7 +190,7 @@ void NewtonRaphson(GridManager *Manager)
 
 
 	*X+=*InitialGuess;
-	for(int i=0; i<100; ++i)
+	for(int i=0; i<25; ++i)
 	{
 		f(Xold, B, Manager);//We have B
 		ComputeJacobian(Xold, Jac, Manager);//We have A
@@ -235,7 +235,7 @@ int main(int argc, char **argv)
 	GridManager *Manager;
 	Manager = new GridManager(0,1,3,*F);
 	const int N(Manager->getCurrentGrid()->getSizeOfGrid());
-	qDebug() << alpha;
+	qDebug() << alpha << N;
 	//Init the Current Grid with the pulse
 	pulse(Manager->getCurrentGrid());
 
@@ -243,9 +243,14 @@ int main(int argc, char **argv)
 	showGrid(Manager->getCurrentGrid(), &app);
 
 
-	NewtonRaphson(Manager);
-	showGrid(Manager->getNextGrid(), &app);
-
+	for(int i=0; i<1000; ++i)
+	{
+		NewtonRaphson(Manager);
+		Manager->switchGrid();
+		if((i%10)==0)
+			qDebug() << i;
+	}
+	showGrid(Manager->getCurrentGrid(), &app);
 
 
 
