@@ -9,7 +9,7 @@
 #include "Matrix/Matrix/ColumnMatrix/columnmatrix.h"
 
 const Type dt(.001);
-const Type dx(.1);
+const Type dx(.001);
 const cmplx alpha(0,dt/dx/dx/2);
 
 void pulse(GridBase *G)
@@ -19,8 +19,32 @@ void pulse(GridBase *G)
 	for(int i=0; i<N; ++i)
 	{
 		Type x = F->getAxisMin()+F->getAxisStep()*(Type)(i);
+		//cmplx w(0,10.*x);
+
 		cmplx w(0,10.*x);
-		G->setValue(i,std::exp(-x*x/4.)*std::exp(w));
+		G->setValue(i,2*std::exp(-x*x/9.)*std::exp(w));
+	}
+	G->setValue(0,0.);
+	G->setValue(N-1,0.);
+}
+
+void pulsecos(GridBase *G)
+{
+	int N=G->getSizeOfGrid();
+	cmplx w(20.*M_PI,0);
+	const Axis *F=G->getAxis(0);
+	for(int i=0; i<N; ++i)
+	{
+		Type t = F->getAxisMin()+F->getAxisStep()*(Type)(i);
+		qDebug() << t;
+		cmplx y(0,0);
+		for(int n=1;n<6;++n)
+		{
+			qDebug() << static_cast<Type>(n)*w*t;
+			y+=static_cast<Type>(n)*std::cos(static_cast<Type>(n)*w*t);
+		}
+
+		G->setValue(i,y);
 	}
 	G->setValue(0,0.);
 	G->setValue(N-1,0.);
@@ -222,12 +246,32 @@ void NewtonRaphson(GridManager *Manager)
 
 }
 
+void fft(ColumnMatrixVirtual *In, ColumnMatrixVirtual *Out)
+{
+	int N = In->row();
+	cmplx i(0,2.*M_PI/static_cast<Type>(N));
+	for(int k = 0; k<N; ++k)
+	{
+		cmplx z;z=std::exp(i*static_cast<Type>(k));
+		cmplx zn(1,0);
+		cmplx Xk(0,0);
+		for(int j=0;j<N;++j)
+		{
+			Xk = Xk + In->at(j)*zn;
+			zn*=z;
+		}
+		Out->set(k,std::norm(Xk));
+	}
+}
+
+
 int main(int argc, char **argv)
 {
 	QApplication app(argc, argv);
 	//Create the Frame with only one dimension
 	Axis *X;
-	X = new LinearAxis(-5, 5,dx);
+	//X = new LinearAxis(-10, 10,dx);
+	X = new LinearAxis(0, .5,dx);
 	Frame *F;
 	F = new Frame(X);
 
@@ -237,19 +281,17 @@ int main(int argc, char **argv)
 	const int N(Manager->getCurrentGrid()->getSizeOfGrid());
 	qDebug() << alpha << N;
 	//Init the Current Grid with the pulse
-	pulse(Manager->getCurrentGrid());
+//	pulse(Manager->getCurrentGrid());
+	pulsecos(Manager->getCurrentGrid());
 
 	//Show the initial state aka the current grid
 	showGrid(Manager->getCurrentGrid(), &app);
 
 
-	for(int i=0; i<1000; ++i)
-	{
-		NewtonRaphson(Manager);
-		Manager->switchGrid();
-		if((i%10)==0)
-			qDebug() << i;
-	}
+
+	fft(Manager->getColumnAtTime(0),Manager->getColumnAtTime(1));
+
+	Manager->switchGrid();
 	showGrid(Manager->getCurrentGrid(), &app);
 
 
