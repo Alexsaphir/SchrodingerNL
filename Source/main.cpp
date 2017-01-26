@@ -8,9 +8,22 @@
 #include "Matrix/SparseMatrix/sparsematrix.h"
 #include "Matrix/Matrix/ColumnMatrix/columnmatrix.h"
 
-const Type dt(.001);
+const Type dt(.01);
 const Type dx(.001);
 const cmplx alpha(0,dt/dx/dx/2);
+
+
+const int Nb_mode(2048*2);//4ki
+
+void showGrid(GridBase *X , QApplication *app)
+{
+	PDEGui1D *Fen;
+	Fen = new PDEGui1D(X);
+	Fen->show();
+	app->exec();//wait until Fen is close
+	delete Fen;//Fen can be deleted
+}
+
 
 void pulse(GridBase *G)
 {
@@ -36,7 +49,7 @@ void pulsecos(GridBase *G)
 	for(int i=0; i<N; ++i)
 	{
 		Type t = F->getAxisMin()+F->getAxisStep()*(Type)(i);
-		qDebug() << t;
+		//qDebug() << t;
 		cmplx y(0,0);
 		for(int n=1;n<6;++n)
 		{
@@ -46,9 +59,180 @@ void pulsecos(GridBase *G)
 
 		G->setValue(i,y);
 	}
-	G->setValue(0,0.);
-	G->setValue(N-1,0.);
+	//G->setValue(0,0.);
+	//G->setValue(N-1,0.);
 }
+
+void pulseSimpleSin(GridBase *G)
+{
+	int N=G->getSizeOfGrid();
+	const Axis *F=G->getAxis(0);
+	for(int i=0; i<N; ++i)
+	{
+		Type t = F->getAxisMin()+F->getAxisStep()*(Type)(i);
+		G->setValue(i,std::sin(t));
+	}
+}
+
+void pulseBin(GridBase *G)
+{
+	int N=G->getSizeOfGrid();
+	for(int i=N/4; i<3*N/4;++i)
+		G->setValue(i,1);
+}
+
+
+
+
+void fft(GridBase *In, GridBase *Out)
+{
+	int N=In->getSizeOfGrid();
+
+	const Axis *X = In->getAxis(0);
+	const int A = X->getAxisMin();
+	const Type dx = X->getAxisStep();
+
+	cmplx i(0,2.*M_PI);
+#pragma omp parallel for
+	for(int k=-N/2; k<N/2; ++k)
+	{
+		cmplx tmp(0,0);
+
+		for(int j=0; j<N; ++j)
+		{
+			tmp+=In->getValue(j)*std::exp(-i*static_cast<Type>(k*j)/static_cast<Type>(N));
+		}
+		tmp/=static_cast<Type>(N);
+		Out->setValue(k+N/2,tmp);
+	}
+
+}
+
+void fft_inverse(GridBase *In, GridBase *Out)
+{
+	int N=In->getSizeOfGrid();
+
+	const Axis *X = In->getAxis(0);
+	const int A = X->getAxisMin();
+	const Type dx = X->getAxisStep();
+
+	cmplx i(0,-2.*M_PI);
+#pragma omp parallel for
+	for(int j=0; j<N; ++j)
+	{
+		cmplx tmp(0,0);
+		for(int k=-N/2; k<N/2; ++k)
+		{
+			tmp+=In->getValue(k+N/2)*std::exp(i*static_cast<Type>(k*j)/static_cast<Type>(N));
+		}
+		//tmp/=static_cast<Type>(N);
+		Out->setValue(j,tmp);
+	}
+}
+
+
+
+void NNLN(GridManager *Manager)
+{
+	//First Step: Linear
+	//Go to Fourier Space
+	//Next, Perform derivative
+	//Finally, return to spatial space
+
+	//Second Step: Non-Linear
+	//Compute the NN linear part
+
+	int N=Manager->getCurrentGrid()->getColumn()->row();
+
+	GridBase *tmp=Manager->getTemporaryDomain(0);
+	fft(Manager->getCurrentGrid(), tmp);
+	cmplx idt(0, dt);
+#pragma omp parallel for
+	for(int i=0; i<N; ++i)
+	{
+		cmplx x=Manager->getCurrentGrid()->getValue(i);
+		tmp->setValue(i,tmp->getValue(i)*std::exp(idt*x*x));
+	}
+	fft_inverse(tmp,Manager->getNextGrid());
+
+	GridBase *Next = Manager->getNextGrid();
+#pragma omp parallel for
+	for(int i=0; i<N; ++i)
+	{
+		cmplx x=Next->getValue(i);
+		Next->setValue(i, x*std::exp(idt*std::norm(x)));
+	}
+}
+
+int main(int argc, char **argv)
+{
+	QApplication app(argc, argv);
+
+	qDebug() << "Number of modes for the Fourier transform : " << Nb_mode;
+
+
+	//Create the Frame with only one dimension
+	Axis *X;
+
+	X = new LinearAxis(-40, 40,80./static_cast<Type>(Nb_mode-1));
+	qDebug() << "Spatial resolution : " << X->getAxisN() << X->getAxisStep();
+	Frame *F;
+	F = new Frame(X);
+
+
+	//Create the GridManager with 1 current time and 1 future time and 3 temporary Grid
+	GridManager *Manager;
+	Manager = new GridManager(0,1,1,*F);
+	const int N(Manager->getCurrentGrid()->getSizeOfGrid());
+
+
+
+
+
+	//Init the Current Grid with the pulse
+	pulse(Manager->getCurrentGrid());
+
+	//Show the initial state aka the current grid
+	showGrid(Manager->getCurrentGrid(), &app);
+
+//	fft(Manager->getCurrentGrid(),Manager->getNextGrid());
+//	showGrid(Manager->getNextGrid(), &app);
+
+//	fft_inverse(Manager->getNextGrid(), Manager->getCurrentGrid());
+//	showGrid(Manager->getCurrentGrid(), &app);
+
+
+	for(int i=0; i<100;++i)
+	{
+		NNLN(Manager);
+		qDebug() << i <<"%";
+		Manager->switchGrid();
+		//showGrid(Manager->getCurrentGrid(), &app);
+	}
+	showGrid(Manager->getCurrentGrid(), &app);
+
+	delete Manager;
+	delete F;
+	delete X;
+
+	return 0;
+	//return app.exec();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void f(const GridBase *X, GridBase *Y, GridManager *Data)
 {
@@ -64,7 +248,7 @@ void f(const GridBase *X, GridBase *Y, GridManager *Data)
 		cmplx tmp(0,0);
 
 		tmp+=1.;
-		tmp+=2.*alpha;
+		tmp+=static_cast<Type>(2)*alpha;
 		tmp-=i*dt*std::norm(X->getValue(k));
 		tmp*=X->getValue(k);
 
@@ -79,15 +263,6 @@ void f(const GridBase *X, GridBase *Y, GridManager *Data)
 
 	//Right-BC
 	Y->setValue(N-1,cmplx(0,0));
-}
-
-void showGrid(GridBase *X , QApplication *app)
-{
-	PDEGui1D *Fen;
-	Fen = new PDEGui1D(X);
-	Fen->show();
-	app->exec();//wait until Fen is close
-	delete Fen;//Fen can be deleted
 }
 
 void ComputeJacobian(const GridBase *X,SparseMatrix *Jac, GridManager *Data)
@@ -111,9 +286,9 @@ void ComputeJacobian(const GridBase *X,SparseMatrix *Jac, GridManager *Data)
 		cmplx tmp(0,0);
 		const cmplx dti(0,dt);
 		tmp+=1.;
-		tmp+=2.*alpha;
+		tmp+=static_cast<Type>(2)*alpha;
 		tmp+=dti*std::norm(X->getValue(i));
-		tmp+=-X->getValue(i)*dti*2.*std::conj(X->getValue(i));
+		tmp+=-X->getValue(i)*dti*static_cast<Type>(2)*std::conj(X->getValue(i));
 		Jac->setValue(i, i, tmp);
 	}
 }
@@ -244,62 +419,4 @@ void NewtonRaphson(GridManager *Manager)
 	//Recopy X in the NextGrid
 	delete Jac;
 
-}
-
-void fft(ColumnMatrixVirtual *In, ColumnMatrixVirtual *Out)
-{
-	int N = In->row();
-	cmplx i(0,2.*M_PI/static_cast<Type>(N));
-	for(int k = 0; k<N; ++k)
-	{
-		cmplx z;z=std::exp(i*static_cast<Type>(k));
-		cmplx zn(1,0);
-		cmplx Xk(0,0);
-		for(int j=0;j<N;++j)
-		{
-			Xk = Xk + In->at(j)*zn;
-			zn*=z;
-		}
-		Out->set(k,std::norm(Xk));
-	}
-}
-
-
-int main(int argc, char **argv)
-{
-	QApplication app(argc, argv);
-	//Create the Frame with only one dimension
-	Axis *X;
-	//X = new LinearAxis(-10, 10,dx);
-	X = new LinearAxis(0, .5,dx);
-	Frame *F;
-	F = new Frame(X);
-
-	//Create the GridManager with 1 current time and 1 future time and 3 temporary Grid
-	GridManager *Manager;
-	Manager = new GridManager(0,1,3,*F);
-	const int N(Manager->getCurrentGrid()->getSizeOfGrid());
-	qDebug() << alpha << N;
-	//Init the Current Grid with the pulse
-//	pulse(Manager->getCurrentGrid());
-	pulsecos(Manager->getCurrentGrid());
-
-	//Show the initial state aka the current grid
-	showGrid(Manager->getCurrentGrid(), &app);
-
-
-
-	fft(Manager->getColumnAtTime(0),Manager->getColumnAtTime(1));
-
-	Manager->switchGrid();
-	showGrid(Manager->getCurrentGrid(), &app);
-
-
-
-	delete Manager;
-	delete F;
-	delete X;
-
-	return 0;
-	//return app.exec();
 }
