@@ -17,7 +17,7 @@ QDebug operator<< (QDebug dbg, const Axis &z)
 
 QDebug operator<< (QDebug dbg, const CoreMatrix &M)
 {
-	//dbg << " ";
+	dbg << " ";
 	for(int i=0; i<M.row(); ++i)
 	{
 		for(int j=0; j<M.column(); ++j)
