@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QDebug>
+#include <iostream>
 
 #include "Axis/linearaxis.h"
 #include "debugclass.h"
@@ -13,7 +14,7 @@ const Type dx(.001);
 const cmplx alpha(0,dt/dx/dx/2);
 
 
-const int Nb_mode(2048*2);//4ki
+const int Nb_mode(2048*2*2*2);//16ki
 
 void showGrid(GridBase *X , QApplication *app)
 {
@@ -202,10 +203,11 @@ int main(int argc, char **argv)
 //	showGrid(Manager->getCurrentGrid(), &app);
 
 
-	for(int i=0; i<100;++i)
+	for(int i=0; i<1000;++i)
 	{
 		NNLN(Manager);
-		qDebug() << i <<"%";
+		if(i%10==0)
+			qDebug() << i/10 <<"%";
 		Manager->switchGrid();
 		//showGrid(Manager->getCurrentGrid(), &app);
 	}
