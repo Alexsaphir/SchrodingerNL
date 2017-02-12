@@ -5,6 +5,9 @@
 #File create by cuda executables
 *.ds
 
+#Video
+*.mpeg
+
 #Pdf and djvu file
 *.pdf
 *.djvu
