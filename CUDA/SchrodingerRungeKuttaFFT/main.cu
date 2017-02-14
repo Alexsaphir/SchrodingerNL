@@ -28,6 +28,51 @@
 #define cmplx cufftDoubleComplex
 
 
+//Operator overloading for cmplx
+
+__device__ __host__ __inline__ cmplx operator+(const cmplx &a, const cmplx &b)
+{
+	return cuCadd(a, b);
+}
+
+__device__ __host__ __inline__ cmplx operator-(const cmplx &a, const cmplx &b)
+{
+	return cuCsub(a, b);
+}
+
+__device__ __host__ __inline__ cmplx operator*(const cmplx &a, const cmplx &b)
+{
+	return cuCmul(a, b);
+}
+
+__device__ __host__ __inline__ cmplx operator*(const double &a, const cmplx &b)
+{
+	return make_cuDoubleComplex(a*cuCreal(b), a*cuCimag(b));
+}
+
+__device__ __host__ __inline__ cmplx operator*(const cmplx &a, const double &b)
+{
+	return make_cuDoubleComplex(b*cuCreal(a), b*cuCimag(a));
+}
+
+__device__ __host__ __inline__ cmplx operator/(const cmplx &a, const cmplx &b)
+{
+	return cuCdiv(a, b);
+}
+
+__device__ __host__ __inline__ cmplx operator/(const cmplx &a, const double &b)
+{
+	return make_cuDoubleComplex(cuCreal(a)/b, cuCimag(a)/b);
+}
+
+__device__ __host__ __inline__ cmplx iMul(const cmplx &a)
+{
+	return make_cuDoubleComplex(-cuCimag(a), cuCreal(a));
+}
+
+
+
+
 __host__ __device__ static __inline__ cuDoubleComplex cuCexp(cuDoubleComplex z)
 {
 	double factor = exp(z.x);
@@ -291,6 +336,17 @@ void rungeKutta2(cmplx *d_Vc, cmplx *d_Vn, cmplx *d_Vder, cmplx *d_Vtmp, cufftHa
 	evaluateFKernel << <NGrid, NBlock >> > (d_Vtmp, d_Vder, d_Vtmp);
 	
 	incrementMul1Kernel << <NGrid, NBlock >> > (d_Vn, d_Vtmp, make_cuDoubleComplex(h, 0));
+
+}
+
+
+__device__ cmplx evaluateF(const cmplx &x, const cmplx &der2)
+{
+
+}
+
+void rungeKutta2ODE(cmplx *d_Vc, cmplx *d_Vn, cmplx *d_Vder, cufftHandle &plan, double h)
+{
 
 }
 
