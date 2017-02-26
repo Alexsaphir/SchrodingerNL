@@ -12,14 +12,14 @@
 
 #define M_PI 3.141592653589793
 
-#define NGrid 512
+#define NGrid 256
 #define NBlock 512
 
-#define N 262144
-#define Nd 262144.
+#define N 131072
+#define Nd 131072.
 
-#define Xmax (50.)
-#define Xmin (-50.)
+#define Xmax (100.)
+#define Xmin (-100.)
 
 #define L (Xmax - Xmin)
 
@@ -153,7 +153,7 @@ __global__ void pulseGauss(cmplx *V)
 	int i = blockIdx.x *blockDim.x + threadIdx.x;
 	double x = static_cast<double>(i)*dx + Xmin;
 	if (i < N)
-		V[i] = make_cuDoubleComplex(2.*std::exp(-x*x / 4.), 0);
+		V[i] = make_cuDoubleComplex(2.*std::exp(-x*x / 16.), 0);
 }
 
 //Normalize After fft Kernel
@@ -342,12 +342,39 @@ void rungeKutta2(cmplx *d_Vc, cmplx *d_Vn, cmplx *d_Vder, cmplx *d_Vtmp, cufftHa
 
 __device__ cmplx evaluateF(const cmplx &x, const cmplx &der2)
 {
-
+	//f= i*(-.5*d²E/dx² + |E|²E)
+	return iMul(-0.5*der2 + cuConj(x)*x*x);
 }
 
-void rungeKutta2ODE(cmplx *d_Vc, cmplx *d_Vn, cmplx *d_Vder, cufftHandle &plan, double h)
+__global__ void rungeKutta2FirstStep(cmplx *V, cmplx *Vstep1, cmplx *Vder, double h)
 {
+	//Apply Runge Kutta 2 first step for each value of V
+	int i = blockIdx.x *blockDim.x + threadIdx.x;
 
+	if (i < N)
+		Vstep1[i] = V[i] + (h / 2.)*evaluateF(V[i], Vder[i]);
+}
+
+__global__ void rungeKutta2SecondStep(cmplx *V, cmplx *Vstep1, cmplx *Vder, double h)
+{
+	//Apply Runge Kutta 2 second step for each value of V
+	//tmp contains the value of the first step and Vde the derivative of Vtmp
+	//And save the final result in V
+	int i = blockIdx.x *blockDim.x + threadIdx.x;
+
+	if (i < N)
+		V[i] = V[i] + h*evaluateF(Vstep1[i], Vder[i]);
+}
+
+void rungeKutta2ODE(cmplx *d_V , cmplx *d_Vtmp, cmplx *d_Vder, cufftHandle &plan, double h)
+{
+	//Compute the derivative of d_V
+	derivative2nd(d_V, d_Vder, plan);
+	//Perform the first Step of RK2 ans save it in Vtmp
+	rungeKutta2FirstStep << <NGrid, NBlock >> > (d_V, d_Vtmp, d_Vder, h);
+	//Reevaluate the 2nd derivative
+	derivative2nd(d_Vtmp, d_Vder, plan);
+	rungeKutta2SecondStep << < NGrid, NBlock >> > (d_V, d_Vtmp, d_Vder, h);
 }
 
 void disp(cmplx *V)
@@ -376,62 +403,73 @@ void writeInFile(cmplx *V, int fileX)
 	for (int i = 0; i < N; ++i)
 	{
 		double tmp = sqrt(V[i].x*V[i].x + V[i].y*V[i].y);
-			if (V[i].x < 0)
-				tmp = -tmp;
+			//if (V[i].x < 0)
+				//tmp = -tmp;
 		file << (static_cast<double>(i)*dx + Xmin) << " " << tmp << "\n";
 	}
 	file.close();
 
 }
 
+void writeInFile(cmplx *h_V, std::string S)
+{
+	std::ofstream file;
+	file.open(S + ".ds");
+	for (int i = 0; i < N; ++i)
+	{
+		double tmp = sqrt(h_V[i].x*h_V[i].x + h_V[i].y*h_V[i].y);
+		//if (h_V[i].x < 0)
+			//tmp = -tmp;
+		file << (static_cast<double>(i)*dx + Xmin) << " " << tmp << "\n";
+	}
+	file.close();
+}
+
 
 int main()
 {
-	cmplx *h_Vc;
-	cmplx *d_Vc;
-	cmplx *d_Vn;
+	cmplx *h_V;
+	cmplx *d_V;
 	cmplx *d_Vder;
 	cmplx *d_Vtmp;
 
 	//Allocate one array on the Host and one on the device
 	//Use pinned memory on the host
-	cudaMallocHost(&h_Vc, N * sizeof(cmplx));
-	cudaMalloc(&d_Vc, N * sizeof(cmplx));
-	cudaMalloc(&d_Vn, N * sizeof(cmplx));
+	cudaMallocHost(&h_V, N * sizeof(cmplx));
+	cudaMalloc(&d_V, N * sizeof(cmplx));
 	cudaMalloc(&d_Vder, N * sizeof(cmplx));
 	cudaMalloc(&d_Vtmp, N * sizeof(cmplx));
 
-	pulseGauss << <NGrid, NBlock >> > (d_Vc);
+	pulseGauss << <NGrid, NBlock >> > (d_V);
 
 	cufftHandle plan;
 	//Create 1D FFT plan
 	cufftPlan1d(&plan, N, CUFFT_Z2Z, 1);
 
-	cudaMemcpy(h_Vc, d_Vc, N * sizeof(cmplx), cudaMemcpyDeviceToHost);
-	writeInFile(h_Vc, 0);
 
 	for (int i = 0; i < 11; i++)
 	{
-		double dt(0.00001);
-		applyBoundaryCondition(d_Vc);
+		double dt(0.001);
 		
 		//Save the data in a file at each step
-		cudaMemcpy(h_Vc, d_Vc, N * sizeof(cmplx), cudaMemcpyDeviceToHost);
-		writeInFile(h_Vc, i);
-		std::cout << "Time : " << dt*100.*static_cast<double>(i) << std::endl;
-		for (int j = 0; j < 1; ++j)
+		cudaMemcpy(h_V, d_V, N * sizeof(cmplx), cudaMemcpyDeviceToHost);
+		writeInFile(h_V, i);
+
+		std::cout << "Time : " << dt*1.*static_cast<double>(i) << std::endl;
+		for (int j = 0; j < 100; ++j)
 		{
-			applyBoundaryCondition(d_Vc);
-			rungeKutta2(d_Vc, d_Vn, d_Vder, d_Vtmp, plan, dt);
-			std::swap(d_Vc, d_Vn);
+			rungeKutta2ODE(d_V, d_Vtmp, d_Vder, plan, dt);
+			applyBoundaryCondition(d_V);
+			
 		}
+		cudaMemcpy(h_V, d_Vder, N * sizeof(cmplx), cudaMemcpyDeviceToHost);
+		writeInFile(h_V, "der" + std::to_string(i));
 	}
 
 
 	cufftDestroy(plan);
-	cudaFreeHost(h_Vc);
-	cudaFree(d_Vc);
-	cudaFree(d_Vn);
+	cudaFreeHost(h_V);
+	cudaFree(d_V);
 	cudaFree(d_Vder);
 	cudaFree(d_Vtmp);
 

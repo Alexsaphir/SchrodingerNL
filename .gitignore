@@ -2,6 +2,7 @@
 #Automatic Save From Gedit
 *~
 
+*.rar
 #File create by cuda executables
 *.ds
 
