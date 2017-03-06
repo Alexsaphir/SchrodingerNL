@@ -12,11 +12,11 @@
 
 #define M_PI 3.141592653589793
 
-#define NGrid 256
+#define NGrid 128
 #define NBlock 512
 
-#define N 131072
-#define Nd 131072.
+#define N 131072/2
+#define Nd 131072./2.
 
 #define Xmax (100.)
 #define Xmin (-100.)
@@ -250,132 +250,71 @@ void derivative2nd(cmplx *d_Vin, cmplx *d_Vout, cufftHandle &plan)
 	NormFFT << <NGrid, NBlock >> > (d_Vout);
 }
 
-void rungeKutta4(cmplx *d_Vc, cmplx *d_Vn, cmplx *d_Vder, cmplx *d_Vtmp, cufftHandle &plan, double h)
-{
-	//Value at time n are in d_Vc
-	//Value computed are saved in d_Vn
-	//d_Vder save the derivative compute with the fft
-
-	//f= i*(d²E/dx² + |E|²E)
-
-	//fill d_Vn with the value of d_Vc
-	fillKernel << <NGrid, NBlock >> > (d_Vn, d_Vc);
-
-
-	//Compute vector A =f(d_Vc)
-	//1-Compute 2nd derivative with the fft saved in d_Vder
-	derivative2nd(d_Vc, d_Vder, plan);
-	//2-Evaluate f
-	evaluateFKernel << <NGrid, NBlock >> > (d_Vc, d_Vder, d_Vtmp);
-	//Now Vtmp contains A
-	//Update d_Vn with partial sum h/6*A
-	incrementMul1Kernel << <NGrid, NBlock >> > (d_Vn, d_Vtmp, make_cuDoubleComplex(h / 6., 0));
-
-
-
-
-	//Compute B=f(d_VC+h/2*A)
-	//0-Compute the fiber and save the result in d_Vtmp(A)
-	incrementMul0Kernel << <NGrid, NBlock >> > (d_Vtmp, d_Vc, make_cuDoubleComplex(h / 2., 0));
-	//1-Compute the 2nd derivative
-	derivative2nd(d_Vtmp, d_Vder, plan);
-	//2-Evaluate f
-	evaluateFKernel << <NGrid, NBlock >> > (d_Vtmp, d_Vder, d_Vtmp);
-	//Now Vtmp contains B
-	//Update d_Vn with partial sum h/3*A
-	incrementMul1Kernel << <NGrid, NBlock >> > (d_Vn, d_Vtmp, make_cuDoubleComplex(h / 3., 0));
-
-
-
-
-	//Compute C=f(d_VC+h/2*B)
-	//0-Compute the fiber and save the result in d_Vtmp(B)
-	incrementMul0Kernel << <NGrid, NBlock >> > (d_Vtmp, d_Vc, make_cuDoubleComplex(h / 2., 0));
-	//1-Compute the 2nd derivative
-	derivative2nd(d_Vtmp, d_Vder, plan);
-	//2-Evaluate f
-	evaluateFKernel << <NGrid, NBlock >> > (d_Vtmp, d_Vder, d_Vtmp);
-	//Now Vtmp contains B
-	//Update d_Vn with partial sum h/3*A
-	incrementMul1Kernel << <NGrid, NBlock >> > (d_Vn, d_Vtmp, make_cuDoubleComplex(h / 3., 0));
-
-
-
-
-	//Compute D=f(d_VC+h*C)
-	//0-Compute the fiber and save the result in d_Vtmp(A)
-	incrementMul0Kernel << <NGrid, NBlock >> > (d_Vtmp, d_Vc, make_cuDoubleComplex(h, 0));
-	//1-Compute the 2nd derivative
-	derivative2nd(d_Vtmp, d_Vder, plan);
-	//2-Evaluate f
-	evaluateFKernel << <NGrid, NBlock >> > (d_Vtmp, d_Vder, d_Vtmp);
-	//Now Vtmp contains B
-	//Update d_Vn with partial sum h/3*A
-	incrementMul1Kernel << <NGrid, NBlock >> > (d_Vn, d_Vtmp, make_cuDoubleComplex(h / 6., 0));
-
-	//
-}
-
-void rungeKutta2(cmplx *d_Vc, cmplx *d_Vn, cmplx *d_Vder, cmplx *d_Vtmp, cufftHandle &plan, double h)
-{
-	//fill d_Vn with the value of d_Vc
-	fillKernel << <NGrid, NBlock >> > (d_Vn, d_Vc);
-
-
-	//Compute vector A =f(d_Vc)
-	//1-Compute 2nd derivative with the fft saved in d_Vder
-	derivative2nd(d_Vc, d_Vder, plan);
-	//2-Evaluate f
-	evaluateFKernel << <NGrid, NBlock >> > (d_Vc, d_Vder, d_Vtmp);
-	//Now Vtmp contains A
-	
-	//Compute B=f(d_Vc+h/2*dVtmp)
-
-	incrementMul0Kernel << <NGrid, NBlock >> > (d_Vtmp, d_Vc, make_cuDoubleComplex(h / 2., 0));
-	derivative2nd(d_Vtmp, d_Vder, plan);
-	evaluateFKernel << <NGrid, NBlock >> > (d_Vtmp, d_Vder, d_Vtmp);
-	
-	incrementMul1Kernel << <NGrid, NBlock >> > (d_Vn, d_Vtmp, make_cuDoubleComplex(h, 0));
-
-}
-
-
-__device__ cmplx evaluateF(const cmplx &x, const cmplx &der2)
+__device__ cmplx evaluateF(double t, cmplx *d_V, cmplx *d_Vder, int i)
 {
 	//f= i*(-.5*d²E/dx² + |E|²E)
-	return iMul(-0.5*der2 + cuConj(x)*x*x);
+	//return make_cuDoubleComplex(-std::exp(-t), 0);
+
+	return iMul(.5*d_Vder[i] - cuConj(d_V[i])*d_V[i] * d_V[i]);
 }
 
-__global__ void rungeKutta2FirstStep(cmplx *V, cmplx *Vstep1, cmplx *Vder, double h)
+
+__global__ void rungeKutta4FirstStep(cmplx *V, cmplx *Vstep, cmplx *d_VtmpOut, cmplx *Vder, double t, double h)
 {
-	//Apply Runge Kutta 2 first step for each value of V
 	int i = blockIdx.x *blockDim.x + threadIdx.x;
-
 	if (i < N)
-		Vstep1[i] = V[i] + (h / 2.)*evaluateF(V[i], Vder[i]);
+	{
+		cmplx k1 = evaluateF(t, V, Vder, i);
+		d_VtmpOut[i] = V[i] + (h / 6.)*k1;
+		Vstep[i] = V[i] + (h / 2.)*k1;
+	}
 }
 
-__global__ void rungeKutta2SecondStep(cmplx *V, cmplx *Vstep1, cmplx *Vder, double h)
+__global__ void rungeKutta4SecondStep(cmplx *V, cmplx *Vstep, cmplx *d_VtmpOut, cmplx *Vder, double t, double h)
 {
-	//Apply Runge Kutta 2 second step for each value of V
-	//tmp contains the value of the first step and Vde the derivative of Vtmp
-	//And save the final result in V
 	int i = blockIdx.x *blockDim.x + threadIdx.x;
-
 	if (i < N)
-		V[i] = V[i] + h*evaluateF(Vstep1[i], Vder[i]);
+	{
+		cmplx k2 = evaluateF(t + h / 2., Vstep, Vder, i);
+		d_VtmpOut[i] = d_VtmpOut[i] + (h / 3.)*k2;
+		Vstep[i] = V[i] + (h / 2.)*k2;
+	}
 }
 
-void rungeKutta2ODE(cmplx *d_V , cmplx *d_Vtmp, cmplx *d_Vder, cufftHandle &plan, double h)
+__global__ void rungeKutta4ThirdStep(cmplx *V, cmplx *Vstep, cmplx *d_VtmpOut, cmplx *Vder, double t, double h)
 {
-	//Compute the derivative of d_V
-	derivative2nd(d_V, d_Vder, plan);
-	//Perform the first Step of RK2 ans save it in Vtmp
-	rungeKutta2FirstStep << <NGrid, NBlock >> > (d_V, d_Vtmp, d_Vder, h);
-	//Reevaluate the 2nd derivative
-	derivative2nd(d_Vtmp, d_Vder, plan);
-	rungeKutta2SecondStep << < NGrid, NBlock >> > (d_V, d_Vtmp, d_Vder, h);
+	int i = blockIdx.x *blockDim.x + threadIdx.x;
+	if (i < N)
+	{
+		cmplx k3 = evaluateF(t + h / 2., Vstep, Vder, i);
+		d_VtmpOut[i] = d_VtmpOut[i] + (h / 3.)*k3;
+		Vstep[i] = V[i] + (h / 2.)*k3;
+	}
 }
+
+__global__ void rungeKutta4FourStep(cmplx *V, cmplx *Vstep, cmplx *d_VtmpOut, cmplx *Vder, double t, double h)
+{
+	int i = blockIdx.x *blockDim.x + threadIdx.x;
+	if (i < N)
+	{
+		cmplx k4 = evaluateF(t, Vstep, Vder, i);
+		V[i] = d_VtmpOut[i] + (h / 6.)*k4;
+	}
+}
+
+void rungeKutta4ODE(cmplx *d_V, cmplx *d_Vtmp, cmplx *d_VtmpOut, cmplx *Vder, double t, double h, cufftHandle &plan)
+{
+	derivative2nd(d_V, Vder, plan);
+	rungeKutta4FirstStep << <NGrid, NBlock >> > (d_V, d_Vtmp, d_VtmpOut, Vder, t, h);
+	derivative2nd(d_Vtmp, Vder, plan);
+	rungeKutta4SecondStep << <NGrid, NBlock >> > (d_V, d_Vtmp, d_VtmpOut, Vder, t, h);
+	derivative2nd(d_Vtmp, Vder, plan);
+	rungeKutta4ThirdStep << <NGrid, NBlock >> > (d_V, d_Vtmp, d_VtmpOut, Vder, t, h);
+	derivative2nd(d_Vtmp, Vder, plan);
+	rungeKutta4FourStep << <NGrid, NBlock >> > (d_V, d_Vtmp, d_VtmpOut, Vder, t, h);
+}
+
+
 
 void disp(cmplx *V)
 {
@@ -432,6 +371,7 @@ int main()
 	cmplx *d_V;
 	cmplx *d_Vder;
 	cmplx *d_Vtmp;
+	cmplx *d_Vtmpout;
 
 	//Allocate one array on the Host and one on the device
 	//Use pinned memory on the host
@@ -439,6 +379,7 @@ int main()
 	cudaMalloc(&d_V, N * sizeof(cmplx));
 	cudaMalloc(&d_Vder, N * sizeof(cmplx));
 	cudaMalloc(&d_Vtmp, N * sizeof(cmplx));
+	cudaMalloc(&d_Vtmpout, N * sizeof(cmplx));
 
 	pulseGauss << <NGrid, NBlock >> > (d_V);
 
@@ -446,25 +387,44 @@ int main()
 	//Create 1D FFT plan
 	cufftPlan1d(&plan, N, CUFFT_Z2Z, 1);
 
+	int Ni(1);
+	int Nj(10000000);
 
-	for (int i = 0; i < 11; i++)
+	//Allocate a big array on host and device to save all time step
+	//double *h_VAllStep;
+	//double *d_VAllStep;
+	//cudaMallocHost(&h_VAllStep, N*(Ni + 1) * sizeof(double));
+
+	//cudaMalloc(&d_VAllStep, N*(Ni + 1) * sizeof(double));
+
+
+	double dt(0.00000001);
+
+	std::cout << "Total Time : " << static_cast<double>((Ni*Nj))*dt << std::endl;
+
+	for (int i = 0; i < Ni + 1; i++)
 	{
-		double dt(0.001);
-		
+
+
 		//Save the data in a file at each step
 		cudaMemcpy(h_V, d_V, N * sizeof(cmplx), cudaMemcpyDeviceToHost);
 		writeInFile(h_V, i);
 
-		std::cout << "Time : " << dt*1.*static_cast<double>(i) << std::endl;
-		for (int j = 0; j < 100; ++j)
+		//SaveDataKernel << <NGrid, NBlock >> > (i, d_V, d_VAllStep);
+
+		std::cout << "Time : " << static_cast<double>((i*Nj))*dt << std::endl;
+		if (i == Ni)
+			break;
+		for (int j = 0; j < Nj + 1; ++j)
 		{
-			rungeKutta2ODE(d_V, d_Vtmp, d_Vder, plan, dt);
+			//rungeKutta2ODE(d_V, d_Vtmp,static_cast<double>((i*Nj+j))*dt, dt);
+			rungeKutta4ODE(d_V, d_Vtmp, d_Vtmpout, d_Vder, static_cast<double>((i*Nj + j))*dt, dt,plan);
 			applyBoundaryCondition(d_V);
-			
 		}
-		cudaMemcpy(h_V, d_Vder, N * sizeof(cmplx), cudaMemcpyDeviceToHost);
-		writeInFile(h_V, "der" + std::to_string(i));
+
 	}
+
+
 
 
 	cufftDestroy(plan);
@@ -472,6 +432,7 @@ int main()
 	cudaFree(d_V);
 	cudaFree(d_Vder);
 	cudaFree(d_Vtmp);
+	cudaFree(d_Vtmpout);
 
 
 	return 0;
