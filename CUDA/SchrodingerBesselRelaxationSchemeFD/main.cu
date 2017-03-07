@@ -92,6 +92,11 @@ __device__ __host__ __inline__ cmplx operator/(const cmplx &a, const double &b)
 	return make_cuDoubleComplex(cuCreal(a) / b, cuCimag(a) / b);
 }
 
+__device__ __host__ __inline__ cmplx operator/(const double &a, const cmplx &b)
+{
+	return make_cuDoubleComplex(a, 0) / b;
+}
+
 __device__ __host__ __inline__ cmplx iMul(const cmplx &a)
 {
 	return make_cuDoubleComplex(-cuCimag(a), cuCreal(a));
