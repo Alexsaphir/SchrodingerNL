@@ -37,9 +37,29 @@ __device__ __host__ __inline__ cmplx operator+(const cmplx &a, const cmplx &b)
 	return cuCadd(a, b);
 }
 
+__device__ __host__ __inline__ cmplx operator+(const double &a, const cmplx &b)
+{
+	return make_cuDoubleComplex(a + b.x, b.y);
+}
+
+__device__ __host__ __inline__ cmplx operator+(const cmplx  &a, const double &b)
+{
+	return make_cuDoubleComplex(a.x + b, a.y);
+}
+
 __device__ __host__ __inline__ cmplx operator-(const cmplx &a, const cmplx &b)
 {
 	return cuCsub(a, b);
+}
+
+__device__ __host__ __inline__ cmplx operator-(const double &a, const cmplx &b)
+{
+	return make_cuDoubleComplex(a - b.x, -b.y);
+}
+
+__device__ __host__ __inline__ cmplx operator-(const cmplx &a, const double &b)
+{
+	return make_cuDoubleComplex(a.x - b, a.y);
 }
 
 __device__ __host__ __inline__ cmplx operator-(const cmplx &a)
@@ -76,6 +96,12 @@ __device__ __host__ __inline__ cmplx iMul(const cmplx &a)
 {
 	return make_cuDoubleComplex(-cuCimag(a), cuCreal(a));
 }
+
+__device__ __host__ __inline__ cmplx iMul(const double &a)
+{
+	return make_cuDoubleComplex(0, a);
+}
+
 
 
 //Init Pulse Kernel
