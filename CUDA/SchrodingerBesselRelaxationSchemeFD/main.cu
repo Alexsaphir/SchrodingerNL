@@ -27,6 +27,7 @@
 
 #define dx (L/(Nd-1.))
 
+#define LAMBDA -1.
 #define cmplx cuDoubleComplex
 
 
@@ -144,26 +145,38 @@ __global__ void pulseGauss(cmplx *V)
 		V[i] = make_cuDoubleComplex(.5*std::exp(-x*x / 1.), 0);
 }
 
+//Init Phi, u must be initialized
+__global__ void initPhi(cmplx* __restrict__ phi, cmplx* __restrict__ u)
+{
+	int i = blockIdx.x *blockDim.x + threadIdx.x;
+	if (i < N)
+		phi[i] = u[i] * cuConj(u[i]);
+
+}
+
 //Boundary manager
 //Boundary Kernel
 __global__ void boundKernel(cmplx *V)
 {
 	int i = threadIdx.x;
-	V[i*(N - 1)] = make_cuDoubleComplex(0, 0);
+	if(i<2)
+		V[i*(N - 1)] = make_cuDoubleComplex(0, 0);
 }
 
 __global__ void boundabsKernel(cmplx *V)
 {//100 is the maximum of kernel requiere
 	int i = blockIdx.x *blockDim.x + threadIdx.x;
-
-	V[i] = cuCmul(V[i], make_cuDoubleComplex(i / 100., 0));
-	V[N - i - 1] = cuCmul(V[N - i - 1], make_cuDoubleComplex(i / 100., 0));
+	if (i < 100)
+	{
+		V[i] = cuCmul(V[i], make_cuDoubleComplex(i / 100., 0));
+		V[N - i - 1] = cuCmul(V[N - i - 1], make_cuDoubleComplex(i / 100., 0));
+	}
 }
 
 void applyBoundaryCondition(cmplx *d_V)
 {
-	//boundabsKernel << <1, 100 >> > (d_V);
-	boundKernel << <1, 2 >> > (d_V);
+	boundabsKernel << <1, 100 >> > (d_V);
+	//boundKernel << <1, 2 >> > (d_V);
 }
 
 
@@ -203,7 +216,82 @@ __device__ cmplx derivative2nd(int i, cmplx *d_V)
 }
 
 
+//Compute the PHI at time n+1/2 with U at time t and PHI at time t-1/2
+__global__ void computePhi(cmplx* __restrict__ phi, cmplx* __restrict__ u)
+{
+	int i = blockIdx.x *blockDim.x + threadIdx.x;
+	if (i < N)
+		phi[i] = 2.*u[i] * cuConj(u[i]) - phi[i];
+}
 
+
+
+__global__ void jacobiEvaluateB(cmplx* __restrict__ V, cmplx* __restrict__ phi, cmplx* __restrict__ B, double dt, double pdx)
+{
+	int i = blockIdx.x *blockDim.x + threadIdx.x;
+	if (i < N)
+		B[i] = V[i] * (iMul(1. / dt) + 1. / pdx / pdx + .5*LAMBDA*phi[i]) - (.5 / pdx / pdx)*(V[i + 1] + V[i - 1]);
+}
+
+__global__ void jacobiNLS(cmplx* __restrict__ V, cmplx* __restrict__ Vtmp, cmplx* __restrict__ B, cmplx* __restrict__ phi, int iter, double dt, double pdx)
+{
+	int i = blockIdx.x *blockDim.x + threadIdx.x;
+
+	cmplx alphainv = 1. / (iMul(1. / dt) - 2. / pdx / pdx - .5*LAMBDA*phi[i]);
+	cmplx beta = make_cuDoubleComplex(.5 / pdx / pdx, 0);
+
+	for (int k = 0; k < iter; ++k)//while
+	{
+		cmplx sigma;
+		//First pass
+		if (i == 0)
+		{
+			sigma = beta*(0. + V[i + 1]);
+		}
+		else if (i == (N - 1))
+		{
+			sigma = beta*(V[i - 1] + 0.);
+		}
+		else
+		{
+			sigma = beta*(V[i - 1] + V[i + 1]);
+		}
+		Vtmp[i] = alphainv*(B[i] - sigma);
+
+		if (i == 0)
+			V[i] = make_cuDoubleComplex(0, 0);
+		if (i == (N - 1))
+			V[i] = make_cuDoubleComplex(0, 0);
+
+		//Second pass
+
+		if (i == 0)
+		{
+			sigma = beta*(0. + Vtmp[i + 1]);
+		}
+		else if (i == (N - 1))
+		{
+			sigma = beta*(Vtmp[i - 1] + 0.);
+		}
+		else
+		{
+			sigma = beta*(Vtmp[i - 1] + Vtmp[i + 1]);
+		}
+		V[i] = alphainv*(B[i] - sigma);
+
+		if (i == 0)
+			V[i] = make_cuDoubleComplex(0, 0);
+		if (i == (N - 1))
+			V[i] = make_cuDoubleComplex(0, 0);
+	}
+}
+
+__global__ void computeError(cmplx* __restrict__ V, cmplx* __restrict__ B, cmplx* __restrict__ phi, int iter, double dt, double pdx)
+{
+
+}
+
+//Write Data 
 void writeInFile(cmplx *V, int fileX)
 {
 	std::ofstream file;
@@ -233,30 +321,13 @@ void writeInFile(cmplx *h_V, std::string S)
 	file.close();
 }
 
-void writeInFile(double *h_V, double *d_V, int Nt)
-{
-	cudaMemcpy(h_V, d_V, N*(Nt + 1) * sizeof(double), cudaMemcpyDeviceToHost);
-	for (int i = 0; i < Nt + 1; ++i)
-	{
-		std::ofstream file;
-		file.open("data" + std::to_string(i) + ".ds");
-		for (int j = i*N; j < (N*i + N); ++j)
-		{
-			file << (static_cast<double>(j - i*N)*dx + Xmin) << " " << h_V[j] << "\n";
-		}
-		file.close();
-	}
-}
-
-
-
-
 int main()
 {
 	cmplx *h_V;
 	cmplx *d_V;
 	cmplx *d_Vtmp;
-	cmplx *d_Vtmpout;
+	cmplx *d_B;
+	cmplx *d_phi;
 
 	//Allocate one array on the Host and one on the device
 	//Use pinned memory on the host
