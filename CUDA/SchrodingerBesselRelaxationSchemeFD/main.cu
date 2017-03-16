@@ -11,23 +11,24 @@
 
 #define M_PI 3.141592653589793
 
-#define NGrid 256
-#define NBlock 512
+#define NBlock 64
+#define NThread 512
 
 
 
 
-#define N 131072
-#define Nd 131072.
+#define N 32768
+#define Nd 32768.
 
-#define Xmax (1000.)
-#define Xmin (-1000.)
+#define Xmax (100.)
+#define Xmin (-100.)
 
 #define L (Xmax - Xmin)
 
 #define dx (L/(Nd-1.))
 
 #define LAMBDA -1.
+
 #define cmplx cuDoubleComplex
 
 
@@ -233,15 +234,18 @@ __global__ void jacobiEvaluateB(cmplx* __restrict__ V, cmplx* __restrict__ phi, 
 		B[i] = V[i] * (iMul(1. / dt) + 1. / pdx / pdx + .5*LAMBDA*phi[i]) - (.5 / pdx / pdx)*(V[i + 1] + V[i - 1]);
 }
 
-__global__ void jacobiNLS(cmplx* __restrict__ V, cmplx* __restrict__ Vtmp, cmplx* __restrict__ B, cmplx* __restrict__ phi, int iter, double dt, double pdx)
+
+//We can use __constant__ for beta
+
+__global__ void jacobiNLSPassOne(cmplx* __restrict__ V, cmplx* __restrict__ Vtmp, cmplx* __restrict__ B, cmplx* __restrict__ phi, double dt, double pdx)
 {
 	int i = blockIdx.x *blockDim.x + threadIdx.x;
 
 	cmplx alphainv = 1. / (iMul(1. / dt) - 2. / pdx / pdx - .5*LAMBDA*phi[i]);
 	cmplx beta = make_cuDoubleComplex(.5 / pdx / pdx, 0);
 
-	for (int k = 0; k < iter; ++k)//while
-	{
+
+
 		cmplx sigma;
 		//First pass
 		if (i == 0)
@@ -262,34 +266,53 @@ __global__ void jacobiNLS(cmplx* __restrict__ V, cmplx* __restrict__ Vtmp, cmplx
 			V[i] = make_cuDoubleComplex(0, 0);
 		if (i == (N - 1))
 			V[i] = make_cuDoubleComplex(0, 0);
+}
 
-		//Second pass
 
-		if (i == 0)
-		{
-			sigma = beta*(0. + Vtmp[i + 1]);
-		}
-		else if (i == (N - 1))
-		{
-			sigma = beta*(Vtmp[i - 1] + 0.);
-		}
-		else
-		{
-			sigma = beta*(Vtmp[i - 1] + Vtmp[i + 1]);
-		}
-		V[i] = alphainv*(B[i] - sigma);
+__global__ void jacobiNLSPassTwo(cmplx* __restrict__ V, cmplx* __restrict__ Vtmp, cmplx* __restrict__ B, cmplx* __restrict__ phi, double dt, double pdx)
+{
+	int i = blockIdx.x *blockDim.x + threadIdx.x;
 
-		if (i == 0)
-			V[i] = make_cuDoubleComplex(0, 0);
-		if (i == (N - 1))
-			V[i] = make_cuDoubleComplex(0, 0);
+	cmplx alphainv = 1. / (iMul(1. / dt) - 2. / pdx / pdx - .5*LAMBDA*phi[i]);
+	cmplx beta = make_cuDoubleComplex(.5 / pdx / pdx, 0);
+
+	cmplx sigma;
+	//Second pass
+
+	if (i == 0)
+	{
+		sigma = beta*(0. + Vtmp[i + 1]);
 	}
+	else if (i == (N - 1))
+	{
+		sigma = beta*(Vtmp[i - 1] + 0.);
+	}
+	else
+	{
+		sigma = beta*(Vtmp[i - 1] + Vtmp[i + 1]);
+	}
+	V[i] = alphainv*(B[i] - sigma);
+
+	if (i == 0)
+		V[i] = make_cuDoubleComplex(0, 0);
+	if (i == (N - 1))
+		V[i] = make_cuDoubleComplex(0, 0);
 }
 
 __global__ void computeError(cmplx* __restrict__ V, cmplx* __restrict__ B, cmplx* __restrict__ phi, int iter, double dt, double pdx)
 {
 
 }
+
+void jacobiNLS(cmplx* __restrict__ V, cmplx* __restrict__ Vtmp, cmplx* __restrict__ B, cmplx* __restrict__ phi, double dt, double pdx, int nbiter)
+{
+	for (int k = 0; k < nbiter; ++k)
+	{
+		jacobiNLSPassOne << <NBlock, NThread >> > (V, Vtmp, B, phi, dt, pdx);
+		jacobiNLSPassTwo << <NBlock, NThread >> > (V, Vtmp, B, phi, dt, pdx);
+	}
+}
+
 
 //Write Data 
 void writeInFile(cmplx *V, int fileX)
@@ -335,17 +358,21 @@ int main()
 
 	cudaMalloc(&d_V, N * sizeof(cmplx));
 	cudaMalloc(&d_Vtmp, N * sizeof(cmplx));
-	cudaMalloc(&d_Vtmpout, N * sizeof(cmplx));
+	cudaMalloc(&d_B, N * sizeof(cmplx));
+	cudaMalloc(&d_phi, N * sizeof(cmplx));
 
-	pulseGauss << <NGrid, NBlock >> > (d_V);
+	pulseGauss << <NBlock, NThread >> > (d_V);
+	initPhi << <NBlock, NThread >> > (d_phi, d_V);
+
 	std::cout << "dx :" << dx << std::endl;
 
-	int Ni(100);
-	int Nj(15000);
+	int Ni(10);
+	int Nj(50);
+	int ITER(500);//True number of iteration is ITER*2
 
 
 
-	double dt(0.0000001);
+	double dt(0.000001);
 
 	std::cout << "Total Time : " << static_cast<double>((Ni*Nj))*dt << std::endl;
 
@@ -354,26 +381,37 @@ int main()
 
 
 		//Save the data in a file at each step
+		std::cout << "Copy ...";
 		cudaMemcpy(h_V, d_V, N * sizeof(cmplx), cudaMemcpyDeviceToHost);
+		std::cout << "Write ...";
 		writeInFile(h_V, i);
+		std::cout << "End." << std::endl;
+		
 
 
 		std::cout << "Time : " << static_cast<double>((i*Nj))*dt << std::endl;
+		if (i == Ni)
+			break;
 		for (int j = 0; j < Nj + 1; ++j)
 		{
-			
+			applyBoundaryCondition(d_V);
+			if (i != 0)
+				computePhi << <NBlock, NThread >> > (d_phi, d_V);
+			jacobiEvaluateB << <NBlock, NThread >> > (d_V, d_phi, d_B, dt, dx);
+			jacobiNLS(d_V, d_Vtmp, d_B, d_phi, dt, dx, ITER);
+			cudaDeviceSynchronize();
 		}
 
 	}
 
-	//writeInFile(h_VAllStep, d_VAllStep, Ni);
 
 	cudaFreeHost(h_V);
-	//cudaFreeHost(h_VAllStep);
+	
 
 	cudaFree(d_V);
 	cudaFree(d_Vtmp);
-	//cudaFree(d_VAllStep);
+	cudaFree(d_B);
+	cudaFree(d_phi);
 
 	return 0;
 }
