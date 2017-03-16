@@ -12,8 +12,8 @@
 
 #define M_PI 3.141592653589793
 
-#define NGrid 2048
-#define NBlock 512
+#define NBlock 2048
+#define NThread 512
 
 #define N 1048576
 #define Nd 1048576.
@@ -140,15 +140,15 @@ void linearStep(cmplx *d_V, double dt ,cufftHandle &plan)
 {
 	//plan must be already initialize
 	cufftExecZ2Z(plan, d_V, d_V, CUFFT_FORWARD);
-	LinearStepKernel << <NGrid, NBlock >> > (d_V, dt);
+	LinearStepKernel << <NBlock, NThread >> > (d_V, dt);
 	cufftExecZ2Z(plan, d_V, d_V, CUFFT_INVERSE);
-	NormFFT << <NGrid, NBlock >> > (d_V);
+	NormFFT << <NBlock, NThread >> > (d_V);
 	applyBoundaryCondition(d_V);
 }
 
 void nonLinearStep(cmplx *d_V, double dt)
 {
-	NonLinearStepKernel << <NGrid, NBlock >> > (d_V, dt);
+	NonLinearStepKernel << <NBlock, NThread >> > (d_V, dt);
 	applyBoundaryCondition(d_V);
 }
 
@@ -202,7 +202,7 @@ int main()
 	cudaMallocHost(&h_V, N * sizeof(cmplx));
 	cudaMalloc(&d_V, N * sizeof(cmplx));
 
-	pulseGauss << <NGrid,NBlock>> > (d_V);
+	pulseGauss << <NBlock,NThread>> > (d_V);
 
 	cufftHandle plan;
 	//Create 1D FFT plan

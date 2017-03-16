@@ -12,8 +12,8 @@
 
 #define M_PI 3.141592653589793
 
-#define NGrid 128
-#define NBlock 512
+#define NBlock 128
+#define NThread 512
 
 #define N 131072/2
 #define Nd 131072./2.
@@ -245,9 +245,9 @@ void __global__ fillKernel(cmplx *V, cmplx *V1)
 void derivative2nd(cmplx *d_Vin, cmplx *d_Vout, cufftHandle &plan)
 {
 	cufftExecZ2Z(plan, d_Vin, d_Vout, CUFFT_FORWARD);
-	derivative2ndFourierKernel << <NGrid, NBlock >> > (d_Vout);
+	derivative2ndFourierKernel << <NBlock, NThread >> > (d_Vout);
 	cufftExecZ2Z(plan, d_Vout, d_Vout, CUFFT_INVERSE);
-	NormFFT << <NGrid, NBlock >> > (d_Vout);
+	NormFFT << <NBlock, NThread >> > (d_Vout);
 }
 
 __device__ cmplx evaluateF(double t, cmplx *d_V, cmplx *d_Vder, int i)
@@ -305,13 +305,13 @@ __global__ void rungeKutta4FourStep(cmplx *V, cmplx *Vstep, cmplx *d_VtmpOut, cm
 void rungeKutta4ODE(cmplx *d_V, cmplx *d_Vtmp, cmplx *d_VtmpOut, cmplx *Vder, double t, double h, cufftHandle &plan)
 {
 	derivative2nd(d_V, Vder, plan);
-	rungeKutta4FirstStep << <NGrid, NBlock >> > (d_V, d_Vtmp, d_VtmpOut, Vder, t, h);
+	rungeKutta4FirstStep << <NBlock, NThread >> > (d_V, d_Vtmp, d_VtmpOut, Vder, t, h);
 	derivative2nd(d_Vtmp, Vder, plan);
-	rungeKutta4SecondStep << <NGrid, NBlock >> > (d_V, d_Vtmp, d_VtmpOut, Vder, t, h);
+	rungeKutta4SecondStep << <NBlock, NThread >> > (d_V, d_Vtmp, d_VtmpOut, Vder, t, h);
 	derivative2nd(d_Vtmp, Vder, plan);
-	rungeKutta4ThirdStep << <NGrid, NBlock >> > (d_V, d_Vtmp, d_VtmpOut, Vder, t, h);
+	rungeKutta4ThirdStep << <NBlock, NThread >> > (d_V, d_Vtmp, d_VtmpOut, Vder, t, h);
 	derivative2nd(d_Vtmp, Vder, plan);
-	rungeKutta4FourStep << <NGrid, NBlock >> > (d_V, d_Vtmp, d_VtmpOut, Vder, t, h);
+	rungeKutta4FourStep << <NBlock, NThread >> > (d_V, d_Vtmp, d_VtmpOut, Vder, t, h);
 }
 
 
@@ -381,7 +381,7 @@ int main()
 	cudaMalloc(&d_Vtmp, N * sizeof(cmplx));
 	cudaMalloc(&d_Vtmpout, N * sizeof(cmplx));
 
-	pulseGauss << <NGrid, NBlock >> > (d_V);
+	pulseGauss << <NBlock, NThread >> > (d_V);
 
 	cufftHandle plan;
 	//Create 1D FFT plan
@@ -410,7 +410,7 @@ int main()
 		cudaMemcpy(h_V, d_V, N * sizeof(cmplx), cudaMemcpyDeviceToHost);
 		writeInFile(h_V, i);
 
-		//SaveDataKernel << <NGrid, NBlock >> > (i, d_V, d_VAllStep);
+		//SaveDataKernel << <NBlock, NThread >> > (i, d_V, d_VAllStep);
 
 		std::cout << "Time : " << static_cast<double>((i*Nj))*dt << std::endl;
 		if (i == Ni)

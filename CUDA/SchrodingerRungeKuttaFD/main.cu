@@ -11,8 +11,8 @@
 
 #define M_PI 3.141592653589793
 
-#define NGrid 256
-#define NBlock 512
+#define NBlock 256
+#define NThread 512
 
 
 
@@ -206,8 +206,8 @@ void rungeKutta2ODE(cmplx *d_V, cmplx *d_Vtmp,double t, double h)
 	//Compute the derivative of d_V
 	
 	//Perform the first Step of RK2 ans save it in Vtmp
-	rungeKutta2FirstStep << <NGrid, NBlock >> > (d_V, d_Vtmp, t, h);
-	rungeKutta2SecondStep << < NGrid, NBlock >> > (d_V, d_Vtmp, t, h);
+	rungeKutta2FirstStep << <NBlock, NThread >> > (d_V, d_Vtmp, t, h);
+	rungeKutta2SecondStep << < NBlock, NThread >> > (d_V, d_Vtmp, t, h);
 }
 
 
@@ -257,11 +257,12 @@ __global__ void rungeKutta4FourStep(cmplx *V, cmplx *Vstep, cmplx *d_VtmpOut, do
 
 void rungeKutta4ODE(cmplx *d_V, cmplx *d_Vtmp, cmplx *d_VtmpOut, double t, double h)
 {
-	rungeKutta4FirstStep << <NGrid, NBlock >> > (d_V, d_Vtmp, d_VtmpOut, t, h);
-	rungeKutta4SecondStep << <NGrid, NBlock >> > (d_V, d_Vtmp, d_VtmpOut, t, h);
-	rungeKutta4ThirdStep << <NGrid, NBlock >> > (d_V, d_Vtmp, d_VtmpOut, t, h);
-	rungeKutta4FourStep << <NGrid, NBlock >> > (d_V, d_Vtmp, d_VtmpOut, t, h);
+	rungeKutta4FirstStep << <NBlock, NThread >> > (d_V, d_Vtmp, d_VtmpOut, t, h);
+	rungeKutta4SecondStep << <NBlock, NThread >> > (d_V, d_Vtmp, d_VtmpOut, t, h);
+	rungeKutta4ThirdStep << <NBlock, NThread >> > (d_V, d_Vtmp, d_VtmpOut, t, h);
+	rungeKutta4FourStep << <NBlock, NThread >> > (d_V, d_Vtmp, d_VtmpOut, t, h);
 }
+
 
 
 
@@ -355,7 +356,7 @@ int main()
 	cudaMalloc(&d_Vtmp, N * sizeof(cmplx));
 	cudaMalloc(&d_Vtmpout, N * sizeof(cmplx));
 
-	pulseGauss << <NGrid, NBlock >> > (d_V);
+	pulseGauss << <NBlock, NThread >> > (d_V);
 	std::cout << "dx :" << dx << std::endl;
 
 	int Ni(100);
@@ -381,7 +382,7 @@ int main()
 		cudaMemcpy(h_V, d_V, N * sizeof(cmplx), cudaMemcpyDeviceToHost);
 		writeInFile(h_V, i);
 		
-		//SaveDataKernel << <NGrid, NBlock >> > (i, d_V, d_VAllStep);
+		//SaveDataKernel << <NBlock, NThread >> > (i, d_V, d_VAllStep);
 
 		std::cout << "Time : " << static_cast<double>((i*Nj))*dt << std::endl;
 		for (int j = 0; j < Nj+1; ++j)
