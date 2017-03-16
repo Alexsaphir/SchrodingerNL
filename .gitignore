@@ -1,8 +1,12 @@
 #Personal ignore direction
 #Automatic Save From Gedit
 *~
+#Remove Nsight file 
+*.nvact
 
+#Remove rar file
 *.rar
+
 #File create by cuda executables
 *.ds
 
