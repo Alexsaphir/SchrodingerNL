@@ -11,14 +11,14 @@
 
 #define M_PI 3.141592653589793
 
-#define NBlock 64
-#define NThread 512
+#define NBlock 131072/64
+#define NThread 1024
 
 
 
 
-#define N 32768
-#define Nd 32768.
+#define N 134217728/64
+#define Nd 134217728./64.
 
 #define Xmax (100.)
 #define Xmin (-100.)
@@ -231,7 +231,7 @@ __global__ void jacobiEvaluateB(cmplx* __restrict__ V, cmplx* __restrict__ phi, 
 {
 	int i = blockIdx.x *blockDim.x + threadIdx.x;
 	if (i < N)
-		B[i] = V[i] * (iMul(1. / dt) + 1. / pdx / pdx + .5*LAMBDA*phi[i]) - (.5 / pdx / pdx)*(V[i + 1] + V[i - 1]);
+		B[i] = V[i] * (iMul(1. / dt) + 1. / pdx / pdx/ 2. + .5*LAMBDA*phi[i]) - (.25 / pdx / pdx)*(V[i + 1] + V[i - 1]);
 }
 
 
@@ -239,64 +239,119 @@ __global__ void jacobiEvaluateB(cmplx* __restrict__ V, cmplx* __restrict__ phi, 
 
 __global__ void jacobiNLSPassOne(cmplx* __restrict__ V, cmplx* __restrict__ Vtmp, cmplx* __restrict__ B, cmplx* __restrict__ phi, double dt, double pdx)
 {
-	int i = blockIdx.x *blockDim.x + threadIdx.x;
+	int i_global = blockIdx.x *blockDim.x + threadIdx.x;//True position in the array
+	int i = threadIdx.x;//Position in the grid
 
-	cmplx alphainv = 1. / (iMul(1. / dt) - 2. / pdx / pdx - .5*LAMBDA*phi[i]);
-	cmplx beta = make_cuDoubleComplex(.5 / pdx / pdx, 0);
+	//copy a part of the array V in shared memory
+	//We need NThread+2 cmplx 
+	__shared__ cmplx Vs[NThread + 2];
 
+	//Begin initialization of the shared memory
+	Vs[i + 1] = V[i_global];
+	if (i == 0 && i_global != 0)
+	{
+		//V[i_global-1] exist
+		Vs[i] = V[i_global - 1];
+	}
 
+	if (i == NThread - 1 && i_global != N - 1)
+	{
+		//V[i_global+1] exist
+		Vs[NThread + 1] = V[i_global + 1];
+	}
+	__syncthreads();
 
+	if (i < N)
+	{
+
+		cmplx alphainv = 1. / (iMul(1. / dt) - .5 / pdx / pdx - .5*LAMBDA*phi[i_global]);
+		cmplx beta = make_cuDoubleComplex(.25 / pdx / pdx, 0);
 		cmplx sigma;
-		//First pass
-		if (i == 0)
-		{
-			sigma = beta*(0. + V[i + 1]);
-		}
-		else if (i == (N - 1))
-		{
-			sigma = beta*(V[i - 1] + 0.);
-		}
-		else
-		{
-			sigma = beta*(V[i - 1] + V[i + 1]);
-		}
-		Vtmp[i] = alphainv*(B[i] - sigma);
+		//sigma = beta*(V[i - 1] + V[i + 1]);
+		sigma = beta*(Vs[i] + Vs[i + 2]);
 
-		if (i == 0)
-			V[i] = make_cuDoubleComplex(0, 0);
-		if (i == (N - 1))
-			V[i] = make_cuDoubleComplex(0, 0);
+		if (i_global == 0)
+		{
+			//sigma = beta*(0. + V[i_global + 1]);
+			sigma = beta*(0. + Vs[i + 2]);
+		}
+		else if (i_global == (N - 1))
+		{
+			//sigma = beta*(V[i - 1] + 0.);
+			sigma = beta*(Vs[i] + 0.);
+		}
+		
+		
+		//Save the value of this iteration
+		Vtmp[i_global] = alphainv*(B[i_global] - sigma);
+		//Boundary Condition
+		if (i_global == 0)
+			Vtmp[i_global] = make_cuDoubleComplex(0, 0);
+		if (i_global == (N - 1))
+			Vtmp[i_global] = make_cuDoubleComplex(0, 0);
+		__syncthreads();
+	}
 }
 
 
 __global__ void jacobiNLSPassTwo(cmplx* __restrict__ V, cmplx* __restrict__ Vtmp, cmplx* __restrict__ B, cmplx* __restrict__ phi, double dt, double pdx)
 {
-	int i = blockIdx.x *blockDim.x + threadIdx.x;
+	int i_global = blockIdx.x *blockDim.x + threadIdx.x;//True position in the array
+	int i = threadIdx.x;//Position in the grid
 
-	cmplx alphainv = 1. / (iMul(1. / dt) - 2. / pdx / pdx - .5*LAMBDA*phi[i]);
-	cmplx beta = make_cuDoubleComplex(.5 / pdx / pdx, 0);
+						//copy a part of the array V in shared memory
+						//We need NThread+2 cmplx 
+	__shared__ cmplx Vs[NThread + 2];
 
-	cmplx sigma;
-	//Second pass
+	//Begin initialization of the shared memory
+	//Copy current value of the thread
+	Vs[i + 1] = Vtmp[i_global];
 
-	if (i == 0)
+	//Copy Boundary of the array
+	if (i == 0 && i_global != 0)
 	{
-		sigma = beta*(0. + Vtmp[i + 1]);
+		//V[i_global-1] exist
+		Vs[i] = Vtmp[i_global - 1];
 	}
-	else if (i == (N - 1))
+	if (i == NThread - 1 && i_global != N - 1)
 	{
-		sigma = beta*(Vtmp[i - 1] + 0.);
+		//V[i_global+1] exist
+		Vs[NThread + 1] = Vtmp[i_global + 1];
 	}
-	else
-	{
-		sigma = beta*(Vtmp[i - 1] + Vtmp[i + 1]);
-	}
-	V[i] = alphainv*(B[i] - sigma);
+	__syncthreads();
 
-	if (i == 0)
-		V[i] = make_cuDoubleComplex(0, 0);
-	if (i == (N - 1))
-		V[i] = make_cuDoubleComplex(0, 0);
+	if (i < N)
+	{
+
+		cmplx alphainv = 1. / (iMul(1. / dt) - .5 / pdx / pdx - .5*LAMBDA*phi[i_global]);
+		cmplx beta = make_cuDoubleComplex(.25 / pdx / pdx, 0);
+		cmplx sigma;
+
+		if (i_global == 0)
+		{
+			//sigma = beta*(0. + V[i_global + 1]);
+			sigma = beta*(0. + Vs[i + 2]);
+		}
+		else if (i_global == (N - 1))
+		{
+			//sigma = beta*(V[i - 1] + 0.);
+			sigma = beta*(Vs[i] + 0.);
+		}
+		else
+		{
+			//sigma = beta*(V[i - 1] + V[i + 1]);
+			sigma = beta*(Vs[i] + Vs[i + 2]);
+		}
+
+		//Save the value of this iteration
+		V[i_global] = alphainv*(B[i_global] - sigma);
+		//Boundary Condition
+		if (i_global == 0)
+			V[i_global] = make_cuDoubleComplex(0, 0);
+		if (i_global == (N - 1))
+			V[i_global] = make_cuDoubleComplex(0, 0);
+		__syncthreads();
+	}
 }
 
 __global__ void computeError(cmplx* __restrict__ V, cmplx* __restrict__ B, cmplx* __restrict__ phi, int iter, double dt, double pdx)
@@ -319,7 +374,7 @@ void writeInFile(cmplx *V, int fileX)
 {
 	std::ofstream file;
 	file.open("data" + std::to_string(fileX) + ".ds");
-	for (int i = 0; i < N; ++i)
+	for (int i = 0; i < N; i+=2048)
 	{
 		double tmp = sqrt(V[i].x*V[i].x + V[i].y*V[i].y);
 		//if (V[i].x < 0)
@@ -364,15 +419,16 @@ int main()
 	pulseGauss << <NBlock, NThread >> > (d_V);
 	initPhi << <NBlock, NThread >> > (d_phi, d_V);
 
-	std::cout << "dx :" << dx << std::endl;
+
+	std::cout << "dx :" << dx <<std::endl <<cudaGetLastError()<< std::endl;
 
 	int Ni(10);
-	int Nj(50);
+	int Nj(20);
 	int ITER(500);//True number of iteration is ITER*2
 
 
 
-	double dt(0.000001);
+	double dt(0.001);
 
 	std::cout << "Total Time : " << static_cast<double>((Ni*Nj))*dt << std::endl;
 
@@ -389,14 +445,16 @@ int main()
 		
 
 
-		std::cout << "Time : " << static_cast<double>((i*Nj))*dt << std::endl;
-		if (i == Ni)
+		std::cout << "Index :" << i <<" Time : " << static_cast<double>((i*Nj))*dt << std::endl;
+
+		if (i == Ni-1)
 			break;
 		for (int j = 0; j < Nj + 1; ++j)
 		{
-			applyBoundaryCondition(d_V);
+			//applyBoundaryCondition(d_V);
 			if (i != 0)
 				computePhi << <NBlock, NThread >> > (d_phi, d_V);
+			
 			jacobiEvaluateB << <NBlock, NThread >> > (d_V, d_phi, d_B, dt, dx);
 			jacobiNLS(d_V, d_Vtmp, d_B, d_phi, dt, dx, ITER);
 			cudaDeviceSynchronize();
