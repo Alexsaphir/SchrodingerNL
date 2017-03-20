@@ -17,8 +17,8 @@
 
 
 
-#define N 134217728/64
-#define Nd 134217728./64.
+#define N 134217728/512
+#define Nd 134217728./512.
 
 #define Xmax (100.)
 #define Xmin (-100.)
@@ -399,6 +399,20 @@ void writeInFile(cmplx *h_V, std::string S)
 	file.close();
 }
 
+void Write3DFile(cmplx *V, double t)
+{
+	std::ofstream file;
+	file.open("data3D.ds", std::ios_base::app);
+	for (int i = 0; i < N; i += 2048)
+	{
+		double tmp = sqrt(V[i].x*V[i].x + V[i].y*V[i].y);
+		if (V[i].x < 0)
+			tmp = -tmp;
+		file << t << " " << (static_cast<double>(i)*dx + Xmin) << " " << tmp << "\n\n";
+	}
+	file.close();
+}
+
 int main()
 {
 	cmplx *h_V;
@@ -422,13 +436,13 @@ int main()
 
 	std::cout << "dx :" << dx <<std::endl <<cudaGetLastError()<< std::endl;
 
-	int Ni(10);
-	int Nj(20);
-	int ITER(500);//True number of iteration is ITER*2
+	int Ni(100);
+	int Nj(10000);
+	int ITER(100);//True number of iteration is ITER*2
 
 
 
-	double dt(0.001);
+	double dt(0.0001);
 
 	std::cout << "Total Time : " << static_cast<double>((Ni*Nj))*dt << std::endl;
 
@@ -440,7 +454,8 @@ int main()
 		std::cout << "Copy ...";
 		cudaMemcpy(h_V, d_V, N * sizeof(cmplx), cudaMemcpyDeviceToHost);
 		std::cout << "Write ...";
-		writeInFile(h_V, i);
+		//writeInFile(h_V, i);
+		Write3DFile(h_V, static_cast<double>((i*Nj))*dt);
 		std::cout << "End." << std::endl;
 		
 
