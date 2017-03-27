@@ -468,6 +468,7 @@ int main()
 		{
 			//applyBoundaryCondition(d_V);
 			if (i != 0)
+			if (!(i == 0 && j== 0))
 				computePhi << <NBlock, NThread >> > (d_phi, d_V);
 			
 			jacobiEvaluateB << <NBlock, NThread >> > (d_V, d_phi, d_B, dt, dx);
