@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SchrodingerRungeKuttaFD", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SchrodingerBesselRelaxationSchemeFD", "SchrodingerBesselRelaxationSchemeFD\SchrodingerBesselRelaxationSchemeFD.vcxproj", "{22466EAB-0F3D-4B72-97E8-C927B85B3B82}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ChebyshevInterpolation", "ChebyshevInterpolation\ChebyshevInterpolation.vcxproj", "{A44BE3BB-06B7-4088-BB48-9CA9AA1A955B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +53,14 @@ Global
 		{22466EAB-0F3D-4B72-97E8-C927B85B3B82}.Release|x64.Build.0 = Release|x64
 		{22466EAB-0F3D-4B72-97E8-C927B85B3B82}.Release|x86.ActiveCfg = Release|Win32
 		{22466EAB-0F3D-4B72-97E8-C927B85B3B82}.Release|x86.Build.0 = Release|Win32
+		{A44BE3BB-06B7-4088-BB48-9CA9AA1A955B}.Debug|x64.ActiveCfg = Debug|x64
+		{A44BE3BB-06B7-4088-BB48-9CA9AA1A955B}.Debug|x64.Build.0 = Debug|x64
+		{A44BE3BB-06B7-4088-BB48-9CA9AA1A955B}.Debug|x86.ActiveCfg = Debug|Win32
+		{A44BE3BB-06B7-4088-BB48-9CA9AA1A955B}.Debug|x86.Build.0 = Debug|Win32
+		{A44BE3BB-06B7-4088-BB48-9CA9AA1A955B}.Release|x64.ActiveCfg = Release|x64
+		{A44BE3BB-06B7-4088-BB48-9CA9AA1A955B}.Release|x64.Build.0 = Release|x64
+		{A44BE3BB-06B7-4088-BB48-9CA9AA1A955B}.Release|x86.ActiveCfg = Release|Win32
+		{A44BE3BB-06B7-4088-BB48-9CA9AA1A955B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
