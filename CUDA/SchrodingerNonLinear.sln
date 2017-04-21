@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SchrodingerBesselRelaxation
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ChebyshevInterpolation", "ChebyshevInterpolation\ChebyshevInterpolation.vcxproj", "{A44BE3BB-06B7-4088-BB48-9CA9AA1A955B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PseudoSpectral", "PseudoSpectral\PseudoSpectral.vcxproj", "{FCE3810A-DC80-4752-B27F-69ED06500944}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -61,6 +63,14 @@ Global
 		{A44BE3BB-06B7-4088-BB48-9CA9AA1A955B}.Release|x64.Build.0 = Release|x64
 		{A44BE3BB-06B7-4088-BB48-9CA9AA1A955B}.Release|x86.ActiveCfg = Release|Win32
 		{A44BE3BB-06B7-4088-BB48-9CA9AA1A955B}.Release|x86.Build.0 = Release|Win32
+		{FCE3810A-DC80-4752-B27F-69ED06500944}.Debug|x64.ActiveCfg = Debug|x64
+		{FCE3810A-DC80-4752-B27F-69ED06500944}.Debug|x64.Build.0 = Debug|x64
+		{FCE3810A-DC80-4752-B27F-69ED06500944}.Debug|x86.ActiveCfg = Debug|Win32
+		{FCE3810A-DC80-4752-B27F-69ED06500944}.Debug|x86.Build.0 = Debug|Win32
+		{FCE3810A-DC80-4752-B27F-69ED06500944}.Release|x64.ActiveCfg = Release|x64
+		{FCE3810A-DC80-4752-B27F-69ED06500944}.Release|x64.Build.0 = Release|x64
+		{FCE3810A-DC80-4752-B27F-69ED06500944}.Release|x86.ActiveCfg = Release|Win32
+		{FCE3810A-DC80-4752-B27F-69ED06500944}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
