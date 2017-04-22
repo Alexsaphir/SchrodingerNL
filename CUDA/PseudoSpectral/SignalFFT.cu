@@ -1,11 +1,12 @@
 #include "SignalFFT.cuh"
 
+
 SignalFFT::SignalFFT(int nbPoints) :m_nbPts(nbPoints > 0 ? nbPoints : 0), m_d_V(NULL), m_h_V(NULL)
 {
 	//create plan for complex to complex
 	cufftPlan1d(&m_plan, nbPoints, CUFFT_Z2Z, 1);
-	m_h_V = new (std::nothrow) cmplx[m_nbPts];
-	cudaError Err = cudaMalloc(&m_d_V, m_nbPts * sizeof(cmplx));
+	cudaMallocHost(&m_h_V, m_nbPts * sizeof(cmplx));
+	cudaMalloc(&m_d_V, m_nbPts * sizeof(cmplx));
 
 	m_thread = 1024;
 	m_block = ((m_nbPts % m_thread) == 0) ? (m_nbPts / m_thread) : (1 + m_nbPts / m_thread);
@@ -109,7 +110,7 @@ void SignalFFT::cancelReorderData()
 SignalFFT::~SignalFFT()
 {
 	cufftDestroy(m_plan);
-	delete[] m_h_V;
+	cudaFreeHost(m_h_V);
 	cudaFree(m_d_V);
 }
 
