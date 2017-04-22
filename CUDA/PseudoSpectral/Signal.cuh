@@ -52,6 +52,6 @@ void SinPulseEqui(Signal *S);
 void CosWTPulseEqui(Signal *S);
 void Trigo(Signal *S, double freq);
 void GaussPulseLinear(Signal *S, double fc = 1000., double bw = .5, double bwr = -6., double tpr = -60);
-
+void GaussCos(Signal *S);
 #endif
 

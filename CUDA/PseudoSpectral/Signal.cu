@@ -114,3 +114,15 @@ void GaussPulseLinear(Signal *S, double fc, double bw, double bwr, double tpr)
 	}
 	S->syncHostToDevice();
 }
+
+void GaussCos(Signal * S)
+{
+	Axis X(S->getXmin(), S->getXmax(), S->getSignalPoints());
+	for (int i = 0; i < S->getSignalPoints(); ++i)
+	{
+		double t = X.getLinearValueAt(i);
+		double yenv = std::exp(-t*t);
+		S->getHostData()[i] = yenv*make_cuDoubleComplex(std::cos(50.*t - std::exp(-2.*t*t)), 0);
+	}
+	S->syncHostToDevice();
+}
