@@ -12,14 +12,14 @@
 
 #define M_PI 3.141592653589793
 
-#define NBlock 128
+#define NBlock 64
 #define NThread 512
 
-#define N 131072/2
-#define Nd 131072./2.
+#define N 32768
+#define Nd 32768.
 
-#define Xmax (100.)
-#define Xmin (-100.)
+#define Xmax (500.)
+#define Xmin (-500.)
 
 #define L (Xmax - Xmin)
 
@@ -79,6 +79,72 @@ __host__ __device__ static __inline__ cuDoubleComplex cuCexp(cuDoubleComplex z)
 	return make_cuDoubleComplex(factor * cos(z.y), factor * sin(z.y));
 }
 
+
+
+
+__global__ void FilterCesaro(cmplx *d_V)
+{
+	int i = blockIdx.x *blockDim.x + threadIdx.x;
+	double Freq;
+
+
+	//Positive Frequency are between 0 and <N/2
+	//Negative Frequency are between N/2and <N
+	if (i < N / 2)
+		Freq = 2.*M_PI*static_cast<double>(i) / L;
+	else if (i > N / 2)
+		Freq = 2.*M_PI*(static_cast<double>(i) - Nd) / L;
+	else
+		Freq = 0.;//k=N/2
+	__syncthreads();
+
+	if (i < N)
+		d_V[i] = (1. - std::abs(Freq) / static_cast<double>(N / 2 + 1))*d_V[i];
+}
+
+__global__ void FilterLanczos(cmplx *d_V)
+{
+	int i = blockIdx.x *blockDim.x + threadIdx.x;
+	double Freq;
+
+
+	//Positive Frequency are between 0 and <N/2
+	//Negative Frequency are between N/2and <N
+	if (i < N / 2)
+		Freq = 2.*M_PI*static_cast<double>(i) / L;
+	else if (i > N / 2)
+		Freq = 2.*M_PI*(static_cast<double>(i) - Nd) / L;
+	else
+		Freq = 0.;//k=N/2
+	__syncthreads();
+
+	if (i < N)
+		d_V[i] = std::sin(Freq / Nd) / (Freq / Nd)*d_V[i];
+}
+
+__global__ void FilterCosinusRaised(cmplx *d_V)
+{
+	int i = blockIdx.x *blockDim.x + threadIdx.x;
+	double Freq;
+
+
+	//Positive Frequency are between 0 and <N/2
+	//Negative Frequency are between N/2and <N
+	if (i < N / 2)
+		Freq = 2.*M_PI*static_cast<double>(i) / L;
+	else if (i > N / 2)
+		Freq = 2.*M_PI*(static_cast<double>(i) - Nd) / L;
+	else
+		Freq = 0.;//k=N/2
+	__syncthreads();
+
+	if (i < N)
+		d_V[i] = (1.+cos(2.*M_PI*Freq/Nd))*.5*d_V[i];
+}
+
+
+
+
 //Derivative Kernel
 __global__ void derivativeFourierKernel(cmplx *V)
 {
@@ -108,6 +174,7 @@ __global__ void derivative2ndFourierKernel(cmplx *V)
 
 	//Positive Frequency are between 0 and <N/2
 	//Negative Frequency are between N/2and <N
+	//2nd derivative = ik*ik=-k*k
 	if (i < N / 2)
 		Freq = make_cuDoubleComplex(0, 2.*M_PI*static_cast<double>(i) / L);
 	else if (i > N / 2)
@@ -115,6 +182,7 @@ __global__ void derivative2ndFourierKernel(cmplx *V)
 	else
 		Freq = make_cuDoubleComplex(0, 0);//k=N/2
 	__syncthreads();
+
 
 	Freq = cuCmul(Freq, Freq);
 	if (i<N)
@@ -153,7 +221,7 @@ __global__ void pulseGauss(cmplx *V)
 	int i = blockIdx.x *blockDim.x + threadIdx.x;
 	double x = static_cast<double>(i)*dx + Xmin;
 	if (i < N)
-		V[i] = make_cuDoubleComplex(2.*std::exp(-x*x / 16.), 0);
+		V[i] = make_cuDoubleComplex(.1*std::exp(-x*x / 4.), 0);
 }
 
 //Normalize After fft Kernel
@@ -242,6 +310,14 @@ void __global__ fillKernel(cmplx *V, cmplx *V1)
 
 
 
+void Filter(cmplx *d_V, cufftHandle &plan)
+{
+	cufftExecZ2Z(plan, d_V, d_V, CUFFT_FORWARD);
+	FilterCesaro << <NBlock, NThread >> > (d_V);
+	cufftExecZ2Z(plan, d_V, d_V, CUFFT_INVERSE);
+	NormFFT << <NBlock, NThread >> > (d_V);
+}
+
 void derivative2nd(cmplx *d_Vin, cmplx *d_Vout, cufftHandle &plan)
 {
 	cufftExecZ2Z(plan, d_Vin, d_Vout, CUFFT_FORWARD);
@@ -255,7 +331,7 @@ __device__ cmplx evaluateF(double t, cmplx *d_V, cmplx *d_Vder, int i)
 	//f= i*(-.5*d²E/dx² + |E|²E)
 	//return make_cuDoubleComplex(-std::exp(-t), 0);
 
-	return iMul(.5*d_Vder[i] - cuConj(d_V[i])*d_V[i] * d_V[i]);
+	return iMul(+0.*d_Vder[i] - 5.*cuConj(d_V[i])*d_V[i] * d_V[i]);
 }
 
 
@@ -316,6 +392,9 @@ void rungeKutta4ODE(cmplx *d_V, cmplx *d_Vtmp, cmplx *d_VtmpOut, cmplx *Vder, do
 
 
 
+
+
+
 void disp(cmplx *V)
 {
 	for (int i = 0; i < N; ++i)
@@ -367,6 +446,18 @@ void writeInFile(cmplx *h_V, std::string S)
 
 int main()
 {
+	int Ni(10);
+	int Nj(10000);
+	double dt(0.000001);
+
+	std::cout << "Ratio dt/dx :" << dt / dx / dx << std::endl;
+	std::cout << "dx :" << dx << std::endl;
+	std::cout << "dt :" << dt << std::endl << "Cuda Status :" << cudaGetLastError() << std::endl;
+
+	std::cout << std::endl << "Total Time : " << static_cast<double>((Ni*Nj))*dt << std::endl;
+	std::cout << "Time per Step :" << static_cast<double>(Nj)*dt << std::endl << std::endl << std::endl << std::endl;
+	//getchar();
+
 	cmplx *h_V;
 	cmplx *d_V;
 	cmplx *d_Vder;
@@ -387,8 +478,7 @@ int main()
 	//Create 1D FFT plan
 	cufftPlan1d(&plan, N, CUFFT_Z2Z, 1);
 
-	int Ni(1);
-	int Nj(10000000);
+	
 
 	//Allocate a big array on host and device to save all time step
 	//double *h_VAllStep;
@@ -397,11 +487,7 @@ int main()
 
 	//cudaMalloc(&d_VAllStep, N*(Ni + 1) * sizeof(double));
 
-
-	double dt(0.00000001);
-
-	std::cout << "Total Time : " << static_cast<double>((Ni*Nj))*dt << std::endl;
-
+	
 	for (int i = 0; i < Ni + 1; i++)
 	{
 
@@ -419,6 +505,7 @@ int main()
 		{
 			//rungeKutta2ODE(d_V, d_Vtmp,static_cast<double>((i*Nj+j))*dt, dt);
 			rungeKutta4ODE(d_V, d_Vtmp, d_Vtmpout, d_Vder, static_cast<double>((i*Nj + j))*dt, dt,plan);
+			Filter(d_V, plan);
 			applyBoundaryCondition(d_V);
 		}
 

@@ -1,4 +1,4 @@
-#include <cuda.h>
+
 #include <cufft.h>
 #include <cuda_runtime.h>
 #include <device_functions.h>

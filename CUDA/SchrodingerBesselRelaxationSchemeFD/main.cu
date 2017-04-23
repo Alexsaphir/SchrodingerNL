@@ -11,14 +11,14 @@
 
 #define M_PI 3.141592653589793
 
-#define NBlock 131072/64
+#define NBlock 512/64
 #define NThread 1024
 
 
 
 
-#define N 134217728/512
-#define Nd 134217728./512.
+#define N 524288/64
+#define Nd 524288./64.
 
 #define Xmax (100.)
 #define Xmin (-100.)
@@ -33,6 +33,13 @@
 
 
 //Operator overloading for cmplx
+
+__host__ __device__ static __inline__ cuDoubleComplex cuCexp(cuDoubleComplex z)
+{
+	double factor = exp(z.x);
+	return make_cuDoubleComplex(factor * cos(z.y), factor * sin(z.y));
+}
+
 
 __device__ __host__ __inline__ cmplx operator+(const cmplx &a, const cmplx &b)
 {
@@ -143,7 +150,12 @@ __global__ void pulseGauss(cmplx *V)
 	int i = blockIdx.x *blockDim.x + threadIdx.x;
 	double x = static_cast<double>(i)*dx + Xmin;
 	if (i < N)
-		V[i] = make_cuDoubleComplex(.5*std::exp(-x*x / 1.), 0);
+		V[i] = make_cuDoubleComplex(.25*std::exp(-x*x / 1.), 0)*cuCexp(iMul(10.*x));
+}
+
+__global__ void pulsePlaneWave(cmplx *V, double eps, double K, double L)
+{
+
 }
 
 //Init Phi, u must be initialized
@@ -267,8 +279,8 @@ __global__ void jacobiNLSPassOne(cmplx* __restrict__ V, cmplx* __restrict__ Vtmp
 		cmplx alphainv = 1. / (iMul(1. / dt) - .5 / pdx / pdx - .5*LAMBDA*phi[i_global]);
 		cmplx beta = make_cuDoubleComplex(.25 / pdx / pdx, 0);
 		cmplx sigma;
-		//sigma = beta*(V[i - 1] + V[i + 1]);
-		sigma = beta*(Vs[i] + Vs[i + 2]);
+		
+		
 
 		if (i_global == 0)
 		{
@@ -279,6 +291,11 @@ __global__ void jacobiNLSPassOne(cmplx* __restrict__ V, cmplx* __restrict__ Vtmp
 		{
 			//sigma = beta*(V[i - 1] + 0.);
 			sigma = beta*(Vs[i] + 0.);
+		}
+		else
+		{
+			//sigma = beta*(V[i - 1] + V[i + 1]);
+			sigma = beta*(Vs[i] + Vs[i + 2]);
 		}
 		
 		
@@ -364,7 +381,9 @@ void jacobiNLS(cmplx* __restrict__ V, cmplx* __restrict__ Vtmp, cmplx* __restric
 	for (int k = 0; k < nbiter; ++k)
 	{
 		jacobiNLSPassOne << <NBlock, NThread >> > (V, Vtmp, B, phi, dt, pdx);
+		cudaDeviceSynchronize();
 		jacobiNLSPassTwo << <NBlock, NThread >> > (V, Vtmp, B, phi, dt, pdx);
+		cudaDeviceSynchronize();
 	}
 }
 
@@ -374,7 +393,7 @@ void writeInFile(cmplx *V, int fileX)
 {
 	std::ofstream file;
 	file.open("data" + std::to_string(fileX) + ".ds");
-	for (int i = 0; i < N; i+=2048)
+	for (int i = 0; i < N; i++)
 	{
 		double tmp = sqrt(V[i].x*V[i].x + V[i].y*V[i].y);
 		//if (V[i].x < 0)
@@ -402,14 +421,24 @@ void writeInFile(cmplx *h_V, std::string S)
 void Write3DFile(cmplx *V, double t)
 {
 	std::ofstream file;
+	static bool firstCall(true);
+	if (firstCall)
+	{
+		firstCall = false;
+		file.open("data3D.ds");
+		file.close();
+	}
+
+	
 	file.open("data3D.ds", std::ios_base::app);
-	for (int i = 0; i < N; i += 2048)
+	for (int i = 0; i < N; i+=4)
 	{
 		double tmp = sqrt(V[i].x*V[i].x + V[i].y*V[i].y);
-		if (V[i].x < 0)
-			tmp = -tmp;
-		file << t << " " << (static_cast<double>(i)*dx + Xmin) << " " << tmp << "\n\n";
+		//if (V[i].x < 0)
+			//tmp = -tmp;
+		file << t << " " << (static_cast<double>(i)*dx + Xmin) << " " << tmp << "\n";
 	}
+	file << "\n";
 	file.close();
 }
 
@@ -433,28 +462,31 @@ int main()
 	pulseGauss << <NBlock, NThread >> > (d_V);
 	initPhi << <NBlock, NThread >> > (d_phi, d_V);
 
-
-	std::cout << "dx :" << dx <<std::endl <<cudaGetLastError()<< std::endl;
-
-	int Ni(100);
-	int Nj(10000);
-	int ITER(100);//True number of iteration is ITER*2
-
-
-
 	double dt(0.0001);
 
-	std::cout << "Total Time : " << static_cast<double>((Ni*Nj))*dt << std::endl;
+	int Ni(900);
+	int Nj(900);
+	int ITER(50);//True number of iteration is ITER*2
 
-	for (int i = 0; i < Ni + 1; i++)
+	std::cout << "Ratio dt/dx :" << dt/dx/dx << std::endl;
+	std::cout << "dx :" << dx << std::endl;
+	std::cout << "dt :" << dt <<std::endl << "Cuda Status :" << cudaGetLastError()<< std::endl;
+	
+	std::cout << std::endl << "Total Time : " << static_cast<double>((Ni*Nj))*dt << std::endl;
+	std::cout << "Time per Step :" << static_cast<double>(Nj)*dt << std::endl << std::endl << std::endl << std::endl;
+
+	
+
+	for (int i = 0; i < Ni + 1; ++i)
 	{
 
 
 		//Save the data in a file at each step
 		std::cout << "Copy ...";
 		cudaMemcpy(h_V, d_V, N * sizeof(cmplx), cudaMemcpyDeviceToHost);
+		cudaDeviceSynchronize();
 		std::cout << "Write ...";
-		//writeInFile(h_V, i);
+		writeInFile(h_V, i);
 		Write3DFile(h_V, static_cast<double>((i*Nj))*dt);
 		std::cout << "End." << std::endl;
 		
@@ -464,16 +496,19 @@ int main()
 
 		if (i == Ni-1)
 			break;
+
 		for (int j = 0; j < Nj + 1; ++j)
 		{
-			//applyBoundaryCondition(d_V);
-			if (i != 0)
+			applyBoundaryCondition(d_V);
 			if (!(i == 0 && j== 0))
 				computePhi << <NBlock, NThread >> > (d_phi, d_V);
 			
 			jacobiEvaluateB << <NBlock, NThread >> > (d_V, d_phi, d_B, dt, dx);
 			jacobiNLS(d_V, d_Vtmp, d_B, d_phi, dt, dx, ITER);
-			cudaDeviceSynchronize();
+			
+			//pulseSol << <NBlock, NThread >> >(d_V, static_cast<double>((i*Nj)+j)*dt, make_cuDoubleComplex(1.,0), make_cuDoubleComplex(1., 0), make_cuDoubleComplex(1., 0));
+			
+			
 		}
 
 	}
