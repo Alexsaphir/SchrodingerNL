@@ -56,13 +56,10 @@ private:
 	int m_thread;
 
 	bool m_GPUOrder;
-
-	double m_xmin;
-	double m_xmax;
 };
 
 __global__ void kernelResizeDataFFT(cmplx *d_V, int nbPts);
-__global__ void kernelFirstDerivative(cmplx *d_V, int nbPts, double xmin, double xmax);
+__global__ void kernelFirstDerivative(cmplx *d_V, int nbPts);
 //__global__ void kernelSmoothing(cmplx *d_V,)
 
 #endif

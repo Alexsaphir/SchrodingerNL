@@ -41,8 +41,6 @@ void SignalFFT::syncDeviceToHost()
 
 void SignalFFT::computeFFT(Signal * src)
 {
-	m_xmin = src->getXmin();
-	m_xmax = src->getXmax();
 	m_GPUOrder = true;
 	cufftExecZ2Z(m_plan, src->getDeviceData() , m_d_V, CUFFT_FORWARD);
 	kernelResizeDataFFT << < m_block, m_thread >> > (m_d_V, m_nbPts);
@@ -118,7 +116,7 @@ void SignalFFT::cancelReorderData()
 
 void SignalFFT::firstDerivative()
 {
-	kernelFirstDerivative << < m_block, m_thread >> > (getDeviceData(), m_nbPts, m_xmin, m_xmax);
+	kernelFirstDerivative << < m_block, m_thread >> > (getDeviceData(), m_nbPts);
 }
 
 SignalFFT::~SignalFFT()
@@ -137,7 +135,7 @@ __global__ void kernelResizeDataFFT(cmplx * d_V, int nbPts)
 	}
 }
 
-__global__ void kernelFirstDerivative(cmplx * d_V, int nbPts, double xmin, double xmax)
+__global__ void kernelFirstDerivative(cmplx * d_V, int nbPts)
 {
 	int i = blockIdx.x *blockDim.x + threadIdx.x;
 
@@ -148,12 +146,12 @@ __global__ void kernelFirstDerivative(cmplx * d_V, int nbPts, double xmin, doubl
 	//Positive Frequency are between 0 and <N/2
 	//Negative Frequency are between N/2and <N
 	if (i < nbPts / 2)
-		Freq = make_cuDoubleComplex(0, 2.*M_PI*k / (xmax - xmin));
+		Freq = make_cuDoubleComplex(0, k *2.*M_PI*k / static_cast<double>(nbPts));
 	else if (i > nbPts / 2)
-		Freq = make_cuDoubleComplex(0, 2.*M_PI*(k - static_cast<double>(nbPts) / (xmax - xmin)));
+		Freq = make_cuDoubleComplex(0, (k - static_cast<double>(nbPts))*2.*M_PI*k / static_cast<double>(nbPts));
 	else
 		Freq = make_cuDoubleComplex(0, 0);//k=N/2
 	__syncthreads();
-	if (i<nbPts)
+	if (i < nbPts)
 		d_V[i] = cuCmul(Freq, d_V[i]);
 }
