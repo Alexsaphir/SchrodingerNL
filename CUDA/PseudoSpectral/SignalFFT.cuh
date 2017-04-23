@@ -14,6 +14,7 @@
 
 #include "ComplexCuda.cuh"
 
+
 #include "Signal.cuh"
 
 class SignalFFT
@@ -39,6 +40,9 @@ public:
 	void reorderData();//All data are only modified on the CPU, No sync perform after
 	void cancelReorderData();//Only CPU data, No sync perform after
 
+//Derivative
+	void firstDerivative();
+
 	~SignalFFT();
 
 
@@ -52,9 +56,13 @@ private:
 	int m_thread;
 
 	bool m_GPUOrder;
+
+	double m_xmin;
+	double m_xmax;
 };
 
 __global__ void kernelResizeDataFFT(cmplx *d_V, int nbPts);
+__global__ void kernelFirstDerivative(cmplx *d_V, int nbPts, double xmin, double xmax);
 //__global__ void kernelSmoothing(cmplx *d_V,)
 
 #endif
