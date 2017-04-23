@@ -153,8 +153,9 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="WaveEquation1D.cpp" />
     <CudaCompile Include="ComplexCuda.cu" />
-    <ClCompile Include="main.cu">
+    <ClCompile Include="main.cpp">
       <FileType>Document</FileType>
     </ClCompile>
     <CudaCompile Include="Signal.cu" />
@@ -166,6 +167,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="resource.h" />
     <ClInclude Include="Signal.cuh" />
     <ClInclude Include="SignalFFT.cuh" />
+    <ClInclude Include="WaveEquation1D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Axis.cpp" />
