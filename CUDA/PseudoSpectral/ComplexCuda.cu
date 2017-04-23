@@ -10,6 +10,10 @@ __host__ __device__ cuDoubleComplex cuCexp(cuDoubleComplex z)
 	return make_cuDoubleComplex(factor * cos(z.y), factor * sin(z.y));
 }
 
+__host__ __device__ cuDoubleComplex cuCexp(double z)
+{
+	return cuCexp(make_cuDoubleComplex(z, 0));
+}
 
 __device__ __host__ cmplx operator+(const cmplx &a, const cmplx &b)
 {
@@ -76,12 +80,12 @@ __device__ __host__ cmplx operator/(const double &a, const cmplx &b)
 	return make_cuDoubleComplex(a, 0) / b;
 }
 
-__device__ __host__ __inline__ cmplx iMul(const cmplx &a)
+__device__ __host__ cmplx iMul(const cmplx &a)
 {
 	return make_cuDoubleComplex(-cuCimag(a), cuCreal(a));
 }
 
-__device__ __host__ __inline__ cmplx iMul(const double &a)
+__device__ __host__ cmplx iMul(const double &a)
 {
 	return make_cuDoubleComplex(0, a);
 }

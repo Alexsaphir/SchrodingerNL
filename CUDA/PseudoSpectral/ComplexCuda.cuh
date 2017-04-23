@@ -9,6 +9,8 @@
 
 __host__ __device__ cuDoubleComplex cuCexp(cuDoubleComplex z);
 
+__host__ __device__ cuDoubleComplex cuCexp(double z);
+
 __device__ __host__ cmplx operator+(const cmplx &a, const cmplx &b);
 
 __device__ __host__ cmplx operator+(const double &a, const cmplx &b);
