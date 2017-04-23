@@ -55,8 +55,9 @@ void Signal::fillHost(cmplx value)
 	}
 }
 
-void Signal::fillDevice(cmplx value)
+void Signal::fillDevice(cmplx * d_V)
 {
+	kernelDuplicate << <((m_nbPts % 1024) == 0) ? (m_nbPts / 1024) : (1 + m_nbPts / 1024), 1024 >> > (d_V, m_d_V, m_nbPts);
 }
 
 void Signal::fillBoth(cmplx value)
@@ -122,7 +123,14 @@ void GaussCos(Signal * S)
 	{
 		double t = X.getLinearValueAt(i);
 		double yenv = std::exp(-t*t);
-		S->getHostData()[i] = yenv*make_cuDoubleComplex(std::cos(50.*t - std::exp(-2.*t*t)), 0);
+		S->getHostData()[i] = yenv*make_cuDoubleComplex(std::cos(50.*t - std::exp(-2.*t*t)*8.*M_PI), 0);
 	}
 	S->syncHostToDevice();
+}
+
+__global__ void kernelDuplicate(cmplx * d_src, cmplx * d_dest, int nbPts)
+{
+	int i = blockIdx.x *blockDim.x + threadIdx.x;
+	if (i < nbPts)
+		d_dest[i] = d_src[i];
 }

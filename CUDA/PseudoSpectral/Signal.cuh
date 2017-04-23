@@ -32,7 +32,7 @@ public:
 
 	void fillHost(cmplx value);
 
-	void fillDevice(cmplx value);
+	void fillDevice(cmplx* d_V);
 
 	void fillBoth(cmplx value);
 
@@ -53,5 +53,8 @@ void CosWTPulseEqui(Signal *S);
 void Trigo(Signal *S, double freq);
 void GaussPulseLinear(Signal *S, double fc = 1000., double bw = .5, double bwr = -6., double tpr = -60);
 void GaussCos(Signal *S);
+
+
+__global__ void kernelDuplicate(cmplx *d_src, cmplx *d_dest, int nbPts);
 #endif
 
