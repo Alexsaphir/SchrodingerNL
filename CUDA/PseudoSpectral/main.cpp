@@ -10,13 +10,13 @@
 //2*M_PI
 #define M_PI2 6.2831853071795864769252867665590057683943387987502
 
-#define N_FFT 128//Frequency Sampling*Duration
+#define N_FFT 1024//Frequency Sampling*Duration
 
 void exportData(const Axis *X, const Signal *S, const std::string &name)
 {
 	std::ofstream file;
 	file.open(name);
-	file << "re" << std::endl;
+	file << "c" << std::endl;
 	for (int i = 0; i < S->getSignalPoints(); ++i)
 		file << X->getLinearValueAt(i) << " " << S->getHostData()[i].x << " " << S->getHostData()[i].y << "\n";//(S->getHostData()[i].x<0?-1.:1)*
 	file.close();
@@ -82,7 +82,7 @@ int main()
 	Signal S(-3, 3, N_FFT);//Input signal
 	Signal SInc(-3, 3, 8 * N_FFT);
 
-	GaussPulseLinear(&S, 5.);
+	GaussPulseLinear(&S, 25,.1);
 	exportData(&X, &S, "Plot/data.ds");//Save the initial signal
 
 
@@ -92,19 +92,31 @@ int main()
 	Sfft.reorderData();//Shift Frequency for the data on the host
 	exportData(&X, &Sfft, "Plot/dataFFT.ds");//Save FFT of the Signal computed
 
-	//Sfft.smoothFilterCesaro();//Apply Filtering
-	//Sfft.smoothFilterLanczos();
+	//Apply Filtering
 	Sfft.smoothFilterRaisedCosinus();
-
 
 	Sfft.ComputeSignal(&S);//Get back the signal in physical space
 	//S.syncDeviceToHost();//Send data to RAM
 
 	extrapolateFromFFTCoeff(&Sfft, &SInc);
+	exportData(&Y, &SInc, "Plot/dataInter.ds");
 
-	exportData(&Y, &SInc, "Plot/dataN.ds");
+	Sfft.firstDerivative();
+	Sfft.syncDeviceToHost();
+	Sfft.smoothFilterRaisedCosinus();
+	Sfft.syncHostToDevice();
 
-	//getchar();
+	Sfft.ComputeSignal(&S);
+	Sfft.syncDeviceToHost();
+	S.syncDeviceToHost();
+
+	exportData(&X, &S, "Plot/dataDer.ds");
+	extrapolateFromFFTCoeff(&Sfft, &SInc);
+	exportData(&Y, &SInc, "Plot/dataDerInterpolation.ds");
+
+
+	//getchar();
+
 
 	//getchar();
 	return 0;
