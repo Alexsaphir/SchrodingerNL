@@ -8,6 +8,7 @@ public:
 	Axis(double Xmin, double Xmax, int nbPts);
 
 	double getLinearValueAt(int i) const;
+	double getFFTValueAt(int i) const;
 	double getChebyshevValueAt(int i) const;
 	double getFrequency(int i) const;
 

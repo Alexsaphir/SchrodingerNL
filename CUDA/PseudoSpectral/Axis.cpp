@@ -34,6 +34,13 @@ double Axis::getLinearValueAt(int i) const
 	return m_Xmin + static_cast<double>(i)*(m_Xmax - m_Xmin) / (static_cast<double>(m_nbPts - 1));
 }
 
+double Axis::getFFTValueAt(int i) const
+{
+	if (i < 0 || i >= m_nbPts)
+		return 0.0;
+	return 2.*M_PI*static_cast<double>(i) / static_cast<double>(m_nbPts);
+}
+
 double Axis::getChebyshevValueAt(int i) const
 {
 	return (m_Xmax + m_Xmin) / 2. + (m_Xmax - m_Xmin)*.5*std::cos(static_cast<double>(i)*M_PI / static_cast<double>(m_nbPts));
