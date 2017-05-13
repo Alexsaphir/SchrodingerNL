@@ -22,15 +22,40 @@ void WaveEquation1D::init()
 void WaveEquation1D::computeStep()
 {
 	Sder->computeFFT(S);
-	Sfreq->fillDevice(Sder->getDeviceData());
-	Sder->firstDerivative();
 	Sder->syncDeviceToHost();
-	Sfreq->syncDeviceToHost();
-	for (int i = 0; i < S->getSignalPoints(); ++i)
+
+	int nbPts = Sder->getSignalPoints();
+
+	for (int i = 0; i < nbPts; ++i)
 	{
-		Sder->getHostData()[i] = Sfreq->getHostData()[i]+m_dt*Sder->getHostData()[i];
+		double k = static_cast<double>(i);
+		cmplx Coeff;
+
+
+		//Positive Frequency are between 0 and <N/2
+		//Negative Frequency are between N/2and <N
+		if (i < nbPts / 2)
+		{
+			k = k *2.*M_PI*k / static_cast<double>(nbPts);
+			Coeff = 1. + iMul(m_dt*k) - .5*m_dt*m_dt*k*k;
+			
+		}
+		else if (i > nbPts / 2)
+		{
+			k = (k - static_cast<double>(nbPts))*2.*M_PI*k / static_cast<double>(nbPts);
+			Coeff = 1. + iMul(m_dt*k) - .5*m_dt*m_dt*k*k;
+			
+		}
+		else
+		{
+			k = 0;
+			
+			Coeff = make_cuDoubleComplex(1.,0);//k=N/2
+		}
+		
+		Sder->getHostData()[i] = cuCmul(Sder->getHostData()[i], Coeff);
 	}
-	Sder->smoothFilterCesaro();
+	Sder->smoothFilterRaisedCosinus();
 	Sder->syncHostToDevice();
 	Sder->ComputeSignal(S);
 }
