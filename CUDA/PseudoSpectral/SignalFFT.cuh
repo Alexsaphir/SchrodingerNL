@@ -58,8 +58,4 @@ private:
 	bool m_GPUOrder;
 };
 
-__global__ void kernelResizeDataFFT(cmplx *d_V, int nbPts);
-__global__ void kernelFirstDerivative(cmplx *d_V, int nbPts);
-//__global__ void kernelSmoothing(cmplx *d_V,)
-
 #endif
