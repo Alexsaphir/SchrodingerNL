@@ -2,35 +2,20 @@
 #include <fstream>
 #include <string>
 
+
 #include "Axis.h"
 #include "Signal.cuh"
 #include "SignalFFT.cuh"
+#include "ExportData.h"
 #include "WaveEquation1D.h"
+
+#include "RungeKutta.cuh"
 
 //2*M_PI
 #define M_PI2 6.2831853071795864769252867665590057683943387987502
 
 #define N_FFT 1024//Frequency Sampling*Duration
 
-void exportData(const Axis *X, const Signal *S, const std::string &name)
-{
-	std::ofstream file;
-	file.open(name);
-	file << "c" << std::endl;
-	for (int i = 0; i < S->getSignalPoints(); ++i)
-		file << X->getLinearValueAt(i) << " " << S->getHostData()[i].x << " " << S->getHostData()[i].y << "\n";//(S->getHostData()[i].x<0?-1.:1)*
-	file.close();
-}
-
-void exportData(const Axis *X, SignalFFT *S, const std::string &name)
-{//Export data of the host
-	std::ofstream file;
-	file.open(name);
-	file << "pa" << std::endl;
-	for (int i = 0; i < S->getSignalPoints(); ++i)
-		file << X->getFrequency(i) << " " << cuCabs(S->getHostData()[i]) << " " << 0 << "\n";
-	file.close();
-}
 
 void computeError(const Signal *S1, const Signal *S2, Signal *E)
 {
@@ -67,57 +52,82 @@ void extrapolateFromFFTCoeff(SignalFFT* const Sfft, Signal* const S)
 				Freq = 0.;//k=N/2
 			z = z + Sfft->getHostData()[i] * cuCexp(iMul(Freq*x));
 		}
+		z = z*1./std::sqrt(N);
 		S->getHostData()[t] = z;
 	}
 }
 
 int main()
 {
+	
+	
+	Axis XInit(-M_PI, M_PI, N_FFT);
 
-	Axis X(-3, 3, N_FFT);
-	Axis Y(-3, 3, 8 * N_FFT);
+	Signal *S;
+	Signal *SInit;
+	SignalFFT *Sfc, *Sfn;
+	Signal *TmpA, *TmpB;//Need less memory than SignalFFT
 
-	SignalFFT Sfft(N_FFT);//FFT Signal
+	SInit = new Signal(-M_PI, M_PI, N_FFT);
+	Sfc = new SignalFFT(N_FFT);
+	Sfn = new SignalFFT(N_FFT);
+	TmpB = new Signal(-M_PI, M_PI, N_FFT);
+	TmpA = new Signal(-M_PI, M_PI, N_FFT);
+	
 
-	Signal S(-3, 3, N_FFT);//Input signal
-	Signal SInc(-3, 3, 8 * N_FFT);
+	GaussPulseLinear(SInit, 10);
+	//Init Sinit and put it in Sfc
+	//for (int i = 0; i < N_FFT; ++i)
+	//{	
+	//	double a = -1. / M_PI / M_PI;
+	//	double b = 2. / M_PI;
 
-	GaussPulseLinear(&S, 25,.1);
-	exportData(&X, &S, "Plot/data.ds");//Save the initial signal
+	//	double x = XInit.getLinearValueAt(i);
+	//	SInit->getHostData()[i] = make_cuDoubleComplex((a*x + b)*x, 0);
+	//	//SInit->getHostData()[i] = make_cuDoubleComplex(0, 0);
+	//	if (i == 0 || i == N_FFT - 1)
+	//	{
+	//		SInit->getHostData()[i] = make_cuDoubleComplex(0, 0);
+	//	}
+	//}
+
+	SInit->syncHostToDevice();
+	Sfc->computeFFT(SInit);
+	delete SInit;
+
+	S = new Signal(-M_PI, M_PI, N_FFT * 4);
+	Axis X(-M_PI, M_PI, N_FFT*4);
+	
+	
+	double dt = .001;
+	double t = 0;
+
+	for (int i = 0; i < 10; ++i)
+	{
+		extrapolateFromFFTCoeff(Sfc, S);
+		exportData(&X, S, "Plot/data" + std::to_string(i) + ".ds");
+		std::cout << t << std::endl;
+		if (i == 9)
+			break;
+
+		for (int j = 0; j < 20000; ++j)
+		{
+			RungeKutta4(Sfc->getDeviceData(), Sfn->getDeviceData(), TmpA->getDeviceData(), TmpB->getDeviceData(), dt, N_FFT);
+			t += dt;
+			std::swap(Sfc, Sfn);
+		}
+	}
+	
 
 
-	Sfft.computeFFT(&S);
-	Sfft.syncDeviceToHost();//Send data to RAM
 
-	Sfft.reorderData();//Shift Frequency for the data on the host
-	exportData(&X, &Sfft, "Plot/dataFFT.ds");//Save FFT of the Signal computed
-
-	//Apply Filtering
-	Sfft.smoothFilterRaisedCosinus();
-
-	Sfft.ComputeSignal(&S);//Get back the signal in physical space
-	//S.syncDeviceToHost();//Send data to RAM
-
-	extrapolateFromFFTCoeff(&Sfft, &SInc);
-	exportData(&Y, &SInc, "Plot/dataInter.ds");
-
-	Sfft.firstDerivative();
-	Sfft.syncDeviceToHost();
-	Sfft.smoothFilterRaisedCosinus();
-	Sfft.syncHostToDevice();
-
-	Sfft.ComputeSignal(&S);
-	Sfft.syncDeviceToHost();
-	S.syncDeviceToHost();
-
-	exportData(&X, &S, "Plot/dataDer.ds");
-	extrapolateFromFFTCoeff(&Sfft, &SInc);
-	exportData(&Y, &SInc, "Plot/dataDerInterpolation.ds");
+	delete S;
+	delete Sfc;
+	delete Sfn;
+	delete TmpA;
+	delete TmpB;
 
 
-	//getchar();
 
-
-	//getchar();
 	return 0;
 }
