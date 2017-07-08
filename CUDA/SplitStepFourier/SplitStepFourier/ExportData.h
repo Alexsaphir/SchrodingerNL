@@ -12,3 +12,5 @@
 void exportData(Grid* const S, const std::string &name);
 
 void exportCsvXY(Grid* const S, const std::string &name);
+
+void exportCsvXTY(Grid * const S, const std::string & name, int iter);
