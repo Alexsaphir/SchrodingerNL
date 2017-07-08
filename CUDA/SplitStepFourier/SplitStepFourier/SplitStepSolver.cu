@@ -67,20 +67,59 @@ namespace
 	}
 }
 
-void SplitStep(cmplx * d_U, double dt, int N, double Length, cufftHandle *plan)
+namespace
 {
-	//Inplace computation
-	
-	//.5L+.5NL
+	void phi1(cmplx * d_U, double dt, int N, double Length, cufftHandle *plan)
+	{
+		//FFt
+		cufftExecZ2Z(*plan, d_U, d_U, CUFFT_FORWARD);
+		//L
+		LinearStep(d_U, dt, 1., N, Length);
+		//FFt-1
+		cufftExecZ2Z(*plan, d_U, d_U, CUFFT_INVERSE);
+		FFTResize(d_U, N);
 
-	//FFt
-	cufftExecZ2Z(*plan, d_U, d_U, CUFFT_FORWARD);
-	//L
-	LinearStep(d_U, dt, .5, N, Length);
-	//FFt-1
-	cufftExecZ2Z(*plan, d_U, d_U, CUFFT_INVERSE);
-	FFTResize(d_U, N);
-	//NL
-	NonLinearStep(d_U, dt, .5, N, Length);
+		//NL
+		NonLinearStep(d_U, dt, 1., N, Length);
 
+	}
+
+	void phi2(cmplx * d_U, double dt, int N, double Length, cufftHandle *plan)
+	{
+		//NL
+		NonLinearStep(d_U, dt, .5, N, Length);
+		
+		//FFt
+		cufftExecZ2Z(*plan, d_U, d_U, CUFFT_FORWARD);
+		//L
+		LinearStep(d_U, dt, 1., N, Length);
+		//FFt-1
+		cufftExecZ2Z(*plan, d_U, d_U, CUFFT_INVERSE);
+		FFTResize(d_U, N);
+
+		//NL
+		NonLinearStep(d_U, dt, .5, N, Length);
+
+	}
+
+	void phi4(cmplx * d_U, double dt, int N, double Length, cufftHandle *plan)
+	{
+		double w = (2. + std::pow(2., 1. / 3.) + .5*std::pow(2., 2. / 3));
+		phi2(d_U, w*dt, N, Length, plan);
+		phi2(d_U, (1.-w)*dt, N, Length, plan);
+		phi2(d_U, w*dt, N, Length, plan);
+	}
+}
+
+void SplitStep(cmplx * d_U, double dt, int N, double Length, cufftHandle *plan, int order)
+{
+	switch (order)
+	{
+	case 2: phi2(d_U, dt, N, Length, plan);
+		break;
+	case 4: phi4(d_U, w*dt, N, Length, plan);
+		break;
+	default:phi1(d_U, dt, N, Length, plan);
+		break;
+	}
 }
