@@ -30,8 +30,8 @@ int main()
 	Xmax = 100;
 	dt = .00001;
 
-	For1 = 1000;
-	For2 = 2000;
+	For1 = 500;
+	For2 = 5000;
 
 	bool b_demo(true);
 
@@ -91,18 +91,16 @@ int main()
 	{
 		//exportData(S, "Plot/data" + std::to_string(i) + ".ds");
 		exportCsvXY(S, "Plot/data" + std::to_string(i) + ".csv");
+		exportCsvXTY(S, "Plot/dataT.csv", i);
 		std::cout << t << std::endl;
 		if (i == For1)
 			break;
 		for (int j = 0; j < For2; ++j)
 		{
-			SplitStep(S->getDeviceData(), dt, N_FFT, Xmax - Xmin, &plan);
+			SplitStep(S->getDeviceData(), dt, N_FFT, Xmax - Xmin, &plan,2);
 			t += dt;
 		}
 	}
-	
-	
-	
 	//getchar();
 	return 0;
 }
