@@ -9,6 +9,8 @@
 
 #File create by cuda executables
 *.ds
+#Remove file for paraview
+*.csv
 
 #Video
 *.mpeg
