@@ -104,7 +104,7 @@ namespace
 
 	void phi4(cmplx * d_U, double dt, int N, double Length, cufftHandle *plan)
 	{
-		double w = (2. + std::pow(2., 1. / 3.) + .5*std::pow(2., 2. / 3));
+		double w = (2. + std::pow(2., 1. / 3.) + .5*std::pow(2., 2. / 3))/3.;
 		phi2(d_U, w*dt, N, Length, plan);
 		phi2(d_U, (1.-w)*dt, N, Length, plan);
 		phi2(d_U, w*dt, N, Length, plan);
@@ -117,7 +117,7 @@ void SplitStep(cmplx * d_U, double dt, int N, double Length, cufftHandle *plan, 
 	{
 	case 2: phi2(d_U, dt, N, Length, plan);
 		break;
-	case 4: phi4(d_U, w*dt, N, Length, plan);
+	case 4: phi4(d_U, dt, N, Length, plan);
 		break;
 	default:phi1(d_U, dt, N, Length, plan);
 		break;
