@@ -17,3 +17,17 @@ void NLSUtility::GaussPulseLinear(Grid *S, double fc, double bw, double bwr, dou
 	}
 	S->syncHostToDevice();
 }
+
+double NLSUtility::computeTotalMass(Grid * S)
+{
+	Axis X = S->getAxis();
+	double dx = (X.getXmax() - X.getXmin()) / static_cast<double>(X.getN());
+	
+	double R(0);
+	
+	for (int i = 0; i < X.getN(); ++i)
+	{
+		R += cuCabs(S->getHostData()[i]) * cuCabs(S->getHostData()[i]) * dx;
+	}
+	return R;
+}

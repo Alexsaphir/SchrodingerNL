@@ -47,3 +47,53 @@ void exportCsvXTY(Grid * const S, const std::string & name, int iter)
 		file << std::fixed << std::setprecision(5) << X.getValueAt(i) << "," << iter << "," << cuCabs(S->getHostData()[i]) << "," << cuCabs(S->getHostData()[i]) << "\n";//(S->getHostData()[i].x<0?-1.:1)*
 	file.close();
 }
+
+void exportCsv2DMatlab(Grid * const S, const std::string & name, int iter)
+{
+	Axis X = S->getAxis();
+	S->syncDeviceToHost();
+
+	std::ofstream file;
+	if (iter == 0)
+	{
+		//erase file
+		file.open(name, std::ios::out | std::ios::trunc);
+	}
+	else
+	{
+		file.open(name, std::ios::out | std::ios::app);
+	}
+
+	for (int i = 0; i < X.getN(); ++i)
+	{
+		file << std::fixed << std::setprecision(5) << cuCabs(S->getHostData()[i]);
+		if (i == X.getN() - 1)
+		{
+			file << "\n";
+		}
+		else
+		{
+			file << ", ";
+		}
+	}
+	file.close();
+}
+
+void exportMassOverTime(double E, const std::string & name, int iter)
+{
+
+	std::ofstream file;
+	if (iter == 0)
+	{
+		//erase file
+		file.open(name, std::ios::out | std::ios::trunc);
+	}
+	else
+	{
+		file.open(name, std::ios::out | std::ios::app);
+	}
+	
+	file << std::fixed << std::setprecision(17) << E << "\n";
+
+	file.close();
+}

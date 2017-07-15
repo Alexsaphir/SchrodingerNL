@@ -10,4 +10,5 @@
 namespace NLSUtility
 {
 	void GaussPulseLinear(Grid *S, double fc, double bw, double bwr, double tpr);
+	double computeTotalMass(Grid *S);
 }
