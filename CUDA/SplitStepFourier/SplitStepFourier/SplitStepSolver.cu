@@ -1,5 +1,9 @@
 #include "SplitStepSolver.cuh"
 
+#define ALPHA 1./2.
+#define BETA -1.
+#define KAPA 2.
+
 namespace
 {
 	__global__ void FFTResizekernel(cmplx * d_V, int nbPts)
@@ -41,7 +45,7 @@ namespace
 				k = iMul(2.*M_PI * (static_cast<double>(i - N)) / Length);
 				//k = iMul(2.*M_PI * (static_cast<double>(i - N)) / static_cast<double>(N));
 			}
-			Vf[i] = cuCexp(iMul(p)*dt*.5*k*k)*Vf[i];
+			Vf[i] = cuCexp(iMul(p)*dt*ALPHA*k*k)*Vf[i];
 
 		}
 	}
@@ -49,10 +53,18 @@ namespace
 	__global__ void NLinearKernel(cmplx *V, double dt, double p, int N, double Length)
 	{
 		int i = blockIdx.x *blockDim.x + threadIdx.x;
-		double kapa = 2.;
 		if (i < N)
 		{
-			V[i] = cuCexp(iMul(dt)*p*kapa*V[i] * cuConj(V[i]))*V[i];
+			V[i] = cuCexp(iMul(dt)*p*BETA*KAPA*V[i] * cuConj(V[i]))*V[i];
+		}
+	}
+
+	__global__ void BoundaryConditionKernel(cmplx *V, int N)
+	{
+		int i = blockIdx.x *blockDim.x + threadIdx.x;
+		if (i < 2)
+		{
+			V[i*(N - 1)] = make_cuDoubleComplex(0, 0);
 		}
 	}
 
@@ -64,6 +76,46 @@ namespace
 	void NonLinearStep(cmplx *V, double dt, double p, int N, double Length)
 	{
 		NLinearKernel << <KernelUtility::computeNumberOfBlocks(1024, N), 1024 >> >(V, dt, p, N, Length);
+	}
+
+	void BoundaryCondition(cmplx *V, int N)
+	{
+		BoundaryConditionKernel << < 1, 2 >> > (V, N);
+	}
+}
+
+
+namespace
+{
+	//filter for the FFT
+	__global__ void smoothFilterRaisedCosinusKernel(cmplx *d_U, int N, double Length)
+	{
+		int i = blockIdx.x *blockDim.x + threadIdx.x;
+		if (i < N)
+		{
+
+			double k;
+			if (i < N / 2)
+			{
+				k = static_cast<double>(i);
+			}
+			if (i == N / 2)
+			{
+				k = 0;
+			}
+			if (i > N / 2)
+			{
+				k = static_cast<double>(N - i);
+			}
+			//m_h_V[k + m_nbPts / 2] = m_h_V[k + m_nbPts / 2] * (.5 + .5*std::cos(2.*M_PI*static_cast<double>(k) / static_cast<double>(m_nbPts)));
+			/*d_U[i] = d_U[i] * (.5 + .5*std::cos(2.*M_PI*static_cast<double>(k) / static_cast<double>(N)));*/
+			d_U[i] = d_U[i] * (.5 + .5*std::cos(2.*M_PI*static_cast<double>(k) / Length));
+		}
+	}
+
+	void smoothFilterRaisedCosinus(cmplx *d_U, int N, double Length)
+	{
+		smoothFilterRaisedCosinusKernel << <KernelUtility::computeNumberOfBlocks(1024, N), 1024 >> > (d_U, N, Length);
 	}
 }
 
@@ -81,7 +133,6 @@ namespace
 
 		//NL
 		NonLinearStep(d_U, dt, 1., N, Length);
-
 	}
 
 	void phi2(cmplx * d_U, double dt, int N, double Length, cufftHandle *plan)
@@ -93,7 +144,7 @@ namespace
 		cufftExecZ2Z(*plan, d_U, d_U, CUFFT_FORWARD);
 		//L
 		LinearStep(d_U, dt, 1., N, Length);
-		//FFt-1
+
 		cufftExecZ2Z(*plan, d_U, d_U, CUFFT_INVERSE);
 		FFTResize(d_U, N);
 
@@ -110,6 +161,7 @@ namespace
 		phi2(d_U, w*dt, N, Length, plan);
 	}
 }
+
 
 void SplitStep(cmplx * d_U, double dt, int N, double Length, cufftHandle *plan, int order)
 {
