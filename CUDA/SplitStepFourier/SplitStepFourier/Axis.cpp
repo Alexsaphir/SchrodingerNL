@@ -43,7 +43,7 @@ double Axis::getValueAt(int i) const
 	{
 		return m_Xmin;//m_nbPts ==1 => m_nbPts-1 == 0 => divide by 0: error
 	}
-	return m_Xmin + static_cast<double>(i)*(m_Xmax - m_Xmin) / (static_cast<double>(m_nbPts - 1));
+	return m_Xmin + static_cast<double>(i)*(m_Xmax - m_Xmin) / (static_cast<double>(m_nbPts));
 }
 
 Axis::~Axis()
