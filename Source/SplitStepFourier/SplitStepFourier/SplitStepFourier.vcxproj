@@ -166,11 +166,15 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Axis.cpp" />
     <ClCompile Include="ExportData.cpp" />
     <ClCompile Include="main.cpp" />
+    <CudaCompile Include="MathUtility.cu">
+      <FileType>CppCode</FileType>
+    </CudaCompile>
     <ClCompile Include="NLSUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="ComplexCuda.cu" />
     <CudaCompile Include="Grid.cu" />
+    <CudaCompile Include="GridAugmented.cu" />
     <CudaCompile Include="KernelUtility.cu" />
     <CudaCompile Include="SplitStepSolver.cu" />
   </ItemGroup>
@@ -179,7 +183,9 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="ComplexCuda.cuh" />
     <ClInclude Include="ExportData.h" />
     <ClInclude Include="Grid.cuh" />
+    <ClInclude Include="GridAugmented.cuh" />
     <ClInclude Include="KernelUtility.cuh" />
+    <ClInclude Include="MathUtility.cuh" />
     <ClInclude Include="NLSUtility.h" />
     <ClInclude Include="SplitStepSolver.cuh" />
   </ItemGroup>

@@ -9,6 +9,9 @@
 #include "NLSUtility.h"
 #include "ExportData.h"
 
+#include <vector>
+#include <algorithm>
+
 //2*M_PI
 #define M_PI2 6.2831853071795864769252867665590057683943387987502
 
@@ -26,14 +29,16 @@ int main()
 	int For2;
 
 	N = N_FFT;
-	Xmin = -100;
-	Xmax = 100;
-	dt = .00001;
+	Xmin = -2;
+	Xmax = 2;
+	dt = .001;
 
-	For1 = 500;
-	For2 = 5000;
+	//For1 = 100000;
+	For1 = 100;
+	For2 = 50;
 
 	bool b_demo(true);
+	//b_demo = false;
 
 
 	
@@ -83,21 +88,51 @@ int main()
 	cufftPlan1d(&plan, N, CUFFT_Z2Z, 1);
 	
 	Grid *S = new Grid(Xmin, Xmax, N);
-	NLSUtility::GaussPulseLinear(S, 1, .5, -6, -60);
+	NLSUtility::GaussPulseLinear(S, 50, .5, -6, -60);
 	
-	double t(0);
+	//Shift pulse +25
 
+	//Shift pulse with add -50
+	//S->syncDeviceToHost();
+
+	//std::vector<cmplx> A;
+	//std::vector<cmplx> B;
+
+	//for (int i = 0; i < N; ++i)
+	//{
+		//A.push_back(S->getHostData()[(i + N / 4) % N]);
+		//B.push_back(S->getHostData()[(i + 3 * N / 4) % N]);
+		//std::cout << (i + N / 2) % N << "\t" << (i + 3 * N / 2) % N << "\n";
+	//}
+	//for (int i = 0; i < N; ++i)
+	//{
+		//S->getHostData()[i] = cuCexp(iMul(-M_PI))*A.at(i) + B.at(i);
+	//}
+	
+
+	//A.clear();
+	//B.clear();
+	
+	//S->syncHostToDevice();
+
+	double t(0);
+	
 	for (int i = 0; i <= For1; ++i)
 	{
 		//exportData(S, "Plot/data" + std::to_string(i) + ".ds");
-		exportCsvXY(S, "Plot/data" + std::to_string(i) + ".csv");
+		exportCsvXY(S, "B:/data" + std::to_string(i) + ".csv");
 		exportCsvXTY(S, "Plot/dataT.csv", i);
-		std::cout << t << std::endl;
+		//exportCsv2DMatlab(S, "B:/Matlab.csv", i);
+		double M = NLSUtility::computeTotalMass(S);
+		exportMassOverTime(M, "B:/dataE.csv", i);
+
+		
+		std::cout << "Time :" << t << "\tM :" << M << std::endl;
 		if (i == For1)
 			break;
 		for (int j = 0; j < For2; ++j)
 		{
-			SplitStep(S->getDeviceData(), dt, N_FFT, Xmax - Xmin, &plan,2);
+			SplitStep(S->getDeviceData(), dt, N_FFT, Xmax - Xmin, &plan,1);
 			t += dt;
 		}
 	}

@@ -79,6 +79,24 @@ void exportCsv2DMatlab(Grid * const S, const std::string & name, int iter)
 	file.close();
 }
 
+void exportCsvComplexMatlab(Grid * const S, const std::string & name)
+{
+	Axis X = S->getAxis();
+	S->syncDeviceToHost();
+
+	std::ofstream file;
+	
+	//erase file
+	file.open(name, std::ios::out | std::ios::trunc);
+
+	for (int i = 0; i < X.getN(); ++i)
+	{
+		file << std::fixed << X.getValueAt(i) << ", " << std::setprecision(5) << S->getHostData()[i].x << ", " << S->getHostData()[i].y;
+		file << "\n";
+	}
+	file.close();
+}
+
 void exportMassOverTime(double E, const std::string & name, int iter)
 {
 
