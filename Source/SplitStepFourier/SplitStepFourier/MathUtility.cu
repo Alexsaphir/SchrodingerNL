@@ -87,6 +87,7 @@ void __device__ MathUtility::BFSM1(cmplx * V, int N, double xmin, double xmax)
 		cmplx alpha = (fb - fa) / (xmax - xmin);
 		cmplx beta = xmin*alpha + fa + h;
 		double x = xmin + static_cast<double>(i)*(xmax - xmin) / (static_cast<double>(N);
+		double x = xmin + static_cast<double>(i)*(xmax - xmin) / (static_cast<double>(N));
 		V[i] = (V[i] + h) / (alpha*x + beta);
 	}
 }
