@@ -1,14 +1,10 @@
 #include "Grid2D.cuh"
 
-Grid2D::Grid2D(double Xmin, double Xmax, int Nx, double Ymin, double Ymax, int Ny)
+Grid2D::Grid2D(double Xmin, double Xmax, int Nx, double Ymin, double Ymax, int Ny) :m_X(Xmin, Xmax, Nx), m_Y(Ymin, Ymax, Ny)
 {
-	m_X = Axis(Xmin, Xmax, Nx);
-	m_Y = Axis(Ymin, Ymax, Ny);
-
 	m_nbPts = Nx*Ny;
 	m_nbPtsX = Nx;
 	m_nbPtsY = Ny;
-
 
 }
 
