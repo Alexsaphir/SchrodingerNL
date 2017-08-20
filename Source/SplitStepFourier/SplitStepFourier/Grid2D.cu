@@ -6,6 +6,11 @@ Grid2D::Grid2D(double Xmin, double Xmax, int Nx, double Ymin, double Ymax, int N
 	m_nbPtsX = Nx;
 	m_nbPtsY = Ny;
 
+	m_h_V = new (std::nothrow) cmplx[m_nbPts];
+	cudaError Err = cudaMalloc(&m_d_V, m_nbPts * sizeof(cmplx));
+	if (Err != 0)
+		throw std::exception("Device :Memory Allocation Error!!!!");
+
 }
 
 Axis Grid2D::getAxisX() const
