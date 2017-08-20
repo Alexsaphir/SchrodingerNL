@@ -166,6 +166,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="Axis.cpp" />
     <ClCompile Include="ExportData.cpp" />
     <ClCompile Include="main.cpp" />
+    <CudaCompile Include="Grid2D.cu" />
     <CudaCompile Include="MathUtility.cu">
       <FileType>CppCode</FileType>
     </CudaCompile>
@@ -183,6 +184,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="ComplexCuda.cuh" />
     <ClInclude Include="ExportData.h" />
     <ClInclude Include="Grid.cuh" />
+    <ClInclude Include="Grid2D.cuh" />
     <ClInclude Include="GridAugmented.cuh" />
     <ClInclude Include="KernelUtility.cuh" />
     <ClInclude Include="MathUtility.cuh" />
