@@ -1,5 +1,9 @@
 #include "SplitStepSolver2D.cuh"
 
+#define ALPHA 1./2.
+#define BETA -1.
+#define KAPA 2.
+
 namespace
 {
 	__global__ void FFTResizekernel(cmplx * d_V, int Nx, int Ny)
