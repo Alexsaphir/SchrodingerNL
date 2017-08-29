@@ -60,6 +60,48 @@ namespace
 	}
 }
 
+namespace
+{
+	__global__ void LinearKernel(cmplx *Vf, double dt, double ssm_p, int Nx, int Ny, double Lx, double Ly)
+	{
+		//ssm_p: coefficient of the split-step method
+
+		int ix = blockDim.x*blockIdx.x + threadIdx.x;
+		int iy = blockDim.y*blockIdx.y + threadIdx.y;
+
+		//Compute value of k for each direction
+		cmplx kx = make_cuDoubleComplex(0, 0);
+		if (ix < Nx / 2)
+		{
+			kx = iMul(2.*M_PI *static_cast<double>(ix) / Lx);
+		}
+		if (ix == Nx / 2)
+		{
+			kx = make_cuDoubleComplex(0, 0);
+		}
+		if (ix > Nx / 2)
+		{
+			kx = iMul(2.*M_PI * (static_cast<double>(ix - Nx)) / Lx);
+		}
+
+		cmplx ky = make_cuDoubleComplex(0, 0);
+		if (iy < Nx / 2)
+		{
+			ky = iMul(2.*M_PI *static_cast<double>(iy) / Ly);
+		}
+		if (iy == Ny / 2)
+		{
+			ky = make_cuDoubleComplex(0, 0);
+		}
+		if (iy > Ny / 2)
+		{
+			ky = iMul(2.*M_PI * (static_cast<double>(iy - Ny)) / Ly);
+		}
+		
+			Vf[Nx*ix + iy] = cuCexp(iMul(ssm_p)*dt*ALPHA*kx*kx*ky*ky)*Vf[Nx*ix + iy];
+	}
+}
+
 void SplitStep2D(cmplx * d_U, double dt, int N, int Nx, int Ny, double Lx, double Ly, cufftHandle * plan, int order)
 {
 	/*switch (order)
