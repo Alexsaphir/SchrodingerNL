@@ -115,3 +115,31 @@ void exportMassOverTime(double E, const std::string & name, int iter)
 
 	file.close();
 }
+
+void exportCsv2DMatlab(Grid2D * const S, const std::string & name, int iter)
+{
+	int Nx = S->getAxisX().getN();
+	int Ny = S->getAxisY().getN();
+	S->syncDeviceToHost();
+
+	std::ofstream file;
+	//erase file
+	file.open(name + std::to_string(iter) + ".csv", std::ios::out | std::ios::trunc);
+
+	for (int i = 0; i < Ny; ++i)
+	{
+		for (int j = 0; j < Nx; ++j)
+		{
+			file << std::fixed << std::setprecision(5) << cuCabs(S->getHostData()[i*Nx+j]);
+			if (j == Nx - 1)
+			{
+				file << "\n";
+			}
+			else
+			{
+				file << ", ";
+			}
+		}
+	}
+	file.close();
+}
