@@ -18,6 +18,28 @@ void NLSUtility::GaussPulseLinear(Grid *S, double fc, double bw, double bwr, dou
 	S->syncHostToDevice();
 }
 
+void NLSUtility::GaussMonoPulse2D(Grid2D * S)
+{
+	Axis X = S->getAxisX();
+	Axis Y = S->getAxisY();
+	int Nx = X.getN();
+	int Ny = Y.getN();
+
+	cmplx *V = S->getHostData();
+
+	for (int i = 0; i < Ny; ++i)
+	{
+		double y = Y.getValueAt(i);
+		for (int j = 0; j < Nx; ++j)
+		{
+			double x = X.getValueAt(j);
+			V[i*Ny + j] = 1. / (2.*M_PI)*cuCexp(-(x*x + y*y) / 2.);
+		}
+	}
+	S->syncHostToDevice();
+}
+
+
 double NLSUtility::computeTotalMass(Grid * S)
 {
 	Axis X = S->getAxis();
