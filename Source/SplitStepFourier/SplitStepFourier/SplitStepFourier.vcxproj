@@ -171,6 +171,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <FileType>CppCode</FileType>
     </CudaCompile>
     <ClCompile Include="NLSUtility.cpp" />
+    <CudaCompile Include="SplitStepSolver2D.cu" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="ComplexCuda.cu" />
@@ -190,6 +191,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="MathUtility.cuh" />
     <ClInclude Include="NLSUtility.h" />
     <ClInclude Include="SplitStepSolver.cuh" />
+    <ClInclude Include="SplitStepSolver2D.cuh" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

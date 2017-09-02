@@ -100,17 +100,80 @@ namespace
 		
 			Vf[Nx*ix + iy] = cuCexp(iMul(ssm_p)*dt*ALPHA*kx*kx*ky*ky)*Vf[Nx*ix + iy];
 	}
+
+	__global__ void NLinearKernel(cmplx *V, double dt, double ssm_p, int Nx, int Ny, double Lx, double Ly)
+	{
+		int ix = blockDim.x*blockIdx.x + threadIdx.x;
+		int iy = blockDim.y*blockIdx.y + threadIdx.y;
+		
+		if (ix < Nx && iy < Ny)
+		{
+			V[Nx*ix + iy] = cuCexp(iMul(dt)*ssm_p*BETA*KAPA*V[Nx*ix + iy] * cuConj(V[Nx*ix + iy]))*V[Nx*ix + iy];
+		}
+	}
+
+	void LinearStep(cmplx *Vf, double dt, double ssm_p, int Nx, int Ny, double Lx, double Ly)
+	{
+		dim3 block;
+		block.x = 32;
+		block.y = 32;
+
+		LinearKernel << <KernelUtility::computeNumberOfBlocks2D(block, Nx, Ny), block >> > (Vf, dt, ssm_p, Nx, Ny, Lx, Ly);
+	}
+
+	void NonLinearStep(cmplx *V, double dt, double ssm_p, int Nx, int Ny, double Lx, double Ly)
+	{
+		dim3 block;
+		block.x = 32;
+		block.y = 32;
+
+		NLinearKernel << <KernelUtility::computeNumberOfBlocks2D(block, Nx, Ny), block >> > (V, dt, ssm_p, Nx, Ny, Lx, Ly);
+	}
+}
+
+namespace
+{
+	void phi1(cmplx *d_U, double dt, int Nx, int Ny, double Lx, double Ly, cufftHandle *plan)
+	{
+		cufftExecZ2Z(*plan, d_U, d_U, CUFFT_FORWARD);
+		LinearStep(d_U, dt, 1., Nx, Ny, Lx, Ly);
+		cufftExecZ2Z(*plan, d_U, d_U, CUFFT_INVERSE);
+		FFTResize(d_U, Nx, Ny);
+
+		NonLinearStep(d_U, dt, 1., Nx, Ny, Lx, Ly);
+
+	}
+	void phi2(cmplx *d_U, double dt, int Nx, int Ny, double Lx, double Ly, cufftHandle *plan)
+	{
+		NonLinearStep(d_U, dt, .5, Nx, Ny, Lx, Ly);
+
+		cufftExecZ2Z(*plan, d_U, d_U, CUFFT_FORWARD);
+		LinearStep(d_U, dt, 1., Nx, Ny, Lx, Ly);
+		cufftExecZ2Z(*plan, d_U, d_U, CUFFT_INVERSE);
+		FFTResize(d_U, Nx, Ny);
+
+		NonLinearStep(d_U, dt, .5, Nx, Ny, Lx, Ly);
+	}
+
+	void phi4(cmplx *d_U, double dt, int Nx, int Ny, double Lx, double Ly, cufftHandle *plan)
+	{
+		double w = (2. + std::pow(2., 1. / 3.) + .5*std::pow(2., 2. / 3)) / 3.;
+		
+		phi2(d_U, w*dt, Nx, Ny, Lx, Ly, plan);
+		phi2(d_U, (1. - w)*dt, Nx, Ny, Lx, Ly, plan);
+		phi2(d_U, w*dt, Nx, Ny, Lx, Ly, plan);
+	}
 }
 
 void SplitStep2D(cmplx * d_U, double dt, int N, int Nx, int Ny, double Lx, double Ly, cufftHandle * plan, int order)
 {
-	/*switch (order)
+	switch (order)
 	{
-	case 2: phi2(d_U, dt, N, Lx, Ly, plan);
+	case 2: phi2(d_U, dt, Nx, Ny, Lx, Ly, plan);
 		break;
-	case 4: phi4(d_U, dt, N, Lx, Ly, plan);
+	case 4: phi4(d_U, dt, Nx, Ny, Lx, Ly, plan);
 		break;
-	default:phi1(d_U, dt, N, Lx, Ly, plan);
+	default:phi1(d_U, dt, Nx, Ny, Lx, Ly, plan);
 		break;
-	}*/
+	}
 }
